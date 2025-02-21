@@ -12,3 +12,38 @@
   background: inherit;
   border: 0;
 }
+
+.wp-block-carmo-bulk-bulk-order {
+  border: 1px dashed #ccc;
+  padding: 1em;
+}
+.wp-block-carmo-bulk-bulk-order .block-editor-block-list__layout {
+  margin: 0;
+}
+.wp-block-carmo-bulk-bulk-order .components-placeholder {
+  min-height: 100px;
+}
+.wp-block-carmo-bulk-bulk-order .carmo-bulk-editor-preview {
+  background-color: #f8f9f9;
+  padding: 1em;
+  border-radius: 4px;
+}
+.wp-block-carmo-bulk-bulk-order .carmo-bulk-editor-preview p {
+  margin: 0.5em 0;
+}
+.wp-block-carmo-bulk-bulk-order .components-panel__body .components-base-control {
+  margin-bottom: 1em;
+}
+.wp-block-carmo-bulk-bulk-order .components-panel__body .components-range-control {
+  width: 100%;
+}
+
+.components-panel .carmo-bulk-controls {
+  padding: 16px;
+}
+.components-panel .carmo-bulk-controls .components-base-control {
+  margin-bottom: 24px;
+}
+.components-panel .carmo-bulk-controls .components-base-control:last-child {
+  margin-bottom: 0;
+}

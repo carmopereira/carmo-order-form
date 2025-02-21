@@ -120,12 +120,6 @@ function Edit(props) {
           onChange: value => setAttributes({
             imageWidth: value
           })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
-          label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Add to Cart Visible', 'carmo-order-form'),
-          checked: addCartVisible,
-          onChange: value => setAttributes({
-            addCartVisible: value
-          })
         })]
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("table", {
@@ -326,7 +320,7 @@ module.exports = window["wp"]["i18n"];
   \************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/carmo-bulk","version":"0.1.0","title":"Carmo Bulk","category":"carmo-blocks","icon":"cart","description":"An interactive block with the Interactivity API.","example":{},"supports":{"color":{"background":true,"text":true},"html":false,"typography":{"fontSize":true},"interactivity":true},"attributes":{"selectedCategory":{"type":"string","default":"0"},"imageWidth":{"type":"string","default":"100"}},"textdomain":"carmo-bulk","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScriptModule":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"create-block/carmo-bulk","version":"0.1.0","title":"Carmo Bulk","category":"carmo-blocks","icon":"cart","description":"An interactive block with the Interactivity API.","example":{},"supports":{"color":{"background":true,"text":true},"html":false,"typography":{"fontSize":true,"lineHeight":true,"__experimentalFontFamily":true,"__experimentalFontWeight":true,"__experimentalFontStyle":true,"__experimentalTextTransform":true,"__experimentalTextDecoration":true,"__experimentalLetterSpacing":true},"interactivity":true},"attributes":{"selectedCategory":{"type":"string","default":"0"},"imageWidth":{"type":"string","default":"100"}},"textdomain":"carmo-bulk","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScriptModule":"file:./view.js"}');
 
 /***/ })
 

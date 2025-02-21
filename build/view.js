@@ -80,6 +80,30 @@ const {
     },
     toggleTheme() {
       state.isDark = !state.isDark;
+    },
+    clearCart() {
+      if (confirm('Tem certeza que deseja limpar o carrinho?')) {
+        jQuery.ajax({
+          url: '/wp-json/wc/store/v1/cart/items',
+          method: 'DELETE',
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader('X-WC-Store-API-Nonce', document.getElementById('carmo-bulk-form').dataset.nonce);
+          },
+          success: function (response) {
+            document.querySelectorAll('.quantity-input').forEach(input => {
+              input.value = '0';
+            });
+            document.querySelectorAll('.cart-item-key').forEach(input => {
+              input.value = '';
+            });
+            updateFooterCart();
+            showNotification('Carrinho limpo com sucesso');
+          },
+          error: function (jqXHR) {
+            showNotification('Erro ao limpar carrinho', 'error');
+          }
+        });
+      }
     }
   },
   callbacks: {
@@ -98,89 +122,170 @@ document.addEventListener('DOMContentLoaded', function () {
     // Implementar lógica do carrinho flutuante aqui
     console.log('Carrinho flutuante criado');
   };
-  function addToCart(event) {
-    event.preventDefault();
-    const button = event.currentTarget;
-    const productId = button.dataset.productId;
-    const isVariable = button.dataset.isVariable === 'true';
-    const quantityInput = button.closest('tr').querySelector('.quantity-input');
-    const quantity = parseInt(quantityInput.value);
-
-    // Para produtos variáveis
-    let variationId = null;
-    let variations = {};
-    if (isVariable) {
-      const row = button.closest('tr');
-      const variationSelects = row.querySelectorAll('.variation-select');
-
-      // Se tiver apenas uma variação (input hidden)
-      const hiddenVariationInput = row.querySelector('.variation-id');
-      if (hiddenVariationInput) {
-        variationId = hiddenVariationInput.value;
+  function handleQuantityChange(input, newValue) {
+    if (!input) return Promise.reject(new Error('Input não encontrado'));
+    const productId = input.dataset.productId;
+    if (!productId) return Promise.reject(new Error('ID do produto não encontrado'));
+    const row = input.closest('tr');
+    if (!row) return Promise.reject(new Error('Linha da tabela não encontrada'));
+    const cartItemKeyInput = row.querySelector('.cart-item-key');
+    const cartItemKey = cartItemKeyInput ? cartItemKeyInput.value : '';
+    return updateCart(productId, null, newValue, cartItemKey);
+  }
+  function updateCart(productId, variationId, quantity, cartItemKey) {
+    return new Promise((resolve, reject) => {
+      const data = {
+        id: productId,
+        quantity: quantity
+      };
+      if (variationId) {
+        data.variation_id = variationId;
       }
-      // Se tiver múltiplas variações (selects)
-      else if (variationSelects.length > 0) {
-        let allSelected = true;
-        variationSelects.forEach(select => {
-          if (!select.value) {
-            allSelected = false;
-            alert('Por favor, selecione todas as opções do produto');
-            return;
-          }
-          variations[select.dataset.attribute] = select.value;
-        });
-        if (!allSelected) return;
-      }
-    }
-    const formData = new FormData();
-    formData.append('product_id', productId);
-    formData.append('quantity', quantity);
-    if (isVariable && variationId) {
-      formData.append('variation_id', variationId);
-    } else if (isVariable) {
-      Object.keys(variations).forEach(key => {
-        formData.append(`attribute_${key}`, variations[key]);
-      });
-    }
-    jQuery.ajax({
-      url: wc_add_to_cart_params.wc_ajax_url.toString().replace('%%endpoint%%', 'add_to_cart'),
-      method: 'POST',
-      data: formData,
-      processData: false,
-      contentType: false,
-      success: function (response) {
-        if (response.error) {
-          console.error('Erro:', response.message);
-          return;
-        }
-
-        // Força a atualização dos fragmentos do carrinho
+      if (cartItemKey) {
         jQuery.ajax({
-          url: wc_add_to_cart_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),
-          method: 'POST',
-          success: function (response) {
-            if (response && response.fragments) {
-              jQuery.each(response.fragments, function (key, value) {
-                jQuery(key).replaceWith(value);
-              });
-              jQuery(document.body).trigger('wc_fragments_refreshed');
-            }
-            const productName = button.closest('tr').querySelector('td:nth-child(2)').textContent;
-            console.log(`Produto adicionado: ${productName} (${quantity} unidades)`);
-          }
+          url: '/wp-json/wc/store/v1/cart/items/' + cartItemKey,
+          method: 'PUT',
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader('X-WC-Store-API-Nonce', document.getElementById('carmo-bulk-form').dataset.nonce);
+          },
+          data: JSON.stringify(data),
+          contentType: 'application/json',
+          success: resolve,
+          error: reject
         });
+      } else {
+        jQuery.ajax({
+          url: '/wp-json/wc/store/v1/cart/items',
+          method: 'POST',
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader('X-WC-Store-API-Nonce', document.getElementById('carmo-bulk-form').dataset.nonce);
+          },
+          data: JSON.stringify(data),
+          contentType: 'application/json',
+          success: resolve,
+          error: reject
+        });
+      }
+    });
+  }
+  function showNotification(message, type = 'success') {
+    const notification = document.getElementById('carmo-notification');
+    if (notification) {
+      notification.textContent = message;
+      notification.className = 'carmo-notification ' + type;
+      notification.style.display = 'block';
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
+    }
+  }
+  function updateFooterCart() {
+    // Remover aria-hidden antes de atualizar
+    const siteBlocks = document.querySelector('.wp-site-blocks');
+    if (siteBlocks) {
+      siteBlocks.removeAttribute('aria-hidden');
+    }
+
+    // Atualizar o carrinho
+    jQuery(document.body).trigger('wc_fragment_refresh');
+  }
+
+  // Adicionar listener para quando os fragmentos são atualizados
+  jQuery(document.body).on('wc_fragments_refreshed', function () {
+    // Restaurar o foco ao elemento apropriado
+    const activeElement = document.activeElement;
+    if (activeElement && activeElement.classList.contains('quantity-button')) {
+      setTimeout(() => {
+        activeElement.focus();
+      }, 0);
+    }
+  });
+
+  // Manipulador para os botões de produto
+  document.body.addEventListener('click', async function (e) {
+    const productButton = e.target.closest('.quantity-button');
+    if (!productButton) return;
+    e.preventDefault();
+
+    // Encontra a linha da tabela (tr) primeiro
+    const row = productButton.closest('tr');
+    if (!row) return;
+
+    // Encontra o input de quantidade na mesma linha
+    const input = row.querySelector('.quantity-input');
+    if (!input) return;
+    const currentValue = parseInt(input.value) || 0;
+    let increment = 0;
+
+    // Verifica qual botão foi clicado
+    if (productButton.classList.contains('product-plus-one')) increment = 1;else if (productButton.classList.contains('product-plus-five')) increment = 5;else if (productButton.classList.contains('product-plus-ten')) increment = 10;
+    if (increment > 0) {
+      const newValue = currentValue + increment;
+      input.value = newValue;
+      try {
+        await handleQuantityChange(input, newValue);
+        showNotification('Quantidade atualizada com sucesso');
+        updateFooterCart();
+      } catch (error) {
+        showNotification('Erro ao atualizar quantidade', 'error');
+        input.value = currentValue; // Reverte para o valor anterior em caso de erro
+      }
+    }
+  });
+
+  // Atualiza o carrinho quando o input é alterado manualmente
+  document.body.addEventListener('change', async function (e) {
+    if (e.target.matches('.quantity-input')) {
+      const input = e.target;
+      const newValue = parseInt(input.value) || 0;
+      try {
+        await handleQuantityChange(input, newValue);
+        showNotification('Quantidade atualizada com sucesso');
+        updateFooterCart();
+      } catch (error) {
+        showNotification('Erro ao atualizar quantidade', 'error');
+      }
+    }
+  });
+
+  // Inicializa os valores do carrinho
+  function updateQuantitiesFromCart() {
+    jQuery.ajax({
+      url: '/wp-json/wc/store/v1/cart',
+      method: 'GET',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-WC-Store-API-Nonce', document.getElementById('carmo-bulk-form').dataset.nonce);
       },
-      error: function (jqXHR, textStatus, errorThrown) {
-        console.error('Erro ao adicionar ao carrinho:', jqXHR.responseText);
+      success: function (response) {
+        if (response && response.items && response.items.length > 0) {
+          response.items.forEach(item => {
+            const productId = item.id.toString();
+            const variationId = item.variation_id ? item.variation_id.toString() : null;
+            const quantity = item.quantity;
+            let quantityInput;
+            let keyInput;
+            if (variationId) {
+              const row = document.querySelector(`input[type="hidden"][value="${variationId}"]`)?.closest('tr');
+              if (row) {
+                quantityInput = row.querySelector('.quantity-input');
+                keyInput = row.querySelector('.cart-item-key');
+              }
+            } else {
+              quantityInput = document.querySelector(`input.quantity-input[data-product-id="${productId}"]`);
+              keyInput = quantityInput?.closest('.quantity-controls').querySelector('.cart-item-key');
+            }
+            if (quantityInput && keyInput) {
+              quantityInput.value = quantity;
+              keyInput.value = item.key;
+            }
+          });
+        }
       }
     });
   }
 
-  // Adiciona event listeners aos botões
-  const addToCartButtons = document.querySelectorAll('.carmo-atc');
-  addToCartButtons.forEach(button => {
-    button.addEventListener('click', addToCart);
-  });
+  // Inicializa o estado do carrinho
+  updateQuantitiesFromCart();
   const orderbySelect = document.querySelector('.carmo-orderby');
   if (orderbySelect) {
     orderbySelect.addEventListener('change', function (e) {
@@ -194,6 +299,46 @@ document.addEventListener('DOMContentLoaded', function () {
       window.location.href = url.toString();
     });
   }
+
+  // Manipulador para o evento keypress nos inputs de quantidade
+  document.body.addEventListener('keypress', async function (e) {
+    if (e.target.matches('.quantity-input') && e.key === 'Enter') {
+      e.preventDefault(); // Previne o comportamento padrão do Enter
+
+      const input = e.target;
+      const newValue = parseInt(input.value) || 0;
+      const oldValue = parseInt(input.dataset.lastValue) || 0;
+
+      // Não faz nada se o valor não mudou
+      if (newValue === oldValue) {
+        return;
+      }
+      try {
+        await handleQuantityChange(input, newValue);
+        input.dataset.lastValue = newValue; // Armazena o último valor válido
+        showNotification('Quantidade atualizada com sucesso');
+        updateFooterCart();
+        input.blur(); // Remove o foco do input
+      } catch (error) {
+        showNotification('Erro ao atualizar quantidade', 'error');
+        input.value = oldValue; // Reverte para o valor anterior em caso de erro
+      }
+    }
+  });
+
+  // Atualiza o valor inicial dos inputs
+  document.querySelectorAll('.quantity-input').forEach(input => {
+    input.dataset.lastValue = input.value;
+  });
+
+  // Atualiza o último valor válido quando o input perde o foco
+  document.body.addEventListener('blur', function (e) {
+    if (e.target.matches('.quantity-input')) {
+      const input = e.target;
+      const currentValue = parseInt(input.value) || 0;
+      input.dataset.lastValue = currentValue;
+    }
+  }, true);
 });
 })();
 

@@ -100,13 +100,6 @@ export default function Edit( props ) {
 							setAttributes( { imageWidth: value } )
 						}
 					/>
-					<CheckboxControl
-						label={ __( 'Add to Cart Visible', 'carmo-order-form' ) }
-						checked={ addCartVisible }
-						onChange={ ( value ) =>
-							setAttributes( { addCartVisible: value } )
-						}
-					/>
 				</PanelBody>
 			</InspectorControls>
 			<table>
