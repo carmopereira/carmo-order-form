@@ -186,8 +186,19 @@ document.addEventListener('DOMContentLoaded', function () {
       siteBlocks.removeAttribute('aria-hidden');
     }
 
-    // Atualizar o carrinho
-    jQuery(document.body).trigger('wc_fragment_refresh');
+    // Atualizar o carrinho diretamente
+    jQuery.ajax({
+      url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),
+      type: 'POST',
+      success: function (data) {
+        if (data && data.fragments) {
+          jQuery.each(data.fragments, function (key, value) {
+            jQuery(key).replaceWith(value);
+          });
+          jQuery(document.body).trigger('wc_fragments_refreshed');
+        }
+      }
+    });
   }
 
   // Adicionar listener para quando os fragmentos são atualizados

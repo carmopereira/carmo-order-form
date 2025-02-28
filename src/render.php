@@ -106,7 +106,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
             <thead>
                 <tr>
                     <?php if ($attributes['showImages']): ?>
-                        <th class="product-image"><?php echo esc_html__('Imagem', 'carmo-bulk'); ?></th>
+                        <th class="product-image"></th>
                     <?php endif; ?>
                     <th class="product-name"><?php echo esc_html__('Produto', 'carmo-bulk'); ?></th>
                     <th class="product-price"><?php echo esc_html__('Preço', 'carmo-bulk'); ?></th>
