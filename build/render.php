@@ -109,6 +109,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
                         <th class="product-image"></th>
                     <?php endif; ?>
                     <th class="product-name"><?php echo esc_html__('Produto', 'carmo-bulk'); ?></th>
+                    <th class="product-type"><?php echo esc_html__('Tipo', 'carmo-bulk'); ?></th>
                     <th class="product-price"><?php echo esc_html__('Preço', 'carmo-bulk'); ?></th>
                     <th class="product-quantity"><?php echo esc_html__('Quantidade', 'carmo-bulk'); ?></th>
                     <th class="product-increment"><?php echo esc_html__('Adicionar Quantidade', 'carmo-bulk'); ?></th>
@@ -120,6 +121,21 @@ $wrapper_attributes = get_block_wrapper_attributes([
                     foreach ($products as $product): 
                         $cart_item_key = '';
                         $cart_quantity = 0;
+                        
+                        // Obtém o tipo do produto
+                        $product_type = $product->get_type();
+                        // Traduz o tipo para português
+                        $type_label = '';
+                        switch ($product_type) {
+                            case 'simple':
+                                $type_label = __('Simples', 'carmo-bulk');
+                                break;
+                            case 'variable':
+                                $type_label = __('Variável', 'carmo-bulk');
+                                break;
+                            default:
+                                $type_label = ucfirst($product_type);
+                        }
                 ?>
                     <tr>
                         <?php if ($attributes['showImages']): ?>
@@ -133,6 +149,9 @@ $wrapper_attributes = get_block_wrapper_attributes([
                         <?php endif; ?>
                         <td class="product-name">
                             <?php echo esc_html($product->get_name()); ?>
+                        </td>
+                        <td class="product-type">
+                            <?php echo esc_html($type_label); ?>
                         </td>
                         <td class="product-price">
                             <?php echo $product->get_price_html(); ?>

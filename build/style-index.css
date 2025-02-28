@@ -128,65 +128,61 @@
 .carmo-order-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 1em;
-  table-layout: fixed;
+  display: table;
 }
 .carmo-order-table th, .carmo-order-table td {
-  padding: 1em;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-  vertical-align: middle;
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+.carmo-order-table thead tr,
+.carmo-order-table tbody tr {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: center;
 }
 .carmo-order-table .product-image {
-  width: var(--image-width);
-  min-width: var(--image-width);
-  text-align: center;
-}
-.carmo-order-table .product-image img {
-  max-width: 100%;
-  height: auto;
+  grid-column: span 1;
+  width: var(--image-width, 100px);
+  min-width: var(--image-width, 100px);
 }
 .carmo-order-table .product-name {
-  width: auto;
-  min-width: 200px;
-  white-space: normal;
-  word-wrap: break-word;
+  grid-column: span 4;
+}
+.carmo-order-table .product-type {
+  grid-column: span 1;
 }
 .carmo-order-table .product-price {
-  width: 80px;
-  text-align: right;
-  white-space: nowrap;
+  grid-column: span 2;
 }
 .carmo-order-table .product-quantity {
-  width: 100px;
-  text-align: center;
-}
-.carmo-order-table .product-quantity .quantity-input {
-  width: 60px;
-  text-align: center;
+  grid-column: span 2;
 }
 .carmo-order-table .product-increment {
-  width: 180px;
+  grid-column: span 2;
 }
-.carmo-order-table .product-increment .quantity-buttons {
-  display: flex;
-  gap: 0.5em;
-  justify-content: flex-start;
-}
-.carmo-order-table .product-increment .quantity-button {
-  padding: 0.5em;
-  min-width: 40px;
-}
-.carmo-order-table td.product-name {
-  max-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.carmo-order-table td.product-name:hover {
-  overflow: visible;
-  white-space: normal;
-  position: relative;
-  z-index: 1;
+@media (max-width: 768px) {
+  .carmo-order-table thead tr,
+  .carmo-order-table tbody tr {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .carmo-order-table .product-image {
+    grid-column: span 1;
+  }
+  .carmo-order-table .product-name {
+    grid-column: span 2;
+  }
+  .carmo-order-table .product-type {
+    grid-column: span 1;
+  }
+  .carmo-order-table .product-price {
+    grid-column: span 1;
+  }
+  .carmo-order-table .product-quantity {
+    grid-column: span 1;
+  }
+  .carmo-order-table .product-increment {
+    grid-column: span 6;
+  }
 }
 
 .carmo-footer {
@@ -337,6 +333,33 @@
 }
 .wp-block-carmo-bulk-bulk-order button {
   font-size: inherit;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quantity-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.quantity-button {
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  background: #f7f7f7;
+  cursor: pointer;
+}
+.quantity-button:hover {
+  background: #e7e7e7;
+}
+
+.quantity-input {
+  width: 60px;
+  padding: 4px;
+  text-align: center;
 }
 
 /*# sourceMappingURL=style-index.css.map*/

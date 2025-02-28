@@ -47,3 +47,63 @@
 .components-panel .carmo-bulk-controls .components-base-control:last-child {
   margin-bottom: 0;
 }
+
+.carmo-order-table {
+  width: 100%;
+  border-collapse: collapse;
+  display: table;
+}
+.carmo-order-table th, .carmo-order-table td {
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+.carmo-order-table thead tr,
+.carmo-order-table tbody tr {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: center;
+}
+.carmo-order-table .product-image {
+  grid-column: span 1;
+  width: var(--image-width, 100px);
+  min-width: var(--image-width, 100px);
+}
+.carmo-order-table .product-name {
+  grid-column: span 4;
+}
+.carmo-order-table .product-type {
+  grid-column: span 1;
+}
+.carmo-order-table .product-price {
+  grid-column: span 2;
+}
+.carmo-order-table .product-quantity {
+  grid-column: span 2;
+}
+.carmo-order-table .product-increment {
+  grid-column: span 3;
+}
+@media (max-width: 768px) {
+  .carmo-order-table thead tr,
+  .carmo-order-table tbody tr {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .carmo-order-table .product-image {
+    grid-column: span 1;
+  }
+  .carmo-order-table .product-name {
+    grid-column: span 2;
+  }
+  .carmo-order-table .product-type {
+    grid-column: span 1;
+  }
+  .carmo-order-table .product-price {
+    grid-column: span 1;
+  }
+  .carmo-order-table .product-quantity {
+    grid-column: span 1;
+  }
+  .carmo-order-table .product-increment {
+    grid-column: span 6;
+  }
+}
