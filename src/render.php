@@ -50,6 +50,11 @@ wp_interactivity_state(
 $category_name = '';
 if (!empty($attributes['selectedCategory'])) {
     $category = get_term_by('id', $attributes['selectedCategory'], 'product_cat');
+
+
+// Se tiver um parent category, use o nome do parent category
+$parent_category_name = get_product_parent_category_name($attributes['selectedCategory']);
+
     if ($category) {
         $category_name = $category->name;
         $args = [
@@ -78,7 +83,14 @@ $wrapper_attributes = get_block_wrapper_attributes([
         <?php if (!empty($category_name)): ?>
             <div class="category-header">
                 <div class="category-title-wrapper">
-                    <h3 class="category-title"><?php echo esc_html($category_name); ?></h3>
+                    
+                    <h3 class="category-title">
+                        <?php echo esc_html($parent_category_name); ?>
+                        <?php if (!empty($parent_category_name)): ?>
+                            <span class="category-separator"> - </span>
+                        <?php endif; ?>
+                        <?php echo esc_html($category_name); ?>
+                    </h3>
                 </div>
                 
                 <div class="category-controls">
@@ -88,12 +100,12 @@ $wrapper_attributes = get_block_wrapper_attributes([
                         <button type="button" class="category-apply-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Apply', 'carmo-bulk'); ?></button>
                         <button type="button" class="category-reset-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Reset Category', 'carmo-bulk'); ?></button>
                     </div>
-                    <div class="category-buttons">
+                    <!-- <div class="category-buttons">
                         <button type="button" class="category-button" data-category-id="<?php echo esc_attr($category->term_id); ?>" data-quantity="1">+1</button>
                         <button type="button" class="category-button" data-category-id="<?php echo esc_attr($category->term_id); ?>" data-quantity="5">+5</button>
                         <button type="button" class="category-button" data-category-id="<?php echo esc_attr($category->term_id); ?>" data-quantity="10">+10</button>
                         
-                    </div>
+                    </div> -->
                 </div>
             </div>
         <?php endif; ?>
@@ -216,7 +228,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
 
     <form id="carmo-bulk-form" data-nonce="<?php echo wp_create_nonce('wp_rest'); ?>"></form>
 
-    <div
+  <!--   <div
         data-wp-interactive="create-block"
         <?php echo wp_interactivity_data_wp_context( array( 'isOpen' => false ) ); ?>
         data-wp-watch="callbacks.logIsOpen"
@@ -243,7 +255,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
                 esc_html_e( 'Carmo Bulk - hello from an interactive block!', 'carmo-bulk' );
             ?>
         </p>
-    </div>
+    </div> -->
 </div>
 
 <script>

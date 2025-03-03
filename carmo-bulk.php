@@ -187,3 +187,16 @@ function carmo_bulk_add_role_selector() {
     echo '</div>';
 }
 add_action('admin_bar_menu', 'carmo_bulk_add_role_selector', 999); 
+
+
+
+function get_product_parent_category_name($category_id) {
+    $term = get_term($category_id, 'product_cat'); // Get the category term
+
+    if (!is_wp_error($term) && $term->parent != 0) {
+        $parent_term = get_term($term->parent, 'product_cat'); // Get the parent category term
+        return !is_wp_error($parent_term) ? $parent_term->name : '';
+    }
+
+    return ''; // Return empty if no parent
+}

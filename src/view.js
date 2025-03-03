@@ -194,16 +194,33 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	function showNotification(message, type = 'success') {
-		const notification = document.getElementById('carmo-notification');
+		// Encontrar o container do bloco
+		const container = document.querySelector('.carmo-bulk-container');
+		if (!container) return;
+		
+		// Verificar se já existe uma notificação e removê-la
+		let notification = container.querySelector('.carmo-notification');
 		if (notification) {
-			notification.textContent = message;
-			notification.className = 'carmo-notification ' + type;
-			notification.style.display = 'block';
-
-			setTimeout(() => {
-				notification.style.display = 'none';
-			}, 3000);
+			notification.remove();
 		}
+		
+		// Criar nova notificação
+		notification = document.createElement('div');
+		notification.className = `carmo-notification ${type}`;
+		notification.textContent = message;
+		
+		// Adicionar ao container do bloco (não ao body)
+		container.appendChild(notification);
+		
+		// Mostrar a notificação
+		notification.style.display = 'block';
+		
+		// Esconder após 3 segundos
+		setTimeout(() => {
+			notification.style.display = 'none';
+			// Opcionalmente, remover do DOM após esconder
+			setTimeout(() => notification.remove(), 300);
+		}, 3000);
 	}
 
 	function updateFooterCart() {

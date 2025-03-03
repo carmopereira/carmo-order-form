@@ -8,14 +8,20 @@
  *
  * Replace them with your own styles or remove the file completely.
  */
+.carmo-bulk-container {
+  width: 100%;
+}
+
 .carmo-notification {
-  position: fixed;
-  top: 32px;
-  left: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
   padding: 15px 20px;
   border-radius: 4px;
-  z-index: 9999;
+  z-index: 99;
   display: none;
+  max-width: 80%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 .carmo-notification.success {
   background-color: #4CAF50;
@@ -24,6 +30,10 @@
 .carmo-notification.error {
   background-color: #f44336;
   color: white;
+}
+
+.carmo-bulk-container {
+  position: relative;
 }
 
 .category-container {
@@ -45,28 +55,11 @@
   display: flex;
   flex-direction: column;
   gap: 1em;
-  padding: 1em;
-  background-color: #f8f9fa;
-  border-radius: 4px;
 }
 .category-container .category-header .category-controls .category-input-group {
   display: flex;
   gap: 0.5em;
   align-items: center;
-}
-.category-container .category-header .category-controls .category-input-group .category-quantity-input {
-  width: 80px;
-  padding: 0.5em;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  text-align: center;
-  background-color: #fffdf5;
-}
-.category-container .category-header .category-controls .category-input-group .category-quantity-input:focus {
-  background-color: #ffffff;
-  outline: none;
-  border-color: #bbb;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
 .category-container .category-header .category-controls .category-input-group .category-apply-button {
   padding: 0.5em 1em;
@@ -245,7 +238,7 @@
 }
 
 .carmo-order-table tbody tr:nth-of-type(even) {
-  background-color: #f3f3f3;
+  /* background-color: #f3f3f3; */
 }
 
 .carmo-order-table tbody tr:last-of-type {
@@ -272,83 +265,8 @@
 }
 
 /* Estilo para o input numérico */
-.quantity-input {
-  width: 60px;
-  padding: 4px 8px;
-  border: 1px solid #009879;
-  border-radius: 4px;
-  font-size: 14px;
-  text-align: center;
-  -moz-appearance: textfield; /* Firefox */
-}
-
-/* Remove as setas do input number no Chrome, Safari, Edge, Opera */
-.quantity-input::-webkit-outer-spin-button,
-.quantity-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Estilo hover e focus */
-.quantity-input:hover,
-.quantity-input:focus {
-  border-color: #006b56;
-  outline: none;
-  box-shadow: 0 0 3px rgba(0, 152, 121, 0.3);
-}
-
-/* Estilo para o select de variações */
-.variation-select {
-  width: 100%;
-  padding: 4px 8px;
-  border: 1px solid #009879;
-  border-radius: 4px;
-  font-size: 14px;
-  margin-bottom: 5px;
-}
-
-.variation-select:hover,
-.variation-select:focus {
-  border-color: #006b56;
-  outline: none;
-  box-shadow: 0 0 3px rgba(0, 152, 121, 0.3);
-}
-
-.product-image {
-  width: var(--image-width);
-  min-width: var(--image-width);
-  text-align: center;
-}
-
-.wp-block-carmo-bulk-bulk-order {
-  font-size: inherit;
-  line-height: inherit;
-}
-.wp-block-carmo-bulk-bulk-order * {
-  font-size: inherit;
-  line-height: inherit;
-}
-.wp-block-carmo-bulk-bulk-order .product-name,
-.wp-block-carmo-bulk-bulk-order .product-price,
-.wp-block-carmo-bulk-bulk-order .product-quantity,
-.wp-block-carmo-bulk-bulk-order .product-increment {
-  font-size: inherit;
-  line-height: inherit;
-}
-.wp-block-carmo-bulk-bulk-order input.quantity-input {
-  font-size: inherit;
-}
-.wp-block-carmo-bulk-bulk-order button {
-  font-size: inherit;
-}
-
-.quantity-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.quantity-input {
+.quantity-input,
+.category-quantity-input {
   width: 70px;
   padding: 6px 10px;
   border: 1px solid #ddd;
@@ -358,30 +276,43 @@
   background: #f9f9f9;
   transition: all 0.3s ease;
   outline: none;
+  /* Firefox */
+  -moz-appearance: textfield;
 }
 
 /* Efeito quando o input recebe foco */
-.quantity-input:focus {
+.quantity-input:focus,
+.category-quantity-input:focus {
   border-color: #009879;
   background: #fff;
   box-shadow: 0 2px 8px rgba(0, 152, 121, 0.3);
 }
 
-/* Remove setinhas no Firefox */
-.quantity-input::-moz-number-spin-box,
+/* Chrome, Safari, Edge, Opera */
+.quantity-input::-webkit-outer-spin-button,
 .quantity-input::-webkit-inner-spin-button,
-.quantity-input::-webkit-outer-spin-button {
+.category-quantity-input::-webkit-outer-spin-button,
+.category-quantity-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
+/* Microsoft Edge e IE */
+.quantity-input::-ms-clear,
+.quantity-input::-ms-reveal,
+.category-quantity-input::-ms-clear,
+.category-quantity-input::-ms-reveal {
+  display: none;
+}
+
+/* Estilização APENAS para os botões de quantidade */
 .quantity-button {
   background-color: #6fb2cf;
   color: white;
   border: none;
-  padding: 6px 10px; /* Reduzi o padding */
-  font-size: 14px; /* Reduzi o tamanho da fonte */
-  border-radius: 5px; /* Pequeno ajuste na borda */
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 5px;
   cursor: pointer;
   transition: all 0.3s ease;
   display: inline-flex;
@@ -389,17 +320,17 @@
   justify-content: center;
 }
 
-/* Efeito hover */
+/* Efeito hover - apenas para botões */
 .quantity-button:hover {
   background-color: #1266ab;
 }
 
-/* Efeito ao pressionar */
+/* Efeito ao pressionar - apenas para botões */
 .quantity-button:active {
   transform: scale(0.95);
 }
 
-/* Estilo quando desativado */
+/* Estilo quando desativado - apenas para botões */
 .quantity-button:disabled {
   background: #ccc;
   cursor: not-allowed;
@@ -480,4 +411,28 @@ ins .amount {
 .carmo-bulk-table .out-of-stock-message::before {
   content: "⚠ ";
   margin-left: 5px;
+}
+
+/* Remover completamente as setas de inputs numéricos em todos os navegadores */
+.quantity-input,
+.category-quantity-input {
+  /* Firefox */
+  -moz-appearance: textfield;
+}
+
+/* Chrome, Safari, Edge, Opera */
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button,
+.category-quantity-input::-webkit-outer-spin-button,
+.category-quantity-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Microsoft Edge e IE */
+.quantity-input::-ms-clear,
+.quantity-input::-ms-reveal,
+.category-quantity-input::-ms-clear,
+.category-quantity-input::-ms-reveal {
+  display: none;
 }
