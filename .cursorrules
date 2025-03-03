@@ -1,0 +1,84 @@
+# Regras Cursor para desenvolvimento de blocos WordPress
+
+## Tecnologias e Versões
+- WordPress: versão mais recente (6.4+)
+- PHP: mínimo 8.2
+- JavaScript: ES2022+
+- Interactivity API: implementar conforme diretrizes atuais
+
+## Padrões de Código PHP
+- Sempre usar strict_types=1 no início de arquivos PHP
+- Utilizar type hints para parâmetros e retornos de funções
+- Seguir convenções de naming do WordPress (snake_case para funções)
+- DocBlocks em todas as funções e classes
+- Respeitar os padrões WordPress para hooks (add_action, add_filter)
+- Sanitizar entradas e escapar saídas
+
+## Padrões JavaScript
+- Organizar código para compatibilidade com Interactivity API
+- Usar desestruturação e métodos modernos
+- Evitar jQuery quando possível, preferir JavaScript nativo
+- Implementar store, getContext e métodos relacionados conforme documentação
+- Modularizar código em componentes reutilizáveis
+
+## Estrutura e Finalidade dos Arquivos
+- **block.json**: Arquivo de manifesto que define metadados, atributos e dependências do bloco
+- **edit.js**: Contém o componente React para a experiência de edição no admin/editor Gutenberg
+- **save.js**: Define o output HTML que será salvo no banco de dados (ou null se for renderizado dinamicamente)
+- **view.js**: Código JavaScript que roda no frontend para adicionar interatividade aos blocos renderizados
+- **index.js**: Ponto de entrada para registrar o bloco e importar dependências necessárias
+- **style.scss/css**: Estilos aplicados tanto no editor quanto no frontend
+- **editor.scss/css**: Estilos aplicados apenas no contexto do editor Gutenberg
+- **render.php**: Renderização dinâmica do bloco no servidor (para blocos dinâmicos)
+- **attributes.php**: Definição de atributos em PHP (alternativa ao block.json para blocos legados)
+- **interactivity.js**: Implementação da Interactivity API para blocos interativos modernos
+- **transforms.js**: Lógica para transformações entre blocos
+- **variations.js**: Definição de variantes do bloco
+
+## Estrutura de Blocos
+- Seguir estrutura recomendada com block.json
+- Definir atributos claramente com tipos apropriados
+- Implementar editorScript e viewScript separadamente
+- Considerar variantes de blocos quando apropriado
+- Utilizar InnerBlocks quando necessário para composição
+
+## CSS/SCSS
+- Usar nomes de classes específicos para evitar conflitos
+- Implementar design responsivo
+- Considerar suporte a temas escuros via prefers-color-scheme
+- Utilizar variáveis CSS para consistência
+
+## Acessibilidade
+- Seguir WCAG 2.1 AA
+- Implementar atributos ARIA apropriados
+- Garantir navegação por teclado
+- Verificar contraste de cores
+
+## Internacionalização
+- Usar funções __() para strings
+- Implementar domínios de texto corretamente
+- Considerar RTL quando aplicável
+
+## Performance
+- Otimizar carregamento de assets
+- Implementar code splitting quando necessário
+- Minimizar dependências externas
+
+## Comentários e Documentação
+- Comentar cada função explicando propósito
+- Documentar parâmetros e retornos
+- Adicionar comentários para explicar lógica complexa
+- Incluir exemplos de uso quando relevante
+
+## Interatividade
+- Implementar corretamente store da Interactivity API
+- Documentar fluxo de dados e eventos
+- Separar lógica de UI e lógica de negócios
+- Considerar SSR quando aplicável
+
+## Fluxo de Dados nos Blocos
+- **edit.js → save.js**: Atributos definidos no editor são passados para o componente de salvamento
+- **edit.js → render.php**: Em blocos dinâmicos, atributos são passados para o PHP
+- **block.json → PHP/JS**: Definições do bloco são acessíveis em ambos os ambientes
+- **view.js → DOM**: Manipulação do bloco renderizado no frontend
+- **interactivity.js → DOM**: Fluxo de dados bidirecional com a Interactivity API
