@@ -207,25 +207,77 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	function updateFooterCart() {
-		// Remover aria-hidden antes de atualizar
-		const siteBlocks = document.querySelector('.wp-site-blocks');
-		if (siteBlocks) {
-			siteBlocks.removeAttribute('aria-hidden');
+		// Abordagem oficial do WooCommerce
+		if (typeof wc_cart_fragments_params !== 'undefined') {
+			// Dispara o evento que o WooCommerce usa para atualizar fragmentos
+			jQuery(document.body).trigger('wc_fragment_refresh');
+			
+			console.log('Debug: Evento de refresh de fragmentos disparado');
 		}
+	}
 
-		// Atualizar o carrinho diretamente
-		jQuery.ajax({
-			url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),
-			type: 'POST',
-			success: function(data) {
-				if (data && data.fragments) {
-					jQuery.each(data.fragments, function(key, value) {
-						jQuery(key).replaceWith(value);
-					});
-					jQuery(document.body).trigger('wc_fragments_refreshed');
+	// Função separada para atualizar os fragmentos
+	function refreshFragments() {
+		if (typeof wc_cart_fragments_params !== 'undefined') {
+			jQuery.ajax({
+				url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),
+				type: 'POST',
+				data: { time: new Date().getTime() }, // Evita cache
+				dataType: 'json',
+				success: function(data) {
+					if (data && data.fragments) {
+						// Atualiza cada fragmento no DOM
+						jQuery.each(data.fragments, function(key, value) {
+							jQuery(key).replaceWith(value);
+						});
+						
+						// Armazena os fragmentos
+						sessionStorage.setItem('wc_fragments', JSON.stringify(data.fragments));
+						sessionStorage.setItem('wc_cart_hash', data.cart_hash);
+						
+						// Dispara eventos para notificar outros scripts
+						jQuery(document.body).trigger('wc_fragments_refreshed');
+						jQuery(document.body).trigger('wc_fragments_loaded');
+						jQuery(document.body).trigger('updated_wc_div');
+						jQuery(document.body).trigger('updated_cart_totals');
+					}
+				},
+				error: function(error) {
+					console.log('Debug: Erro ao atualizar fragmentos', error);
+					forceFragmentRefresh();
 				}
+			});
+		} else {
+			forceFragmentRefresh();
+		}
+	}
+
+	// Método alternativo para forçar a atualização dos fragmentos
+	function forceFragmentRefresh() {
+		console.log('Debug: Usando método alternativo para atualizar mini carrinho');
+		
+		// Método 2: Usar jQuery para buscar a página atual e extrair os fragmentos
+		jQuery.get(window.location.href, function(response) {
+			const miniCart = jQuery(response).find('.widget_shopping_cart_content').html();
+			if (miniCart) {
+				jQuery('.widget_shopping_cart_content').html(miniCart);
+				console.log('Debug: Mini carrinho atualizado via método alternativo');
+			}
+			
+			// Atualizar outros elementos relacionados ao carrinho
+			const cartCount = jQuery(response).find('.cart-count-wrap').html();
+			if (cartCount) {
+				jQuery('.cart-count-wrap').html(cartCount);
 			}
 		});
+		
+		// Método 3: Último recurso - recarregar a página após um pequeno atraso
+		// Comentado para não interferir na experiência do usuário, mas pode ser descomentado se necessário
+		/*
+		setTimeout(function() {
+			window.location.reload();
+		}, 2000);
+		*/
 	}
 
 	// Adicionar listener para quando os fragmentos são atualizados

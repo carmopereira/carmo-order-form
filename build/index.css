@@ -1,6 +1,7 @@
 /*!****************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/editor.scss ***!
   \****************************************************************************************************************************************************************************************************************************************/
+@charset "UTF-8";
 /**
  * The following styles get applied inside the editor only.
  *
@@ -106,6 +107,29 @@
   .carmo-order-table .product-increment {
     grid-column: span 6;
   }
+}
+
+/* Estilo para colocar preços na mesma linha e ajustar cores */
+.price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+del .amount {
+  color: #666; /* Cinza escuro para o preço riscado */
+  font-weight: normal;
+  text-decoration: line-through;
+}
+
+ins {
+  text-decoration: none !important; /* Remove o sublinhado do preço com desconto */
+}
+
+ins .amount {
+  color: #cc0000; /* Vermelho para o preço com desconto */
+  font-weight: bold;
 }
 
 /*# sourceMappingURL=index.css.map*/

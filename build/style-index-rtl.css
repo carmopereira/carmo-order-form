@@ -132,7 +132,6 @@
 }
 .carmo-order-table th, .carmo-order-table td {
   padding: 8px;
-  border: 1px solid #ddd;
 }
 .carmo-order-table thead tr,
 .carmo-order-table tbody tr {
@@ -144,20 +143,25 @@
   grid-column: span 1;
   width: var(--image-width, 100px);
   min-width: var(--image-width, 100px);
+  text-align: center;
 }
 .carmo-order-table .product-name {
-  grid-column: span 4;
+  grid-column: span 5;
 }
 .carmo-order-table .product-type {
+  text-align: center;
   grid-column: span 1;
 }
 .carmo-order-table .product-price {
+  text-align: center;
   grid-column: span 2;
 }
 .carmo-order-table .product-quantity {
-  grid-column: span 2;
+  text-align: center;
+  grid-column: span 1;
 }
 .carmo-order-table .product-increment {
+  text-align: center;
   grid-column: span 2;
 }
 @media (max-width: 768px) {
@@ -344,6 +348,7 @@
 .quantity-buttons {
   display: flex;
   gap: 4px;
+  justify-content: center;
 }
 
 .quantity-button {
@@ -372,4 +377,38 @@
 }
 .category-reset-button:hover {
   background-color: #d32f2f;
+}
+
+/* Estilo para colocar preços riscados e com desconto lado a lado */
+.price {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap; /* Impede que os elementos quebrem para a próxima linha */
+  gap: 8px;
+}
+
+/* Preço riscado */
+del .amount {
+  color: #666; /* Cinza escuro para o preço riscado */
+  font-weight: 300;
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap; /* Evita quebras de linha dentro do preço */
+}
+
+/* Container do preço com desconto */
+ins {
+  text-decoration: none !important; /* Remove o sublinhado do preço com desconto */
+  white-space: nowrap; /* Evita quebras de linha dentro do preço */
+}
+
+/* Valor do preço com desconto */
+ins .amount {
+  color: black; /* Vermelho para o preço com desconto */
+}
+
+/* Para casos específicos onde o WooCommerce usa outra estrutura */
+.price del,
+.price ins {
+  display: inline-block; /* Garante que estes elementos fiquem na mesma linha */
 }
