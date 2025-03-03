@@ -783,7 +783,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		// Se terminou todos os inputs
 		if (index >= inputs.length) {
 			console.log(`Debug: Atualizados ${inputs.length} produtos da categoria ${categoryId}`);
-			alert(`Aplicado o valor ${valueToApply} a ${inputs.length} produtos da categoria`);
+			//alert(`Aplicado o valor ${valueToApply} a ${inputs.length} produtos da categoria`);
 			updateFooterCart();
 			return;
 		}

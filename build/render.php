@@ -83,15 +83,16 @@ $wrapper_attributes = get_block_wrapper_attributes([
                 
                 <div class="category-controls">
                     <div class="category-input-group">
-                        <label for="category-quantity-<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Quantidade para todos os produtos:', 'carmo-bulk'); ?></label>
+                        <label for="category-quantity-<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Set all products to:', 'carmo-bulk'); ?></label>
                         <input type="number" id="category-quantity-<?php echo esc_attr($category->term_id); ?>" class="category-quantity-input" min="0">
-                        <button type="button" class="category-apply-button" data-category-id="<?php echo esc_attr($category->term_id); ?>">Aplicar a todos</button>
+                        <button type="button" class="category-apply-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Apply', 'carmo-bulk'); ?></button>
+                        <button type="button" class="category-reset-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Reset Category', 'carmo-bulk'); ?></button>
                     </div>
                     <div class="category-buttons">
                         <button type="button" class="category-button" data-category-id="<?php echo esc_attr($category->term_id); ?>" data-quantity="1">+1</button>
                         <button type="button" class="category-button" data-category-id="<?php echo esc_attr($category->term_id); ?>" data-quantity="5">+5</button>
                         <button type="button" class="category-button" data-category-id="<?php echo esc_attr($category->term_id); ?>" data-quantity="10">+10</button>
-                        <button type="button" class="category-reset-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Reset', 'carmo-bulk'); ?></button>
+                        
                     </div>
                 </div>
             </div>
@@ -212,12 +213,6 @@ $wrapper_attributes = get_block_wrapper_attributes([
     </div>
 
     <div id="carmo-notification" class="carmo-notification"></div>
-
-    <div class="carmo-footer">
-        <button type="button" class="carmo-footer-button clear-cart">
-            <?php echo esc_html__('Limpar Carrinho', 'carmo-bulk'); ?>
-        </button>
-    </div>
 
     <form id="carmo-bulk-form" data-nonce="<?php echo wp_create_nonce('wp_rest'); ?>"></form>
 

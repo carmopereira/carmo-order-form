@@ -348,26 +348,62 @@
   gap: 8px;
 }
 
-.quantity-buttons {
-  display: flex;
-  gap: 4px;
-  justify-content: center;
+.quantity-input {
+  width: 70px;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  text-align: center;
+  background: #f9f9f9;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+/* Efeito quando o input recebe foco */
+.quantity-input:focus {
+  border-color: #009879;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 152, 121, 0.3);
+}
+
+/* Remove setinhas no Firefox */
+.quantity-input::-moz-number-spin-box,
+.quantity-input::-webkit-inner-spin-button,
+.quantity-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .quantity-button {
-  padding: 4px 8px;
-  border: 1px solid #ddd;
-  background: #f7f7f7;
+  background-color: #6fb2cf;
+  color: white;
+  border: none;
+  padding: 6px 10px; /* Reduzi o padding */
+  font-size: 14px; /* Reduzi o tamanho da fonte */
+  border-radius: 5px; /* Pequeno ajuste na borda */
   cursor: pointer;
-}
-.quantity-button:hover {
-  background: #e7e7e7;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.quantity-input {
-  width: 60px;
-  padding: 4px;
-  text-align: center;
+/* Efeito hover */
+.quantity-button:hover {
+  background-color: #1266ab;
+}
+
+/* Efeito ao pressionar */
+.quantity-button:active {
+  transform: scale(0.95);
+}
+
+/* Estilo quando desativado */
+.quantity-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .category-reset-button {
