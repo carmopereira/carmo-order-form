@@ -131,6 +131,29 @@ $wrapper_attributes = get_block_wrapper_attributes([
                             default:
                                 $type_label = ucfirst($product_type);
                         }
+
+                        // Verificar se o produto está em estoque
+                        $is_in_stock = $product->is_in_stock();
+                        $product_id = $product->get_id();
+                        $product_name = $product->get_name();
+                        $stock_quantity = $product->get_stock_quantity();
+                        $stock_status = $product->get_stock_status(); // 'instock', 'outofstock', or 'onbackorder'
+                        
+                        // Informações detalhadas no HTML como comentários
+                        echo "<!-- DEBUG PRODUTO: $product_name (ID: $product_id) -->";
+                        echo "<!-- Stock Status: $stock_status -->";
+                        echo "<!-- Quantidade em estoque: " . ($stock_quantity !== null ? $stock_quantity : 'N/A') . " -->";
+                        echo "<!-- is_in_stock(): " . ($is_in_stock ? 'true' : 'false') . " -->";
+                        
+                        // Para debug visível na interface (temporário)
+                        if (isset($_GET['debug_stock'])) {
+                            echo '<div style="background:#ffe; padding:5px; border:1px solid #ddd; margin:5px; font-size:12px;">';
+                            echo "Debug: $product_name (ID: $product_id)<br>";
+                            echo "Status: $stock_status | ";
+                            echo "Em estoque: " . ($is_in_stock ? 'Sim' : 'Não') . " | ";
+                            echo "Quantidade: " . ($stock_quantity !== null ? $stock_quantity : 'N/A');
+                            echo '</div>';
+                        }
                 ?>
                     <tr>
                         <?php if ($attributes['showImages']): ?>
@@ -141,38 +164,44 @@ $wrapper_attributes = get_block_wrapper_attributes([
                                     class="product-thumbnail"
                                 >
                             </td>
+                            <td class="product-name">
+                                <?php echo esc_html($product->get_name()); ?>
+                            </td>
                         <?php endif; ?>
-                        <td class="product-name">
-                            <?php echo esc_html($product->get_name()); ?>
-                        </td>
-                        <td class="product-type">
-                            <?php echo esc_html($type_label); ?>
-                        </td>
-                        <td class="product-price">
-                            <?php echo $product->get_price_html(); ?>
-                        </td>
-                        <td class="product-quantity">
-                            <?php 
-                            if ($cart_quantity > 0) {
-                                echo '<input type="hidden" class="cart-item-key" value="' . esc_attr($cart_item_key) . '" />';
-                            } 
-                            ?>
-                            <input 
-                                type="number" 
-                                class="quantity-input" 
-                                data-product-id="<?php echo esc_attr($product->get_id()); ?>" 
-                                data-category-id="<?php echo esc_attr($category->term_id); ?>" 
-                                value="<?php echo esc_attr($cart_quantity); ?>" 
-                                min="0"
-                            >
-                        </td>
-                        <td class="product-increment">
-                            <div class="quantity-buttons">
-                                <button class="quantity-button product-plus-one">+1</button>
-                                <button class="quantity-button product-plus-five">+5</button>
-                                <button class="quantity-button product-plus-ten">+10</button>
-                            </div>
-                        </td>
+                        <?php if ($is_in_stock): ?>                        
+                            <td class="product-type">
+                                <?php echo esc_html($type_label); ?>
+                            </td>
+                            <td class="product-price">
+                                <?php echo $product->get_price_html(); ?>
+                            </td>
+                            <td class="product-quantity">
+                                <?php 
+                                if ($cart_quantity > 0) {
+                                    echo '<input type="hidden" class="cart-item-key" value="' . esc_attr($cart_item_key) . '" />';
+                                } 
+                                ?>
+                                <input 
+                                    type="number" 
+                                    class="quantity-input" 
+                                    data-product-id="<?php echo esc_attr($product->get_id()); ?>" 
+                                    data-category-id="<?php echo esc_attr($category->term_id); ?>" 
+                                    value="<?php echo esc_attr($cart_quantity); ?>" 
+                                    min="0"
+                                >
+                            </td>
+                            <td class="product-increment">
+                                <div class="quantity-buttons">
+                                    <button class="quantity-button product-plus-one">+1</button>
+                                    <button class="quantity-button product-plus-five">+5</button>
+                                    <button class="quantity-button product-plus-ten">+10</button>
+                                </div>
+                            </td>
+                        <?php else: ?>
+                            <td colspan="5" class="out-of-stock-message">
+                                <?php echo esc_html__('Out of Stock', 'carmo-bulk'); ?>
+                            </td>
+                        <?php endif; ?>
                     </tr>
                 <?php 
                     endforeach;

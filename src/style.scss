@@ -194,6 +194,10 @@
 		grid-column: span 2; // 2/12
 	}
 
+	.out-of-stock-message {
+		grid-column: span 6;
+	}
+
 	// Responsividade
 	@media (max-width: 768px) {
 		thead tr,
@@ -263,7 +267,7 @@
 	border-collapse: collapse;
 	margin: 25px 0;
 	font-size: 0.9em;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+	border: solid 1px green;
 }
 
 .carmo-order-table thead tr {
@@ -464,5 +468,35 @@ ins .amount {
 .price del, 
 .price ins {
     display: inline-block; /* Garante que estes elementos fiquem na mesma linha */
+}
+
+.out-of-stock-message {
+    text-align: center;
+    color: #e74c3c;
+    font-style: italic;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.out-of-stock-message::before {
+    content: "⚠ ";
+    margin-right: 5px;
+}
+
+/* Estilo para produtos esgotados */
+.carmo-bulk-table .out-of-stock-message {
+    text-align: center;
+    font-weight: bold;
+    color: #e74c3c;
+    font-style: italic;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+/* Opcional: adicionar um ícone */
+.carmo-bulk-table .out-of-stock-message::before {
+    content: "⚠ ";
+    margin-right: 5px;
 }
 
