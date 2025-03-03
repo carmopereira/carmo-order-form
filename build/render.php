@@ -78,25 +78,20 @@ $wrapper_attributes = get_block_wrapper_attributes([
         <?php if (!empty($category_name)): ?>
             <div class="category-header">
                 <div class="category-title-wrapper">
-                    <h2 class="category-title wp-block-heading"><?php echo esc_html($category_name); ?></h2>
+                    <h3 class="category-title"><?php echo esc_html($category_name); ?></h3>
                 </div>
                 
                 <div class="category-controls">
                     <div class="category-input-group">
-                        <input 
-                            type="number" 
-                            class="category-quantity-input" 
-                            min="0" 
-                            value="0"
-                            placeholder="Qtd."
-                        >
-                        <button class="category-apply-button">Aplicar</button>
+                        <label for="category-quantity-<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Quantidade para todos os produtos:', 'carmo-bulk'); ?></label>
+                        <input type="number" id="category-quantity-<?php echo esc_attr($category->term_id); ?>" class="category-quantity-input" min="0">
+                        <button type="button" class="category-apply-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Aplicar', 'carmo-bulk'); ?></button>
                     </div>
                     <div class="category-buttons">
-                        <button class="category-button category-plus-one">+1</button>
-                        <button class="category-button category-plus-five">+5</button>
-                        <button class="category-button category-plus-ten">+10</button>
-                        <button class="category-button category-plus-fifty">+50</button>
+                        <button type="button" class="category-button" data-category-id="<?php echo esc_attr($category->term_id); ?>" data-quantity="1">+1</button>
+                        <button type="button" class="category-button" data-category-id="<?php echo esc_attr($category->term_id); ?>" data-quantity="5">+5</button>
+                        <button type="button" class="category-button" data-category-id="<?php echo esc_attr($category->term_id); ?>" data-quantity="10">+10</button>
+                        <button type="button" class="category-reset-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Reset', 'carmo-bulk'); ?></button>
                     </div>
                 </div>
             </div>
@@ -157,20 +152,19 @@ $wrapper_attributes = get_block_wrapper_attributes([
                             <?php echo $product->get_price_html(); ?>
                         </td>
                         <td class="product-quantity">
-                            <div class="quantity-controls">
-                                <input 
-                                    type="number" 
-                                    class="quantity-input" 
-                                    min="0" 
-                                    value="0"
-                                    data-product-id="<?php echo esc_attr($product->get_id()); ?>"
-                                >
-                                <input 
-                                    type="hidden" 
-                                    class="cart-item-key" 
-                                    value=""
-                                >
-                            </div>
+                            <?php 
+                            if ($cart_quantity > 0) {
+                                echo '<input type="hidden" class="cart-item-key" value="' . esc_attr($cart_item_key) . '" />';
+                            } 
+                            ?>
+                            <input 
+                                type="number" 
+                                class="quantity-input" 
+                                data-product-id="<?php echo esc_attr($product->get_id()); ?>" 
+                                data-category-id="<?php echo esc_attr($category->term_id); ?>" 
+                                value="<?php echo esc_attr($cart_quantity); ?>" 
+                                min="0"
+                            >
                         </td>
                         <td class="product-increment">
                             <div class="quantity-buttons">
