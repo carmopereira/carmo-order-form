@@ -700,4 +700,147 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		// Lógica existente para outros botões...
 	});
+
+	/**
+	 * Diagnóstico e implementação da funcionalidade de aplicar a todos
+	 */
+	function handleCategoryApply() {
+		const categoryApplyButtons = document.querySelectorAll('.category-apply-button');
+		
+		console.log(`Debug: Encontrados ${categoryApplyButtons.length} botões de aplicar categoria`);
+		
+		categoryApplyButtons.forEach(button => {
+			button.addEventListener('click', function(event) {
+				event.preventDefault();
+				event.stopPropagation();
+				
+				const categoryId = this.dataset.categoryId;
+				console.log(`Debug: Botão de categoria ${categoryId} clicado`);
+				
+				// Buscar o input de categoria usando diferentes seletores (verificação mais robusta)
+				let categoryInput = null;
+				
+				// Tentar encontrar por seletor específico
+				categoryInput = document.querySelector(`.category-quantity-input[data-category-id="${categoryId}"]`);
+				
+				// Se não encontrou, tenta buscar input próximo ao botão
+				if (!categoryInput) {
+					const parentElement = this.parentElement;
+					if (parentElement) {
+						categoryInput = parentElement.querySelector('input[type="number"]');
+						console.log(`Debug: Procurando input no elemento pai: ${categoryInput ? 'Encontrado' : 'Não encontrado'}`);
+					}
+				}
+				
+				// Último recurso: buscar qualquer input com o mesmo data-category-id
+				if (!categoryInput) {
+					categoryInput = document.querySelector(`input[data-category-id="${categoryId}"]`);
+					console.log(`Debug: Procurando qualquer input com data-category-id: ${categoryInput ? 'Encontrado' : 'Não encontrado'}`);
+				}
+				
+				// Determinar o valor a ser aplicado
+				let valueToApply = '1';  // Valor padrão
+				
+				if (categoryInput && categoryInput.value && categoryInput.value !== '') {
+					valueToApply = categoryInput.value;
+					console.log(`Debug: INPUT ENCONTRADO! Valor a ser aplicado: ${valueToApply}`);
+				} else {
+					console.log(`Debug: Nenhum input válido encontrado. Usando valor padrão: ${valueToApply}`);
+					
+					// Encontrar todos os inputs numéricos para diagnóstico
+					const allInputs = document.querySelectorAll('input[type="number"]');
+					console.log(`Debug: Total de inputs numéricos na página: ${allInputs.length}`);
+					
+					// Listar os primeiros 5 inputs para diagnóstico
+					console.log('Debug: Amostra de inputs disponíveis:');
+					Array.from(allInputs).slice(0, 5).forEach((input, i) => {
+						console.log(`Input ${i+1}: ID=${input.id}, Classes=${input.className}, Value=${input.value}, Data:`, input.dataset);
+					});
+				}
+				
+				// Encontrar todos os inputs da categoria
+				const categoryInputs = document.querySelectorAll(`.quantity-input[data-category-id="${categoryId}"]`);
+				
+				if (categoryInputs.length === 0) {
+					console.log(`Debug: Nenhum input de produto encontrado para a categoria ${categoryId}`);
+					alert(`Erro: Não foi possível encontrar produtos para esta categoria (${categoryId})`);
+					return;
+				}
+				
+				console.log(`Debug: Aplicando valor ${valueToApply} a ${categoryInputs.length} produtos da categoria ${categoryId}`);
+				
+				// Aplicar o valor a todos os produtos sequencialmente
+				applyValueSequentially(Array.from(categoryInputs), 0, valueToApply, categoryId);
+			});
+		});
+	}
+
+	/**
+	 * Aplica um valor específico a inputs sequencialmente
+	 * Com checagem de modificação de valor reforçada
+	 */
+	function applyValueSequentially(inputs, index, valueToApply, categoryId) {
+		// Se terminou todos os inputs
+		if (index >= inputs.length) {
+			console.log(`Debug: Atualizados ${inputs.length} produtos da categoria ${categoryId}`);
+			alert(`Aplicado o valor ${valueToApply} a ${inputs.length} produtos da categoria`);
+			updateFooterCart();
+			return;
+		}
+		
+		const input = inputs[index];
+		const productId = input.dataset.productId;
+		const oldValue = input.value;
+		
+		console.log(`Debug [${index+1}/${inputs.length}]: Aplicando valor ${valueToApply} ao produto ${productId} (valor anterior: ${oldValue})`);
+		
+		try {
+			// IMPORTANTE: Primeiro definir o valor explicitamente no input
+			input.value = valueToApply;
+			
+			// Verificar se o valor foi realmente alterado no DOM
+			console.log(`Debug: Valor do input após atribuição: ${input.value}`);
+			
+			// Depois disparar o evento de mudança
+			if (typeof handleQuantityChange === 'function') {
+				console.log(`Debug: Chamando handleQuantityChange diretamente`);
+				handleQuantityChange(input, valueToApply);
+			} else {
+				console.log(`Debug: Disparando evento change manualmente`);
+				const event = new Event('change', { bubbles: true });
+				input.dispatchEvent(event);
+			}
+			
+			// Processar o próximo após um pequeno delay
+			setTimeout(function() {
+				applyValueSequentially(inputs, index + 1, valueToApply, categoryId);
+			}, 200);
+			
+		} catch (error) {
+			console.error(`Debug: ERRO ao aplicar valor ao produto ${productId}:`, error);
+			setTimeout(function() {
+				applyValueSequentially(inputs, index + 1, valueToApply, categoryId);
+			}, 200);
+		}
+	}
+
+	// Garantir que os eventos sejam registrados quando o DOM estiver pronto
+	document.addEventListener('DOMContentLoaded', function() {
+		console.log('Debug: DOM carregado, inicializando manipuladores de eventos');
+		
+		// Inicializar manipuladores de eventos para botões de categoria
+		handleCategoryApply();
+		
+		// Adicionar também após um curto delay (para casos onde o conteúdo é carregado dinamicamente)
+		setTimeout(function() {
+			console.log('Debug: Verificando botões após delay');
+			handleCategoryApply();
+		}, 1000);
+	});
+
+	// Adicionar também no evento load (para quando imagens e outros recursos terminarem de carregar)
+	window.addEventListener('load', function() {
+		console.log('Debug: Página totalmente carregada, verificando botões novamente');
+		handleCategoryApply();
+	});
 });

@@ -85,7 +85,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
                     <div class="category-input-group">
                         <label for="category-quantity-<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Quantidade para todos os produtos:', 'carmo-bulk'); ?></label>
                         <input type="number" id="category-quantity-<?php echo esc_attr($category->term_id); ?>" class="category-quantity-input" min="0">
-                        <button type="button" class="category-apply-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Override Quantidade', 'carmo-bulk'); ?></button>
+                        <button type="button" class="category-apply-button" data-category-id="<?php echo esc_attr($category->term_id); ?>">Aplicar a todos</button>
                     </div>
                     <div class="category-buttons">
                         <button type="button" class="category-button" data-category-id="<?php echo esc_attr($category->term_id); ?>" data-quantity="1">+1</button>
