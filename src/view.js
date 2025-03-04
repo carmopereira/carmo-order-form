@@ -20,7 +20,7 @@ const { state } = store( 'create-block', {
 		toggleTheme() {
 			state.isDark = ! state.isDark;
 		},
-		clearCart() {
+		carmobulk_clearCart() {
 			if (confirm('Tem certeza que deseja limpar o carrinho?')) {
 				jQuery.ajax({
 					url: '/wp-json/wc/store/v1/cart/items',
@@ -47,7 +47,7 @@ const { state } = store( 'create-block', {
 		}
 	},
 	callbacks: {
-		logIsOpen: () => {
+		carmobulk_logIsOpen: () => {
 			const { isOpen } = getContext();
 			// Log the value of `isOpen` each time it changes.
 			console.log( `Is open: ${ isOpen }` );
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		console.log('Carrinho flutuante criado');
 	};
 
-	function handleQuantityChange(input, newValue) {
+	function carmobulk_handleQuantityChange(input, newValue) {
 		if (!input) {
 			return Promise.reject(new Error('Input não encontrado'));
 		}
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		// Se a quantidade for zero e temos um cartItemKey, removemos o item
 		if (newValue === 0 && cartItemKey) {
-			return removeFromCart(cartItemKey).then(() => {
+			return carmobulk_removeFromCart(cartItemKey).then(() => {
 				if (cartItemKeyInput) {
 					cartItemKeyInput.value = '';
 				}
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			});
 		}
 
-		return updateCart(productId, null, newValue, cartItemKey).then(response => {
+		return carmobulk_updateCart(productId, null, newValue, cartItemKey).then(response => {
 			// Aqui está a correção: atualizar o cartItemKey após o sucesso da operação
 			if (response && response.key) {
 				// Se não existe o input para o cartItemKey, criamos um
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	// Nova função para remover item do carrinho
-	function removeFromCart(cartItemKey) {
+	function carmobulk_removeFromCart(cartItemKey) {
 		console.log('Debug: Removendo item do carrinho', cartItemKey);
 		
 		return new Promise((resolve, reject) => {
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 	}
 
-	function updateCart(productId, variationId, quantity, cartItemKey) {
+	function carmobulk_updateCart(productId, variationId, quantity, cartItemKey) {
 		console.log('Debug: Iniciando updateCart', {
 			productId,
 			variationId,
@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	 * @param {string} type - Tipo de notificação (success/error)
 	 * @param {HTMLElement} triggerElement - Elemento que disparou a ação (para identificar o bloco)
 	 */
-	function showNotification(message, type = 'success', triggerElement = null) {
+	function carmobulk_showNotification(message, type = 'success', triggerElement = null) {
 		// Encontrar o bloco que contém o elemento que disparou a ação
 		let blockContainer;
 		
@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		}, 3000);
 	}
 
-	function updateFooterCart() {
+	function carmobulk_updateFooterCart() {
 		// Abordagem oficial do WooCommerce
 		if (typeof wc_cart_fragments_params !== 'undefined') {
 			// Dispara o evento que o WooCommerce usa para atualizar fragmentos
@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	// Função separada para atualizar os fragmentos
-	function refreshFragments() {
+	function carmobulk_refreshFragments() {
 		if (typeof wc_cart_fragments_params !== 'undefined') {
 			jQuery.ajax({
 				url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),
@@ -293,16 +293,16 @@ document.addEventListener('DOMContentLoaded', function() {
 				},
 				error: function(error) {
 					console.log('Debug: Erro ao atualizar fragmentos', error);
-					forceFragmentRefresh();
+					carmobulk_forceFragmentRefresh();
 				}
 			});
 		} else {
-			forceFragmentRefresh();
+			carmobulk_forceFragmentRefresh();
 		}
 	}
 
 	// Método alternativo para forçar a atualização dos fragmentos
-	function forceFragmentRefresh() {
+	function carmobulk_forceFragmentRefresh() {
 		console.log('Debug: Usando método alternativo para atualizar mini carrinho');
 		
 		// Método 2: Usar jQuery para buscar a página atual e extrair os fragmentos
@@ -368,11 +368,11 @@ document.addEventListener('DOMContentLoaded', function() {
 			input.value = newValue;
 			
 			try {
-				await handleQuantityChange(input, newValue);
-				showNotification('Quantidade atualizada com sucesso');
-				updateFooterCart();
+				await carmobulk_handleQuantityChange(input, newValue);
+				carmobulk_showNotification('Quantidade atualizada com sucesso');
+				carmobulk_updateFooterCart();
 			} catch (error) {
-				showNotification('Erro ao atualizar quantidade', 'error');
+				carmobulk_showNotification('Erro ao atualizar quantidade', 'error');
 				input.value = currentValue; // Reverte para o valor anterior em caso de erro
 			}
 		}
@@ -381,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (e.target.matches('.category-reset-button')) {
 			const categoryId = e.target.dataset.categoryId;
 			if (categoryId) {
-				await resetCategory(categoryId);
+				await carmobulk_resetCategory(categoryId);
 			}
 		}
 	});
@@ -411,18 +411,18 @@ document.addEventListener('DOMContentLoaded', function() {
 			// Processa se o valor mudou OU se estamos forçando a remoção com zero
 			if (newValue !== oldValue || forceProcess) {
 				try {
-					const result = await handleQuantityChange(input, newValue);
+					const result = await carmobulk_handleQuantityChange(input, newValue);
 					input.dataset.lastValue = newValue;
 					if (result.removed) {
-						showNotification('Produto removido do carrinho');
+						carmobulk_showNotification('Produto removido do carrinho');
 					} else {
-						showNotification('Quantidade atualizada com sucesso');
+						carmobulk_showNotification('Quantidade atualizada com sucesso');
 					}
-					updateFooterCart();
+					carmobulk_updateFooterCart();
 					input.blur(); // Remove o foco do input
 				} catch (error) {
 					console.log('Debug: Erro no keypress event', error);
-					showNotification('Erro ao atualizar quantidade', 'error');
+					carmobulk_showNotification('Erro ao atualizar quantidade', 'error');
 					input.value = oldValue; // Reverte para o valor anterior em caso de erro
 				}
 			} else {
@@ -465,17 +465,17 @@ document.addEventListener('DOMContentLoaded', function() {
 				});
 				
 				try {
-					const result = await handleQuantityChange(input, newValue);
+					const result = await carmobulk_handleQuantityChange(input, newValue);
 					input.dataset.lastValue = newValue;
 					if (result.removed) {
-						showNotification('Produto removido do carrinho');
+						carmobulk_showNotification('Produto removido do carrinho');
 					} else {
-						showNotification('Quantidade atualizada com sucesso');
+						carmobulk_showNotification('Quantidade atualizada com sucesso');
 					}
-					updateFooterCart();
+					carmobulk_updateFooterCart();
 				} catch (error) {
 					console.log('Debug: Erro no change event', error);
-					showNotification('Erro ao atualizar quantidade', 'error');
+					carmobulk_showNotification('Erro ao atualizar quantidade', 'error');
 					input.value = oldValue;
 				}
 			}
@@ -483,7 +483,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 
 	// Inicializa os valores do carrinho
-	function updateQuantitiesFromCart() {
+	function carmobulk_updateQuantitiesFromCart() {
 		console.log('Debug: Iniciando updateQuantitiesFromCart');
 		
 		// Tentar uma abordagem diferente usando o endpoint do Store API do WooCommerce
@@ -592,7 +592,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	// Inicializa o estado do carrinho
-	updateQuantitiesFromCart();
+	carmobulk_updateQuantitiesFromCart();
 
 	const orderbySelect = document.querySelector('.carmo-orderby');
 	if (orderbySelect) {
@@ -609,7 +609,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	// Adicione uma função para processar o reset de categoria
-	async function resetCategory(categoryId) {
+	async function carmobulk_resetCategory(categoryId) {
 		console.log('Debug: Iniciando resetCategory', { categoryId });
 		
 		// Encontra todos os inputs de quantidade para esta categoria
@@ -654,7 +654,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		for (const item of itemsToRemove) {
 			try {
 				console.log('Debug: Removendo item do carrinho', item.cartItemKey, 'produto ID:', item.productId);
-				await removeFromCart(item.cartItemKey);
+				await carmobulk_removeFromCart(item.cartItemKey);
 				
 				// Limpa o cartItemKey
 				item.cartItemKeyInput.value = '';
@@ -672,24 +672,24 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		
 		if (productsRemoved > 0) {
-			showNotification(`${productsRemoved} produtos removidos da categoria`);
+			carmobulk_showNotification(`${productsRemoved} produtos removidos da categoria`);
 			
 			// Espera um pouco antes de atualizar o minicart para garantir que o servidor processou tudo
 			setTimeout(() => {
-				updateFooterCart();
+				carmobulk_updateFooterCart();
 			}, 500);
 			
 			// Após a remoção, verifica se todos foram realmente removidos
 			setTimeout(() => {
-				verifyCartItems(itemsToRemove.map(item => item.cartItemKey));
+				carmobulk_verifyCartItems(itemsToRemove.map(item => item.cartItemKey));
 			}, 1000);
 		} else {
-			showNotification('Nenhum produto no carrinho para remover');
+			carmobulk_showNotification('Nenhum produto no carrinho para remover');
 		}
 	}
 
 	// Nova função para verificar se os itens foram realmente removidos
-	function verifyCartItems(removedKeys) {
+	function carmobulk_verifyCartItems(removedKeys) {
 		jQuery.ajax({
 			url: '/wp-json/wc/store/v1/cart',
 			type: 'GET',
@@ -712,9 +712,9 @@ document.addEventListener('DOMContentLoaded', function() {
 						// Tenta remover novamente os itens que persistiram
 						remainingItems.forEach(item => {
 							console.log('Tentando remover item persistente:', item.key);
-							removeFromCart(item.key).then(() => {
+							carmobulk_removeFromCart(item.key).then(() => {
 								console.log('Item persistente removido com sucesso');
-								updateFooterCart();
+								carmobulk_updateFooterCart();
 							});
 						});
 					} else {
@@ -739,7 +739,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			console.log('Debug: Botão reset clicado', { categoryId });
 			
 			if (categoryId) {
-				resetCategory(categoryId).catch(error => {
+				carmobulk_resetCategory(categoryId).catch(error => {
 					console.log('Debug: Erro ao executar resetCategory', error);
 				});
 			} else {
@@ -753,7 +753,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	/**
 	 * Diagnóstico e implementação da funcionalidade de aplicar a todos
 	 */
-	function handleCategoryApply() {
+	function carmobulk_handleCategoryApply() {
 		const categoryApplyButtons = document.querySelectorAll('.category-apply-button');
 		
 		console.log(`Debug: Encontrados ${categoryApplyButtons.length} botões de aplicar categoria`);
@@ -819,7 +819,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				console.log(`Debug: Aplicando valor ${valueToApply} a ${categoryInputs.length} produtos da categoria ${categoryId}`);
 				
 				// Aplicar o valor a todos os produtos sequencialmente
-				applyValueSequentially(Array.from(categoryInputs), 0, valueToApply, categoryId);
+				carmobulk_applyValueSequentially(Array.from(categoryInputs), 0, valueToApply, categoryId);
 			});
 		});
 	}
@@ -828,12 +828,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	 * Aplica um valor específico a inputs sequencialmente
 	 * Com checagem de modificação de valor reforçada
 	 */
-	function applyValueSequentially(inputs, index, valueToApply, categoryId) {
+	function carmobulk_applyValueSequentially(inputs, index, valueToApply, categoryId) {
 		// Se terminou todos os inputs
 		if (index >= inputs.length) {
 			console.log(`Debug: Atualizados ${inputs.length} produtos da categoria ${categoryId}`);
 			//alert(`Aplicado o valor ${valueToApply} a ${inputs.length} produtos da categoria`);
-			updateFooterCart();
+			carmobulk_updateFooterCart();
 			return;
 		}
 		
@@ -851,9 +851,9 @@ document.addEventListener('DOMContentLoaded', function() {
 			console.log(`Debug: Valor do input após atribuição: ${input.value}`);
 			
 			// Depois disparar o evento de mudança
-			if (typeof handleQuantityChange === 'function') {
+			if (typeof carmobulk_handleQuantityChange === 'function') {
 				console.log(`Debug: Chamando handleQuantityChange diretamente`);
-				handleQuantityChange(input, valueToApply);
+				carmobulk_handleQuantityChange(input, valueToApply);
 			} else {
 				console.log(`Debug: Disparando evento change manualmente`);
 				const event = new Event('change', { bubbles: true });
@@ -862,18 +862,18 @@ document.addEventListener('DOMContentLoaded', function() {
 			
 			// Processar o próximo após um pequeno delay
 			setTimeout(function() {
-				applyValueSequentially(inputs, index + 1, valueToApply, categoryId);
+				carmobulk_applyValueSequentially(inputs, index + 1, valueToApply, categoryId);
 			}, 200);
 			
 			// Adicione isso antes do setTimeout
 			if (index === inputs.length - 1) {
 				// Usando o último input como referência para o contêiner do bloco
-				showNotification(`Aplicado valor ${valueToApply} a todos os produtos da categoria`, 'success', input);
+				carmobulk_showNotification(`Aplicado valor ${valueToApply} a todos os produtos da categoria`, 'success', input);
 			}
 			
 		} catch (e) {
 			console.error(`Erro ao aplicar valor: ${e.message}`);
-			showNotification('Erro ao aplicar valor aos produtos', 'error', input);
+			carmobulk_showNotification('Erro ao aplicar valor aos produtos', 'error', input);
 		}
 	}
 
@@ -882,18 +882,18 @@ document.addEventListener('DOMContentLoaded', function() {
 		console.log('Debug: DOM carregado, inicializando manipuladores de eventos');
 		
 		// Inicializar manipuladores de eventos para botões de categoria
-		handleCategoryApply();
+		carmobulk_handleCategoryApply();
 		
 		// Adicionar também após um curto delay (para casos onde o conteúdo é carregado dinamicamente)
 		setTimeout(function() {
 			console.log('Debug: Verificando botões após delay');
-			handleCategoryApply();
+			carmobulk_handleCategoryApply();
 		}, 1000);
 	});
 
 	// Adicionar também no evento load (para quando imagens e outros recursos terminarem de carregar)
 	window.addEventListener('load', function() {
 		console.log('Debug: Página totalmente carregada, verificando botões novamente');
-		handleCategoryApply();
+		carmobulk_handleCategoryApply();
 	});
 });
