@@ -431,16 +431,13 @@ ins .amount {
 }
 
 .out-of-stock-message {
+    height: 94%;
+    background-color: lavenderblush;
+    align-content: center;
     text-align: center;
     color: #e74c3c;
-    font-style: italic;
     padding: 10px;
     border-radius: 4px;
-}
-
-.out-of-stock-message::before {
-    content: "⚠ ";
-    margin-right: 5px;
 }
 
 /* Estilo para produtos esgotados */

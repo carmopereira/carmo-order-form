@@ -60,6 +60,7 @@ $parent_category_name = get_product_parent_category_name($attributes['selectedCa
         $args = [
             'post_type' => 'product',
             'posts_per_page' => -1,
+            'status' => 'publish',
             'tax_query' => [
                 [
                     'taxonomy' => 'product_cat',
@@ -212,7 +213,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
                             </td>
                         <?php else: ?>
                             <td colspan="5" class="out-of-stock-message">
-                                <?php echo esc_html__('Out of Stock', 'carmo-bulk'); ?>
+                                <?php echo esc_html__('out of stock', 'carmo-bulk'); ?>
                             </td>
                         <?php endif; ?>
                     </tr>
