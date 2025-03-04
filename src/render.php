@@ -223,9 +223,10 @@ $wrapper_attributes = get_block_wrapper_attributes([
             </tbody>
         </table>
     </div>
-    <!-- Notificação que ficará contida neste bloco -->
-    <div class="carmo-notification"></div>
+    <!-- Notificação específica para este bloco -->
+     <div id="carmo-notification" class="carmo-notification"></div>
     
+
     <form id="carmo-bulk-form" data-nonce="<?php echo wp_create_nonce('wp_rest'); ?>"></form>
 
 </div>
