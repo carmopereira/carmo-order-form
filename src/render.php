@@ -223,39 +223,12 @@ $wrapper_attributes = get_block_wrapper_attributes([
             </tbody>
         </table>
     </div>
-
-    <div id="carmo-notification" class="carmo-notification"></div>
+    <!-- Notificação específica para este bloco -->
+     <div id="carmo-notification" class="carmo-notification"></div>
+    
 
     <form id="carmo-bulk-form" data-nonce="<?php echo wp_create_nonce('wp_rest'); ?>"></form>
 
-  <!--   <div
-        data-wp-interactive="create-block"
-        <?php echo wp_interactivity_data_wp_context( array( 'isOpen' => false ) ); ?>
-        data-wp-watch="callbacks.logIsOpen"
-        data-wp-class--dark-theme="state.isDark"
-    >
-        <button
-            data-wp-on--click="actions.toggleTheme"
-            data-wp-text="state.themeText"
-        ></button>
-
-        <button
-            data-wp-on--click="actions.toggleOpen"
-            data-wp-bind--aria-expanded="context.isOpen"
-            aria-controls="<?php echo esc_attr( $unique_id ); ?>"
-        >
-            <?php esc_html_e( 'Toggle', 'carmo-bulk' ); ?>
-        </button>
-
-        <p
-            id="<?php echo esc_attr( $unique_id ); ?>"
-            data-wp-bind--hidden="!context.isOpen"
-        >
-            <?php
-                esc_html_e( 'Carmo Bulk - hello from an interactive block!', 'carmo-bulk' );
-            ?>
-        </p>
-    </div> -->
 </div>
 
 <script>
