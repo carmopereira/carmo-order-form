@@ -75,7 +75,8 @@ $parent_category_name = get_product_parent_category_name($attributes['selectedCa
 
 // Obter as classes do bloco
 $wrapper_attributes = get_block_wrapper_attributes([
-    'class' => 'carmo-bulk-container'
+    'class' => 'carmo-bulk-container',
+    'id' => 'carmo-bulk-category-' . (isset($attributes['selectedCategory']) ? esc_attr($attributes['selectedCategory']) : 'default')
 ]);
 ?>
 
