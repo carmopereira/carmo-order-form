@@ -243,33 +243,64 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   }
-  function showNotification(message, type = 'success') {
-    // Encontrar o container do bloco
-    const container = document.querySelector('.carmo-bulk-container');
-    if (!container) return;
 
-    // Verificar se já existe uma notificação e removê-la
-    let notification = container.querySelector('.carmo-notification');
-    if (notification) {
-      notification.remove();
+  /**
+   * Mostra uma notificação dentro do contêiner do bloco
+   * @param {string} message - Mensagem a ser exibida
+   * @param {string} type - Tipo de notificação (success/error)
+   * @param {HTMLElement} triggerElement - Elemento que disparou a ação (para identificar o bloco)
+   */
+  function showNotification(message, type = 'success', triggerElement = null) {
+    // Encontrar o bloco que contém o elemento que disparou a ação
+    let blockContainer;
+    if (triggerElement) {
+      // Buscar o container de bloco mais próximo
+      blockContainer = triggerElement.closest('.carmo-bulk-container');
+      console.log(`Debug: Encontrado container de bloco a partir do elemento de trigger: ${blockContainer ? 'Sim' : 'Não'}`);
     }
 
-    // Criar nova notificação
-    notification = document.createElement('div');
-    notification.className = `carmo-notification ${type}`;
+    // Se não encontrou o container a partir do elemento de trigger
+    if (!blockContainer) {
+      // Tentar usar o elemento atualmente com foco
+      const activeElement = document.activeElement;
+      if (activeElement) {
+        blockContainer = activeElement.closest('.carmo-bulk-container');
+        console.log(`Debug: Encontrado container de bloco a partir do elemento ativo: ${blockContainer ? 'Sim' : 'Não'}`);
+      }
+    }
+
+    // Se ainda não encontrou, tentar o primeiro bloco como fallback
+    if (!blockContainer) {
+      blockContainer = document.querySelector('.carmo-bulk-container');
+      console.log('Debug: Usando primeiro container de bloco como fallback');
+    }
+
+    // Se realmente não encontrou nenhum container, não fazer nada
+    if (!blockContainer) {
+      console.error('Erro: Não foi possível encontrar um container de bloco para a notificação');
+      return;
+    }
+
+    // Obter ou criar a notificação no container
+    let notification = blockContainer.querySelector('.carmo-notification');
+
+    // Se não existe um elemento de notificação, criar um
+    if (!notification) {
+      notification = document.createElement('div');
+      notification.className = 'carmo-notification';
+      blockContainer.appendChild(notification);
+      console.log('Debug: Criado novo elemento de notificação no container');
+    }
+
+    // Configurar a notificação
     notification.textContent = message;
-
-    // Adicionar ao container do bloco (não ao body)
-    container.appendChild(notification);
-
-    // Mostrar a notificação
+    notification.className = `carmo-notification ${type}`;
     notification.style.display = 'block';
+    console.log(`Debug: Exibindo notificação "${message}" (${type}) no container`);
 
     // Esconder após 3 segundos
     setTimeout(() => {
       notification.style.display = 'none';
-      // Opcionalmente, remover do DOM após esconder
-      setTimeout(() => notification.remove(), 300);
     }, 3000);
   }
   function updateFooterCart() {
@@ -612,111 +643,125 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Adicione uma função para processar o reset de categoria
   async function resetCategory(categoryId) {
-    console.log('Debug: Iniciando resetCategory', {
-      categoryId
-    });
-
-    // Encontra todos os inputs de quantidade para esta categoria
-    const categoryInputs = document.querySelectorAll(`.quantity-input[data-category-id="${categoryId}"]`);
-    if (!categoryInputs.length) {
-      console.log('Debug: Nenhum produto encontrado na categoria');
+    const inputs = document.querySelectorAll(`.quantity-input[data-category-id="${categoryId}"]`);
+    if (!inputs.length) {
+      console.warn(`Nenhum produto encontrado para a categoria ${categoryId}`);
       return;
     }
-    let promises = [];
-    let productsRemoved = 0;
-    let itemsToRemove = [];
+    console.log(`Resetando ${inputs.length} produtos da categoria ${categoryId}`);
+    let removedKeys = [];
 
-    // Primeiro coletamos todos os itens que precisam ser removidos
-    for (const input of categoryInputs) {
-      const row = input.closest('tr');
-      if (!row) continue;
-
-      // Zeramos o input de qualquer forma
-      input.value = 0;
-      input.dataset.lastValue = 0;
-
-      // Verifica se existe cartItemKey
-      const cartItemKeyInput = row.querySelector('.cart-item-key');
-      if (!cartItemKeyInput || !cartItemKeyInput.value) {
-        continue; // Não está no carrinho, pula para o próximo
-      }
-      const cartItemKey = cartItemKeyInput.value;
-      itemsToRemove.push({
-        input: input,
-        cartItemKey: cartItemKey,
-        cartItemKeyInput: cartItemKeyInput,
-        productId: input.dataset.productId
-      });
-    }
-    console.log('Debug: Itens para remover', itemsToRemove.length);
-
-    // Agora removemos um por um, sequencialmente para evitar problemas
-    for (const item of itemsToRemove) {
-      try {
-        console.log('Debug: Removendo item do carrinho', item.cartItemKey, 'produto ID:', item.productId);
-        await removeFromCart(item.cartItemKey);
-
-        // Limpa o cartItemKey
-        item.cartItemKeyInput.value = '';
-        productsRemoved++;
-
-        // Pequena pausa para garantir que o servidor processe cada remoção
-        await new Promise(resolve => setTimeout(resolve, 100));
-      } catch (error) {
-        console.log('Debug: Erro ao remover produto', {
-          cartItemKey: item.cartItemKey,
-          productId: item.productId,
-          error
+    // Primeiro, reunimos todos os produtos que serão zerados
+    const productsToReset = [];
+    inputs.forEach(input => {
+      if (input.value && input.value !== '0') {
+        const productId = input.dataset.productId;
+        const variationId = input.dataset.variationId || 0;
+        const cartItemKey = input.dataset.cartItemKey || '';
+        if (cartItemKey) {
+          removedKeys.push(cartItemKey);
+        }
+        productsToReset.push({
+          input,
+          productId,
+          variationId,
+          cartItemKey
         });
       }
+    });
+
+    // Verificar se não há produtos para resetar
+    if (productsToReset.length === 0) {
+      console.warn(`Nenhum produto com quantidade a resetar na categoria ${categoryId}`);
+      return;
     }
-    if (productsRemoved > 0) {
-      showNotification(`${productsRemoved} produtos removidos da categoria`);
 
-      // Espera um pouco antes de atualizar o minicart para garantir que o servidor processou tudo
-      setTimeout(() => {
+    // Notifica o usuário que o processo começou
+    const triggerElement = document.querySelector(`.category-reset-button[data-category-id="${categoryId}"]`);
+    showNotification(`Removendo ${productsToReset.length} produtos do carrinho...`, 'success', triggerElement);
+
+    // Zero as quantidades nos inputs
+    productsToReset.forEach(product => {
+      product.input.value = '0';
+    });
+
+    // Agora executamos a remoção real do carrinho
+    try {
+      // Usar AJAX para remover todos os itens de uma vez
+      const response = await jQuery.ajax({
+        url: carmo_bulk_data.ajax_url,
+        type: 'POST',
+        data: {
+          action: 'carmo_bulk_reset_category',
+          category_id: categoryId,
+          security: carmo_bulk_data.nonce
+        }
+      });
+      if (response.success) {
+        // Atualiza o footer do carrinho após a conclusão
         updateFooterCart();
-      }, 500);
 
-      // Após a remoção, verifica se todos foram realmente removidos
-      setTimeout(() => {
-        verifyCartItems(itemsToRemove.map(item => item.cartItemKey));
-      }, 1000);
-    } else {
-      showNotification('Nenhum produto no carrinho para remover');
+        // Verificar se há chaves de itens do carrinho específicas para remover
+        if (removedKeys.length > 0) {
+          // Verifica se os itens foram realmente removidos
+          verifyCartItems(removedKeys);
+        }
+
+        // Notifica o usuário sobre o sucesso
+        showNotification(`${productsToReset.length} produtos removidos do carrinho`, 'success', triggerElement);
+
+        // Redefinir as chaves do carrinho nos inputs
+        productsToReset.forEach(product => {
+          if (product.input.dataset.cartItemKey) {
+            product.input.dataset.cartItemKey = '';
+          }
+        });
+      } else {
+        console.error('Erro ao resetar categoria:', response.data);
+        showNotification('Erro ao remover produtos do carrinho', 'error', triggerElement);
+      }
+    } catch (error) {
+      console.error('Erro ao processar reset da categoria:', error);
+      showNotification('Erro ao processar a remoção de produtos', 'error', triggerElement);
     }
   }
 
   // Nova função para verificar se os itens foram realmente removidos
   function verifyCartItems(removedKeys) {
+    if (!removedKeys || !removedKeys.length) return;
+
+    // Obtém informações atualizadas do carrinho
     jQuery.ajax({
-      url: '/wp-json/wc/store/v1/cart',
-      type: 'GET',
-      beforeSend: function (xhr) {
-        const nonceElement = document.getElementById('carmo-bulk-form');
-        if (nonceElement && nonceElement.dataset.nonce) {
-          xhr.setRequestHeader('X-WC-Store-API-Nonce', nonceElement.dataset.nonce);
-        }
+      url: carmo_bulk_data.ajax_url,
+      type: 'POST',
+      data: {
+        action: 'carmo_bulk_get_cart',
+        security: carmo_bulk_data.nonce
       },
       success: function (response) {
-        if (response && response.items && Array.isArray(response.items)) {
-          // Verifica se algum dos itens que deveriam ter sido removidos ainda existe
-          const remainingItems = response.items.filter(item => removedKeys.includes(item.key));
-          if (remainingItems.length > 0) {
-            console.log('AVISO: Alguns itens não foram removidos corretamente:', remainingItems);
-
-            // Tenta remover novamente os itens que persistiram
-            remainingItems.forEach(item => {
-              console.log('Tentando remover item persistente:', item.key);
-              removeFromCart(item.key).then(() => {
-                console.log('Item persistente removido com sucesso');
-                updateFooterCart();
-              });
-            });
-          } else {
-            console.log('Todos os itens foram removidos com sucesso');
-          }
+        if (!response.success) {
+          console.error('Erro ao verificar carrinho:', response.data);
+          return;
         }
+        const currentCart = response.data;
+        const keysStillInCart = [];
+        removedKeys.forEach(key => {
+          if (currentCart.cart_contents && currentCart.cart_contents[key]) {
+            keysStillInCart.push(key);
+          }
+        });
+        if (keysStillInCart.length > 0) {
+          console.warn('Alguns produtos não foram removidos corretamente:', keysStillInCart);
+          showNotification('Alguns produtos não foram removidos corretamente do carrinho', 'error');
+
+          // Força uma atualização completa dos fragmentos
+          forceFragmentRefresh();
+        } else {
+          console.log('Todos os produtos foram removidos com sucesso do carrinho');
+        }
+      },
+      error: function (error) {
+        console.error('Erro ao verificar itens do carrinho:', error);
       }
     });
   }
@@ -855,11 +900,15 @@ document.addEventListener('DOMContentLoaded', function () {
       setTimeout(function () {
         applyValueSequentially(inputs, index + 1, valueToApply, categoryId);
       }, 200);
-    } catch (error) {
-      console.error(`Debug: ERRO ao aplicar valor ao produto ${productId}:`, error);
-      setTimeout(function () {
-        applyValueSequentially(inputs, index + 1, valueToApply, categoryId);
-      }, 200);
+
+      // Adicione isso antes do setTimeout
+      if (index === inputs.length - 1) {
+        // Usando o último input como referência para o contêiner do bloco
+        showNotification(`Aplicado valor ${valueToApply} a todos os produtos da categoria`, 'success', input);
+      }
+    } catch (e) {
+      console.error(`Erro ao aplicar valor: ${e.message}`);
+      showNotification('Erro ao aplicar valor aos produtos', 'error', input);
     }
   }
 

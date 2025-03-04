@@ -6,7 +6,10 @@
  */
 
  .carmo-bulk-container {
+    position: relative;
     width: 100%;
+    box-sizing: border-box;
+    overflow: visible;
  }
 // Estilos para o frontend
 .carmo-notification {

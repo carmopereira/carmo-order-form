@@ -9,7 +9,10 @@
  * Replace them with your own styles or remove the file completely.
  */
 .carmo-bulk-container {
+  position: relative;
   width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
 }
 
 .carmo-notification {
@@ -278,6 +281,8 @@
   outline: none;
   /* Firefox */
   -moz-appearance: textfield;
+  /* Garante que o elemento pode receber foco */
+  tab-index: 0;
 }
 
 /* Efeito quando o input recebe foco */
@@ -285,7 +290,8 @@
 .category-quantity-input:focus {
   border-color: #009879;
   background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 152, 121, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 152, 121, 0.5);
+  outline: 2px solid #009879; /* Contorno mais visível */
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -435,4 +441,29 @@ ins .amount {
 .category-quantity-input::-ms-clear,
 .category-quantity-input::-ms-reveal {
   display: none;
+}
+
+/* Efeito visual para o próximo campo que receberá foco */
+.highlight-focus {
+  animation: pulse-focus 0.8s ease-in-out;
+}
+
+@keyframes pulse-focus {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 152, 121, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 152, 121, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 152, 121, 0);
+  }
+}
+/* Melhorar a visibilidade do foco nos inputs */
+.quantity-input:focus,
+.category-quantity-input:focus {
+  border-color: #009879;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 152, 121, 0.5);
+  outline: 2px solid #009879; /* Contorno mais visível */
 }
