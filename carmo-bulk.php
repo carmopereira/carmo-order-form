@@ -17,6 +17,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+add_filter( 'block_categories_all' , function( $categories ) {
+
+    // Adding a new category.
+	$categories[] = array(
+		'slug'  => 'carmo-blocks',
+		'title' => 'Carmo Blocks'
+	);
+
+	return $categories;
+} );
+
 /**
  * Registers the block using the metadata loaded from the `block.json` file.
  * Behind the scenes, it registers also all assets so they can be enqueued
@@ -24,12 +35,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @see https://developer.wordpress.org/reference/functions/register_block_type/
  */
-function create_block_carmo_bulk_block_init() {
+function create_block_carmo_bulk_block_init(): void {
 	// Registra o bloco principal
-	register_block_type_from_metadata( __DIR__ . '/build' );
-	
+	register_block_type( __DIR__ . '/build/blocks/orderform' );
 	// Registra o bloco de Menu de Categorias
-	register_block_type_from_metadata( __DIR__ . '/build/blocks/menu' );
+	register_block_type( __DIR__ . '/build/blocks/menu' );
 }
 add_action( 'init', 'create_block_carmo_bulk_block_init' );
 
