@@ -1,0 +1,19 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 2,
+    "name": "carmo-bulk/menu",
+    "version": "1.0.0",
+    "title": "Carmo Menu",
+    "category": "widgets",
+    "icon": "list-view",
+    "description": "Um bloco de menu simples",
+    "supports": {
+        "html": false
+    },
+    "textdomain": "carmo-bulk",
+    "editorScript": "file:../../index.js",
+    "editorStyle": "file:./editor.scss",
+    "style": "file:./style.scss",
+    "viewScript": "file:./view.js",
+    "render": "file:./render.php"
+} 

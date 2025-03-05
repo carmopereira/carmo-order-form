@@ -22,14 +22,28 @@ import './editor.scss';
 import Edit from './edit';
 import metadata from './block.json';
 
+// Importar o componente de edição do novo bloco Menu
+import MenuEdit from './blocks/menu/edit';
+import menuMetadata from './blocks/menu/block.json';
+
 /**
  * Every block starts by registering a new block type definition.
  *
  * @see https://developer.wordpress.org/block-editor/developers/block-api/#registering-a-block
  */
-registerBlockType( metadata.name, {
+registerBlockType(metadata.name, {
 	/**
 	 * @see ./edit.js
 	 */
 	edit: Edit,
-} );
+});
+
+/**
+ * Registro do bloco Menu de Categorias
+ */
+registerBlockType(menuMetadata.name, {
+	/**
+	 * @see ./blocks/menu/edit.js
+	 */
+	edit: MenuEdit,
+});

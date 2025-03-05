@@ -25,7 +25,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @see https://developer.wordpress.org/reference/functions/register_block_type/
  */
 function create_block_carmo_bulk_block_init() {
+	// Registra o bloco principal
 	register_block_type_from_metadata( __DIR__ . '/build' );
+	
+	// Registra o bloco de Menu de Categorias
+	register_block_type_from_metadata( __DIR__ . '/build/blocks/menu' );
 }
 add_action( 'init', 'create_block_carmo_bulk_block_init' );
 
