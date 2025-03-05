@@ -1,16 +1,16 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 2,
-    "name": "carmo-bulk/menu",
+    "name": "carmoorderform/menu",
     "version": "1.0.0",
-    "title": "Carmo Menu",
+    "title": "Carmo Order Form Menu",
     "category": "carmo-blocks",
 	"icon": "cart",
     "description": "Um bloco de menu simples",
     "supports": {
         "html": false
     },
-    "textdomain": "carmo-bulk",
+    "textdomain": "carmo-order-form",
     "editorScript": "file:./index.js",
     "editorStyle": "file:./editor.scss",
     "style": "file:./style-index.css",

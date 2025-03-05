@@ -82,3 +82,6 @@
 - **block.json → PHP/JS**: Definições do bloco são acessíveis em ambos os ambientes
 - **view.js → DOM**: Manipulação do bloco renderizado no frontend
 - **interactivity.js → DOM**: Fluxo de dados bidirecional com a Interactivity API
+
+## Lingua
+Utiliza Português de Portugal
