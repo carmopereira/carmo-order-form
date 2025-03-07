@@ -232,7 +232,3 @@ $wrapper_attributes = get_block_wrapper_attributes([
     <form id="carmo-bulk-form" data-nonce="<?php echo wp_create_nonce('wp_rest'); ?>"></form>
 
 </div>
-
-<script>
-// Remover todo o código jQuery inline aqui, já que está sendo manipulado em view.js
-</script>

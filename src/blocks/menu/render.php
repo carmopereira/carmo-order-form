@@ -1,6 +1,6 @@
 <?php
 /**
- * Renderização do bloco Menu de Categorias - versão simplificada
+ * Renderização do bloco Menu de Categorias
  */
 
 // Prevenir acesso direto

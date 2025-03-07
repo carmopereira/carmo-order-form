@@ -88,7 +88,6 @@
 				try {
 					await handleQuantityChange(input, newValue);
 					showNotification('Quantidade atualizada com sucesso');
-					updateFooterCart();
 				} catch (error) {
 					showNotification('Erro ao atualizar quantidade', 'error');
 					input.value = currentValue; // Reverte para o valor anterior em caso de erro
@@ -124,7 +123,6 @@
 						} else {
 							showNotification('Quantidade atualizada com sucesso');
 						}
-						updateFooterCart();
 						input.blur(); // Remove o foco do input
 					} catch (error) {
 						console.log('Erro no keypress event', error);
@@ -157,7 +155,6 @@
 						} else {
 							showNotification('Quantidade atualizada com sucesso');
 						}
-						updateFooterCart();
 					} catch (error) {
 						console.log('Erro no change event', error);
 						showNotification('Erro ao atualizar quantidade', 'error');
@@ -254,7 +251,6 @@
 		// Se terminou todos os inputs
 		if (index >= inputs.length) {
 			console.log(`Atualizados ${inputs.length} produtos da categoria ${categoryId}`);
-			updateFooterCart();
 			return;
 		}
 		
@@ -274,7 +270,7 @@
 			// Processar o próximo após um pequeno delay
 			setTimeout(function() {
 				applyValueSequentially(inputs, index + 1, valueToApply, categoryId);
-			}, 200);
+			}, 400);
 			
 			// Adicionar notificação
 			if (index === inputs.length - 1) {
@@ -354,11 +350,9 @@
 		
 		if (productsRemoved > 0) {
 			showNotification(`${productsRemoved} produtos removidos da categoria`);
-			
-			// Atualizar minicart
-			setTimeout(() => {
-				updateFooterCart();
-			}, 500);
+
+			const customEvent = new CustomEvent('wc-blocks_added_to_cart');
+			document.body.dispatchEvent(customEvent);
 		} else {
 			showNotification('Nenhum produto no carrinho para remover');
 		}
@@ -432,6 +426,9 @@
 				success: function(response) {
 					console.log('Item removido com sucesso', response);
 					resolve(response);
+
+					const customEvent = new CustomEvent('wc-blocks_added_to_cart');
+					document.body.dispatchEvent(customEvent);
 				},
 				error: function(error) {
 					console.log('Erro ao remover item', error);
@@ -468,6 +465,9 @@
 				success: function(response) {
 					console.log('Sucesso na atualização', response);
 					resolve(response);
+
+					const customEvent = new CustomEvent('wc-blocks_added_to_cart');
+					document.body.dispatchEvent(customEvent);
 				},
 				error: function(error) {
 					console.log('Erro na atualização', error);
@@ -544,15 +544,6 @@
 		setTimeout(() => {
 			notification.style.display = 'none';
 		}, 3000);
-	}
-	
-	function updateFooterCart() {
-		// Abordagem oficial do WooCommerce
-		if (typeof wc_cart_fragments_params !== 'undefined') {
-			// Dispara o evento que o WooCommerce usa para atualizar fragmentos
-			jQuery(document.body).trigger('wc_fragment_refresh');
-			console.log('Evento de refresh de fragmentos disparado');
-		}
 	}
 	
 	// Inicializa os valores do carrinho
@@ -635,6 +626,9 @@
 						}
 					}
 				});
+
+				const customEvent = new CustomEvent('wc-blocks_added_to_cart');
+				document.body.dispatchEvent(customEvent);
 			},
 			error: function(error) {
 				console.log('Erro ao obter carrinho via Store API', error);
