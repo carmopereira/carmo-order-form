@@ -8,12 +8,13 @@
 	"icon": "cart",
     "description": "Um bloco de menu simples",
     "supports": {
-        "html": false
+        "html": false,
+        "interactivity": true
     },
     "textdomain": "carmo-order-form",
     "editorScript": "file:./index.js",
     "editorStyle": "file:./editor.scss",
     "style": "file:./style-index.css",
-    "viewScriptModule": "file:./view.js",
+    "viewScript": "file:./view.js",
     "render": "file:./render.php"
 }

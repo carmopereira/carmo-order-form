@@ -34,18 +34,6 @@ $attributes = wp_parse_args($attributes, [
 // Generates a unique id for aria-controls.
 $unique_id = wp_unique_id( 'p-' );
 
-
-// Adds the global state.
-wp_interactivity_state(
-    'create-block',
-    array(
-        'isDark'    => false,
-        'darkText'  => esc_html__( 'Switch to Light', 'carmo-bulk' ),
-        'lightText' => esc_html__( 'Switch to Dark', 'carmo-bulk' ),
-        'themeText' => esc_html__( 'Switch to Dark', 'carmo-bulk' ),
-    )
-);
-
 // Obter produtos da categoria
 $category_name = '';
 if (!empty($attributes['selectedCategory'])) {
@@ -98,9 +86,9 @@ $wrapper_attributes = get_block_wrapper_attributes([
                 <div class="category-controls">
                     <div class="category-input-group">
                         <label for="category-quantity-<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Set all products to:', 'carmo-bulk'); ?></label>
-                        <input type="number" id="category-quantity-<?php echo esc_attr($category->term_id); ?>" class="category-quantity-input" min="0">
-                        <button type="button" class="category-apply-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Apply', 'carmo-bulk'); ?></button>
-                        <button type="button" class="category-reset-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Reset Category', 'carmo-bulk'); ?></button>
+                        <input name="category-quantity.<?php echo esc_attr($unique_id); ?>" type="number" id="category-quantity-<?php echo esc_attr($category->term_id); ?>" class="category-quantity-input" min="0">
+                        <button name="category-apply.<?php echo esc_attr($unique_id); ?>" type="button" class="category-apply-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Apply', 'carmo-bulk'); ?></button>
+                        <button name="category-reset.<?php echo esc_attr($unique_id); ?>" type="button" class="category-reset-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Reset Category', 'carmo-bulk'); ?></button>
                     </div>
                     <!-- <div class="category-buttons">
                         <button type="button" class="category-button" data-category-id="<?php echo esc_attr($category->term_id); ?>" data-quantity="1">+1</button>
@@ -193,10 +181,11 @@ $wrapper_attributes = get_block_wrapper_attributes([
                             <td class="product-quantity">
                                 <?php 
                                 if ($cart_quantity > 0) {
-                                    echo '<input type="hidden" class="cart-item-key" value="' . esc_attr($cart_item_key) . '" />';
-                                } 
+                                    echo '<input name="product-quantity.'. esc_attr($unique_id) .'" type="hidden" class="cart-item-key" value="' . esc_attr($cart_item_key) . '" />';
+                                }
                                 ?>
                                 <input 
+                                    name="product-quantity.<?php echo esc_attr($product->get_id()) ?>.<?php echo esc_attr($unique_id); ?>"
                                     type="number" 
                                     class="quantity-input" 
                                     data-product-id="<?php echo esc_attr($product->get_id()); ?>" 
@@ -227,8 +216,6 @@ $wrapper_attributes = get_block_wrapper_attributes([
     </div>
     <!-- Notificação específica para este bloco -->
      <div id="carmo-notification" class="carmo-notification"></div>
-    
-
     <form id="carmo-bulk-form" data-nonce="<?php echo wp_create_nonce('wp_rest'); ?>"></form>
 
 </div>

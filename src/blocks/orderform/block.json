@@ -34,12 +34,16 @@
 		"imageWidth": {
 			"type": "string",
 			"default": "100"
+		},
+		"showImages": {
+			"type": "boolean",
+			"default": true
 		}
 	},
 	"textdomain": "carmo-order-form",
 	"editorScript": "file:./index.js",
-	"editorStyle": "file:./index.css",
+	"editorStyle": ["file:./index.css", "file:./style-index.css"],
 	"style": "file:./style-index.css",
 	"render": "file:./render.php",
-	"viewScriptModule": "file:./view.js"
+	"viewScript": "file:./view.js"
 }

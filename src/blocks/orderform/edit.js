@@ -26,124 +26,220 @@ import { useBlockProps } from '@wordpress/block-editor';
  * @return {Element} Element to render.
  */
 
-/*
-export default function Edit( { attributes, setAttributes } ) {
-	const blockProps = useBlockProps();
-*/
-/*
-	return (
-		<p { ...blockProps }>
-			{ __( 'Carmo Bulk – hello from the editor!', 'carmo-bulk' ) }
-		</p>
-	);
-}
-*/
-
-import {PanelBody,SelectControl,CheckboxControl,TextControl} from '@wordpress/components';
+import {
+	PanelBody,
+	SelectControl,
+	CheckboxControl,
+	TextControl,
+	ToggleControl
+} from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import { InspectorControls } from '@wordpress/block-editor';
 
-export default function Edit( props ) {
+export default function Edit(props) {
 	const { attributes, setAttributes } = props;
-	const { selectedCategory, imageWidth, addCartVisible } = attributes;
-	const [ products, setProducts ] = useState( [] );
+	const { selectedCategory, imageWidth, showImages = true } = attributes;
+	const [products, setProducts] = useState([]);
+	const [categoryName, setCategoryName] = useState('');
+	const [parentCategoryName, setParentCategoryName] = useState('');
 
-	const categories = useSelect( ( select ) => {
-		return select( 'core' ).getEntityRecords( 'taxonomy', 'product_cat', {
+	// Obter categorias de produtos
+	const categories = useSelect((select) => {
+		return select('core').getEntityRecords('taxonomy', 'product_cat', {
 			per_page: -1,
-		} );
-	}, [] );
+		});
+	}, []);
 
-	useEffect( () => {
-		if ( selectedCategory ) {
-			fetchProducts( selectedCategory );
+	useEffect(() => {
+		if (selectedCategory) {
+			fetchProducts(selectedCategory);
+			
+			// Atualizar nome da categoria
+			if (categories) {
+				const category = categories.find(cat => cat.id.toString() === selectedCategory.toString());
+				if (category) {
+					setCategoryName(category.name);
+					
+					// Verificar se tem categoria pai
+					if (category.parent) {
+						const parentCategory = categories.find(cat => cat.id === category.parent);
+						if (parentCategory) {
+							setParentCategoryName(parentCategory.name);
+						}
+					}
+				}
+			}
 		}
-	}, [ selectedCategory ] );
+	}, [selectedCategory, categories]);
 
-	const fetchProducts = ( category ) => {
-		wp.apiFetch( {
-			path: `/wc/v3/products?category=${ category }`,
-		} ).then( ( data ) => {
-			setProducts( data );
-		} );
+	const fetchProducts = (category) => {
+		wp.apiFetch({
+			path: `/wc/v3/products?category=${category}&per_page=50`,
+		}).then((data) => {
+			setProducts(data);
+		});
 	};
 
-	addCartVisible ? console.log('true') : console.log('false');
+	// Função auxiliar para obter o tipo de produto em português
+	const getProductTypeLabel = (type) => {
+		switch (type) {
+			case 'simple':
+				return __('Simples', 'carmo-order-form');
+			case 'variable':
+				return __('Variável', 'carmo-order-form');
+			default:
+				return type.charAt(0).toUpperCase() + type.slice(1);
+		}
+	};
 
 	return (
-		<div { ...useBlockProps() }>
+		<div {...useBlockProps()}>
 			<InspectorControls>
-				<PanelBody title={ __( 'Settings', 'carmo-order-form' ) }>
+				<PanelBody title={__('Settings', 'carmo-order-form')}>
 					<SelectControl
-						label={ __( 'Product Category', 'carmo-order-form' ) }
-						value={ selectedCategory }
+						label={__('Product Category', 'carmo-order-form')}
+						value={selectedCategory}
 						options={
 							categories
-								? categories.map( ( category ) => ( {
+								? categories.map((category) => ({
 										label: category.name,
-										value: category.id,
-								  } ) )
+										value: category.id.toString(),
+								  }))
 								: []
 						}
-						onChange={ ( value ) =>
-							setAttributes( { selectedCategory: value } )
+						onChange={(value) =>
+							setAttributes({ selectedCategory: value })
 						}
 					/>
+					<ToggleControl
+						label={__('Show Images', 'carmo-order-form')}
+						checked={showImages}
+						onChange={(value) => setAttributes({ showImages: value })}
+					/>
 					<TextControl
-						label={ __(
+						label={__(
 							'Product Image Width (px)',
 							'carmo-order-form'
-						) }
-						value={ imageWidth }
-						onChange={ ( value ) =>
-							setAttributes( { imageWidth: value } )
+						)}
+						value={imageWidth}
+						onChange={(value) =>
+							setAttributes({ imageWidth: value })
 						}
 					/>
 				</PanelBody>
 			</InspectorControls>
-			<table>
-				<thead>
-					<tr>
-						<th>{ __( 'Image', 'carmo-order-form' ) }</th>
-						<th>{ __( 'Name', 'carmo-order-form' ) }</th>
-						<th>{ __( 'Quantity', 'carmo-order-form' ) }</th>
-						<th>{ __( 'Add to Cart', 'carmo-order-form' ) }</th>
-					</tr>
-				</thead>
-				<tbody>
-					{ products.map( ( product ) => (
-						<tr key={ product.id }>
-							<td>
-								<img
-									src={ product.images[ 0 ]?.src }
-									width={ imageWidth }
-									alt={ product.name }
-								/>
-							</td>
-							<td>{ product.name }</td>
-							<td>
+
+			<div className="carmo-bulk-container">
+				{selectedCategory && categoryName && (
+					<div className="category-header">
+						<div className="category-title-wrapper">
+							<h3 className="category-title">
+								{parentCategoryName && (
+									<>
+										{parentCategoryName}
+										<span className="category-separator"> - </span>
+									</>
+								)}
+								{categoryName}
+							</h3>
+						</div>
+						
+						<div className="category-controls">
+							<div className="category-input-group">
+								<label htmlFor={`category-quantity-${selectedCategory}`}>
+									{__('Set all products to:', 'carmo-order-form')}
+								</label>
 								<input 
 									type="number" 
-									min="1" 
-									defaultValue="1"
-									data-product-id={product.id}
-									className="quantity-input"
+									id={`category-quantity-${selectedCategory}`} 
+									className="category-quantity-input" 
+									min="0"
+									data-category-id={selectedCategory}
 								/>
-							</td>
-							<td>
-								<button
-									className="add-to-cart-button"
-									data-product-id={product.id}
-									data-wp-on--click="actions.addToCart"
+								<button 
+									type="button" 
+									className="category-apply-button" 
+									data-category-id={selectedCategory}
 								>
-									{ __( 'Add to Cart', 'carmo-order-form' ) }
+									{__('Apply', 'carmo-order-form')}
 								</button>
-							</td>
+								<button 
+									type="button" 
+									className="category-reset-button" 
+									data-category-id={selectedCategory}
+								>
+									{__('Reset Category', 'carmo-order-form')}
+								</button>
+							</div>
+						</div>
+					</div>
+				)}
+
+				<table className="carmo-order-table">
+					<thead>
+						<tr>
+							{showImages && <th className="product-image"></th>}
+							<th className="product-name">{__('Produto', 'carmo-order-form')}</th>
+							<th className="product-type">{__('Tipo', 'carmo-order-form')}</th>
+							<th className="product-price">{__('Preço', 'carmo-order-form')}</th>
+							<th className="product-quantity">{__('Quantidade', 'carmo-order-form')}</th>
+							<th className="product-increment">{__('Adicionar Quantidade', 'carmo-order-form')}</th>
 						</tr>
-					) ) }
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						{products.length > 0 ? (
+							products.map((product) => (
+								<tr key={product.id} data-product-id={product.id} data-category-id={selectedCategory}>
+									{showImages && (
+										<td className="product-image">
+											<img
+												src={product.images[0]?.src || ''}
+												alt={product.name}
+												className="product-thumbnail"
+												style={{ width: `${imageWidth}px` }}
+											/>
+										</td>
+									)}
+									<td className="product-name">{product.name}</td>
+									<td className="product-type">
+										{getProductTypeLabel(product.type)}
+									</td>
+									<td className="product-price" dangerouslySetInnerHTML={{ __html: product.price_html }} />
+									<td className="product-quantity">
+										<input
+											type="number"
+											className="quantity-input"
+											data-product-id={product.id}
+											data-category-id={selectedCategory}
+											defaultValue="0"
+											min="0"
+										/>
+									</td>
+									<td className="product-increment">
+										<div className="quantity-buttons">
+											<button className="quantity-button product-plus-one">+1</button>
+											<button className="quantity-button product-plus-five">+5</button>
+											<button className="quantity-button product-plus-ten">+10</button>
+										</div>
+									</td>
+								</tr>
+							))
+						) : (
+							<tr>
+								<td colSpan={showImages ? 6 : 5} className="no-products">
+									{selectedCategory 
+										? __('No products found in this category.', 'carmo-order-form')
+										: __('Please select a category to display products.', 'carmo-order-form')
+									}
+								</td>
+							</tr>
+						)}
+					</tbody>
+				</table>
+				
+				<div className="carmo-notification"></div>
+			</div>
 		</div>
 	);
 }
