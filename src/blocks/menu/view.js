@@ -29,10 +29,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Add handler for category links to highlight active item
+    // Add handler for category links to highlight active item and implement smooth scroll
     const categoryLinks = document.querySelectorAll('.carmo-menu-accordion .category-link');
     categoryLinks.forEach(link => {
         link.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent default anchor behavior
+            
             // Remove active class from all links
             document.querySelectorAll('.carmo-menu-accordion .category-link.active').forEach(activeLink => {
                 activeLink.classList.remove('active');
@@ -50,12 +52,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             
-            // Close menu on mobile devices (optional)
-            if (window.innerWidth <= 768) {
-                // Implement logic to close menu on mobile if needed
+            // Get the target element from href attribute
+            const targetId = this.getAttribute('href').substring(1); // Remove the # from the href
+            const targetElement = document.getElementById(targetId);
+            
+            if (targetElement) {
+                // Smooth scroll to target
+                const yOffset = -50; // Offset to account for fixed headers if needed
+                const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                
+                window.scrollTo({
+                    top: y,
+                    behavior: 'smooth'
+                });
+                
+                // Optional: Add a highlight effect to the target element
+                targetElement.classList.add('target-highlight');
+                setTimeout(() => {
+                    targetElement.classList.remove('target-highlight');
+                }, 2000);
             }
         });
     });
     
-    console.log('🟢 Accordion menu initialized!');
+    console.log('🟢 Accordion menu initialized with smooth scrolling!');
 });
