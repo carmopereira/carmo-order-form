@@ -108,6 +108,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
                     <?php if ($attributes['showImages']): ?>
                         <th class="product-image"></th>
                     <?php endif; ?>
+                    <th class="product-sku"><?php echo esc_html__('SKU', 'carmo-order-form'); ?></th>
                     <th class="product-name"><?php echo esc_html__('Product', 'carmo-order-form'); ?></th>
                     <th class="product-type"><?php echo esc_html__('Type', 'carmo-order-form'); ?></th>
                     <th class="product-price"><?php echo esc_html__('Price', 'carmo-order-form'); ?></th>
@@ -140,6 +141,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
                         // Verificar se o produto está em estoque
                         $is_in_stock = $product->is_in_stock();
                         $product_id = $product->get_id();
+                        $product_sku = $product->get_sku();
                         $product_name = $product->get_name();
                         $stock_quantity = $product->get_stock_quantity();
                         $stock_status = $product->get_stock_status(); // 'instock', 'outofstock', or 'onbackorder'
@@ -169,8 +171,11 @@ $wrapper_attributes = get_block_wrapper_attributes([
                                     class="product-thumbnail"
                                 >
                             </td>
+                            <td class="product-sku">
+                                <?php echo esc_html($product_sku); ?>
+                            </td>
                             <td class="product-name">
-                                <?php echo esc_html($product->get_name()); ?>
+                                <?php echo esc_html($product_name); ?>
                             </td>
                         <?php endif; ?>
                         <?php if ($is_in_stock): ?>                        
