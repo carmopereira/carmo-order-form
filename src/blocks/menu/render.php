@@ -1,17 +1,17 @@
 <?php
 /**
- * Renderização do bloco Menu de Categorias
+ * Rendering of Categories Menu Block
  */
 
-// Prevenir acesso direto
+// Prevent direct access
 if (!defined('ABSPATH')) {
     exit;
 }
 
-// Gerar ID único para o bloco
+// Generate unique ID for the block
 $block_id = 'carmo-menu-' . uniqid();
 
-// Obter as classes do bloco
+// Get block classes
 $wrapper_attributes = get_block_wrapper_attributes([
     'class' => 'carmo-menu-accordion',
     'id' => $block_id
@@ -19,7 +19,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
 ?>
 
 <div <?php echo $wrapper_attributes; ?>>
-    <h2 class="carmo-menu-title">Menu de Categorias</h2>
+    <h2 class="carmo-menu-title">Categories Menu</h2>
     
     <nav class="menu-accordion">
         <ul>
@@ -39,7 +39,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
                 </a>
             </li>
             
-            <!-- Menu Colapsável: Grass Tufts -->
+            <!-- Collapsible Menu: Grass Tufts -->
             <li class="has-children">
                 <div class="submenu-toggle">
                     <div class="menu-label">
@@ -82,7 +82,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
                 </a>
             </li>
             
-            <!-- Menu Colapsável: Battle Ready Bases -->
+            <!-- Collapsible Menu: Battle Ready Bases -->
             <li class="has-children">
                 <div class="submenu-toggle">
                     <div class="menu-label">

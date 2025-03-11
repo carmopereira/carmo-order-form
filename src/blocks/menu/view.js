@@ -1,21 +1,21 @@
 console.log('🟢 Bloco Menu carregado!');
 
 /**
- * Menu Acordeão para o bloco Menu de Categorias
+ * Accordion Menu for the Categories Menu Block
  */
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggles = document.querySelectorAll('.carmo-menu-accordion .submenu-toggle');
     
-    // Função para abrir/fechar submenus
+    // Function to open/close submenus
     menuToggles.forEach(toggle => {
         toggle.addEventListener('click', function() {
             const parent = this.parentElement;
             
-            // Se já estiver aberto, fechar
+            // If already open, close it
             if (parent.classList.contains('open')) {
                 parent.classList.remove('open');
             } else {
-                // Fechar outros submenus abertos no mesmo nível
+                // Close other open submenus at the same level
                 const siblings = parent.parentElement.querySelectorAll('.has-children.open');
                 siblings.forEach(sibling => {
                     if (sibling !== parent) {
@@ -23,25 +23,25 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
                 
-                // Abrir este submenu
+                // Open this submenu
                 parent.classList.add('open');
             }
         });
     });
     
-    // Adicionar handler para os links de categorias para destacar o item ativo
+    // Add handler for category links to highlight active item
     const categoryLinks = document.querySelectorAll('.carmo-menu-accordion .category-link');
     categoryLinks.forEach(link => {
         link.addEventListener('click', function(e) {
-            // Remover classe ativa de todos os links
+            // Remove active class from all links
             document.querySelectorAll('.carmo-menu-accordion .category-link.active').forEach(activeLink => {
                 activeLink.classList.remove('active');
             });
             
-            // Adicionar classe ativa ao link clicado
+            // Add active class to clicked link
             this.classList.add('active');
             
-            // Se estiver em submenu, garantir que o pai esteja aberto
+            // If in submenu, ensure parent is open
             const parentSubMenu = this.closest('.submenu');
             if (parentSubMenu) {
                 const parentLi = parentSubMenu.parentElement;
@@ -50,12 +50,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             
-            // Fechar o menu em dispositivos móveis (opcional)
+            // Close menu on mobile devices (optional)
             if (window.innerWidth <= 768) {
-                // Implementar lógica para fechar menu em mobile se necessário
+                // Implement logic to close menu on mobile if needed
             }
         });
     });
     
-    console.log('🟢 Menu acordeão inicializado!');
+    console.log('🟢 Accordion menu initialized!');
 });
