@@ -27,6 +27,11 @@
 		
 		// Add visual indicator of loaded script
 		addScriptLoadedIndicator();
+		
+		// Initialize lastValue for all inputs
+		document.querySelectorAll('.quantity-input').forEach(input => {
+			input.dataset.lastValue = input.value || '0';
+		});
 	});
 	
 	// Helper functions
@@ -366,6 +371,7 @@
 		}
 		
 		const productId = input.dataset.productId;
+				
 		console.log('Changing quantity for product', {
 			productId: productId,
 			newValue: newValue,
@@ -394,7 +400,8 @@
 			});
 		}
 		
-		return updateCart(productId, null, newValue, cartItemKey).then(response => {
+		// Passar o ID da variação para a função updateCart
+		return updateCart(productId, newValue, cartItemKey).then(response => {
 			// Update the cartItemKey after the operation is successful
 			if (response && response.key) {
 				// If the input for cartItemKey doesn't exist, we create one
@@ -414,9 +421,16 @@
 	
 	// Function to remove item from cart
 	function removeFromCart(cartItemKey) {
-		console.log('Removing item from cart', cartItemKey);
+		console.log('Removing item from cart', {
+			cartItemKey: cartItemKey
+		});
 		
 		return new Promise((resolve, reject) => {
+			if (!cartItemKey) {
+				console.error('No cart item key provided for removal');
+				return reject(new Error('No cart item key provided'));
+			}
+			
 			jQuery.ajax({
 				url: '/wp-json/wc/store/v1/cart/items/' + cartItemKey,
 				method: 'DELETE',
@@ -438,10 +452,9 @@
 		});
 	}
 	
-	function updateCart(productId, variationId, quantity, cartItemKey) {
+	function updateCart(productId, quantity, cartItemKey) {
 		console.log('Starting updateCart', {
 			productId,
-			variationId,
 			quantity,
 			cartItemKey
 		});
@@ -451,11 +464,7 @@
 				id: productId,
 				quantity: quantity
 			};
-			
-			if (variationId) {
-				data.variation_id = variationId;
-			}
-			
+					
 			let ajaxConfig = {
 				beforeSend: function(xhr) {
 					xhr.setRequestHeader('X-WC-Store-API-Nonce', document.getElementById('carmo-bulk-form').dataset.nonce);
@@ -570,13 +579,22 @@
 					console.log('Found', response.items.length, 'items in cart');
 					
 					response.items.forEach(item => {
-						// ID can be in different locations depending on the structure
+						// ID pode ser o product_id para produtos simples ou variation_id para variáveis
 						const productId = item.id || 
 									(item.product_id ? item.product_id.toString() : null) || 
 									(item.product && item.product.id ? item.product.id.toString() : null);
 						
+						// Verificar se é um produto variável (possui variation_id)
+						const variationId = item.variation_id || 
+									(item.variation && item.variation.id ? item.variation.id.toString() : null);
+												
 						if (productId) {
-							productsInCart[productId] = {
+							// Usar o variation_id como chave se for um produto variável
+							const mapKey = variationId ? `${productId}_${variationId}` : productId;
+							
+							productsInCart[mapKey] = {
+								productId: productId,
+								variationId: variationId,
 								quantity: item.quantity,
 								key: item.key
 							};
@@ -590,40 +608,55 @@
 				const inputs = document.querySelectorAll('.quantity-input');
 				console.log('Total inputs found', inputs.length);
 				
-				// Reset all inputs first (option 1: zero everything)
+				// Reset all inputs first (zerar os campos)
 				inputs.forEach(function(input) {
-					const productId = input.dataset.productId;
-					const row = input.closest('tr');
-					if (!row) return;
+					input.value = 0;
+					input.dataset.lastValue = 0;
 					
-					// Check if the product is in the cart
-					if (productsInCart[productId]) {
-						const cartInfo = productsInCart[productId];
-						
-						// Update the input with the quantity
-						input.value = cartInfo.quantity;
-						input.dataset.lastValue = cartInfo.quantity;
-						
-						// Update or create the cartItemKey
-						let cartItemKeyInput = row.querySelector('.cart-item-key');
-						if (!cartItemKeyInput) {
-							cartItemKeyInput = document.createElement('input');
-							cartItemKeyInput.type = 'hidden';
-							cartItemKeyInput.className = 'cart-item-key';
-							row.querySelector('.product-quantity').appendChild(cartItemKeyInput);
-						}
-						
-						cartItemKeyInput.value = cartInfo.key;
-					} else {
-						// Zero the input
-						input.value = 0;
-						input.dataset.lastValue = 0;
-						
-						// Clear the cartItemKey if it exists
+					// Remover o cart item key, se existir
+					const row = input.closest('tr');
+					if (row) {
 						const cartItemKeyInput = row.querySelector('.cart-item-key');
 						if (cartItemKeyInput) {
 							cartItemKeyInput.value = '';
 						}
+					}
+				});
+				
+				// Atualizar com os valores do carrinho
+				inputs.forEach(function(input) {
+					const productId = input.dataset.productId;
+					const variationId = input.dataset.variationId;
+					const row = input.closest('tr');
+					if (!row) return;
+					
+					// Determinar a chave a ser usada no mapa
+					let mapKey = productId;
+					
+					// Se o input tem variation_id, usar a combinação product_variation como chave
+					if (variationId) {
+						mapKey = `${productId}_${variationId}`;
+					}
+					
+					// Verificar se o produto está no carrinho
+					if (productsInCart[mapKey]) {
+						const cartInfo = productsInCart[mapKey];
+						
+						// Atualizar o input com a quantidade
+						input.value = cartInfo.quantity;
+						input.dataset.lastValue = cartInfo.quantity;
+						
+						// Atualizar ou criar o cartItemKey
+						let cartItemKeyInput = row.querySelector('.cart-item-key');
+						if (!cartItemKeyInput) {
+							cartItemKeyInput = document.createElement('input');
+							cartItemKeyInput.className = 'cart-item-key';
+							cartItemKeyInput.type = 'hidden';
+							cartItemKeyInput.name = 'product-quantity.' + (productId || '');
+							row.querySelector('.product-quantity').appendChild(cartItemKeyInput);
+						}
+						
+						cartItemKeyInput.value = cartInfo.key;
 					}
 				});
 

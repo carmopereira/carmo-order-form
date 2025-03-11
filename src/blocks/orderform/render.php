@@ -86,7 +86,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
                 <div class="category-controls">
                     <div class="category-input-group">
                         <label for="category-quantity-<?php echo esc_attr($category->term_id); ?>">
-                            <?php echo esc_html__('Set all products to:', 'carmo-order-form'); ?>
+                            <?php echo esc_html__('Set all products quantity:', 'carmo-order-form'); ?>
                         </label>
                         <input name="category-quantity.<?php echo esc_attr($unique_id); ?>" type="number" id="category-quantity-<?php echo esc_attr($category->term_id); ?>" class="category-quantity-input" min="0" data-category-id="<?php echo esc_attr($category->term_id); ?>">
                         <button name="category-apply.<?php echo esc_attr($unique_id); ?>" type="button" class="category-apply-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Apply', 'carmo-order-form'); ?></button>
@@ -110,10 +110,9 @@ $wrapper_attributes = get_block_wrapper_attributes([
                     <?php endif; ?>
                     <th class="product-sku"><?php echo esc_html__('SKU', 'carmo-order-form'); ?></th>
                     <th class="product-name"><?php echo esc_html__('Product', 'carmo-order-form'); ?></th>
-                    <th class="product-type"><?php echo esc_html__('Type', 'carmo-order-form'); ?></th>
                     <th class="product-price"><?php echo esc_html__('Price', 'carmo-order-form'); ?></th>
                     <th class="product-quantity"><?php echo esc_html__('Quantity', 'carmo-order-form'); ?></th>
-                    <th class="product-increment"><?php echo esc_html__('Add Quantity', 'carmo-order-form'); ?></th>
+                    <th class="product-increment"><?php echo esc_html__('', 'carmo-order-form'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -146,6 +145,27 @@ $wrapper_attributes = get_block_wrapper_attributes([
                         $stock_quantity = $product->get_stock_quantity();
                         $stock_status = $product->get_stock_status(); // 'instock', 'outofstock', or 'onbackorder'
                         
+                        // Verificar se é um produto variável com apenas uma variação
+                        $variation_id = false;
+                        if ($product->is_type('variable')) {
+                            // Prioriza variações com atributo Shape="Wild", ou usa a única variação disponível
+                            $variation_id = carmo_bulk_get_single_variation_id($product_id);
+                            
+                            // Se encontrou uma variação prioritária, usamos esta variação em vez do produto pai
+                            if ($variation_id) {
+                                $variation = wc_get_product($variation_id);
+                                
+                                // Atualiza os dados do produto com os da variação única
+                                if ($variation) {
+                                    // Mantem o nome do produto pai, mas atualiza outros dados
+                                    $product_sku = $variation->get_sku();
+                                    $is_in_stock = $variation->is_in_stock();
+                                    $stock_quantity = $variation->get_stock_quantity();
+                                    $stock_status = $variation->get_stock_status();
+                                }
+                            }
+                        }
+                        
                         // Informações detalhadas no HTML como comentários
                         echo "<!-- DEBUG PRODUTO: $product_name (ID: $product_id) -->";
                         echo "<!-- Stock Status: $stock_status -->";
@@ -172,18 +192,73 @@ $wrapper_attributes = get_block_wrapper_attributes([
                                 >
                             </td>
                             <td class="product-sku">
-                                <?php echo esc_html($product_sku); ?>
+                                <?php 
+                                // Obtém o SKU apropriado com base no tipo de produto
+                                $display_sku = $product_sku;
+                                
+                                // Se for um produto variável, verifica se existe um SKU para o produto pai
+                                if ($product->is_type('variable')) {
+                                    $parent_sku = $product->get_sku();
+                                    if (!empty($parent_sku)) {
+                                        $display_sku = $parent_sku;
+                                    } else {
+                                        // Se o produto pai não tiver SKU, tenta obter o SKU com o atributo shape="Wild" das variações
+                                        // Procura por variações com shape="Wild"
+                                        $variations = $product->get_available_variations();
+                                        foreach ($variations as $variation_data) {
+                                            $variation_obj = wc_get_product($variation_data['variation_id']);
+                                            
+                                            // Verifica se a variação tem o atributo shape="Wild"
+                                            $is_wild_shape = false;
+                                            
+                                            // Verifica nos diferentes formatos possíveis
+                                            if (
+                                                (isset($variation_data['attributes']['attribute_shape']) && 
+                                                 $variation_data['attributes']['attribute_shape'] === 'Wild') ||
+                                                
+                                                (isset($variation_data['attributes']['shape']) && 
+                                                 $variation_data['attributes']['shape'] === 'Wild') ||
+                                                 
+                                                (isset($variation_data['attributes']['attribute_pa_shape']) && 
+                                                 $variation_data['attributes']['attribute_pa_shape'] === 'Wild')
+                                            ) {
+                                                $is_wild_shape = true;
+                                            }
+                                            
+                                            if ($is_wild_shape && $variation_obj && !empty($variation_obj->get_sku())) {
+                                                $display_sku = $variation_obj->get_sku();
+                                                break;
+                                            }
+                                        }
+                                        
+                                        // Se ainda não encontrou um SKU e só existe uma variação, usa o SKU dela
+                                        if (empty($display_sku) && count($variations) === 1) {
+                                            $single_variation = wc_get_product($variations[0]['variation_id']);
+                                            if ($single_variation && !empty($single_variation->get_sku())) {
+                                                $display_sku = $single_variation->get_sku();
+                                            }
+                                        }
+                                        }
+                                    }
+                                
+                                
+                                echo esc_html($display_sku);
+                                ?>
                             </td>
                             <td class="product-name">
                                 <?php echo esc_html($product_name); ?>
                             </td>
                         <?php endif; ?>
                         <?php if ($is_in_stock): ?>                        
-                            <td class="product-type">
-                                <?php echo esc_html($type_label); ?>
-                            </td>
                             <td class="product-price">
-                                <?php echo $product->get_price_html(); ?>
+                                <?php 
+                                if ($variation_id) {
+                                    $variation = wc_get_product($variation_id);
+                                    echo $variation->get_price_html();
+                                } else {
+                                    echo $product->get_price_html();
+                                }
+                                ?>
                             </td>
                             <td class="product-quantity">
                                 <?php 
@@ -195,8 +270,14 @@ $wrapper_attributes = get_block_wrapper_attributes([
                                     name="product-quantity.<?php echo esc_attr($product->get_id()) ?>.<?php echo esc_attr($unique_id); ?>"
                                     type="number" 
                                     class="quantity-input" 
-                                    data-product-id="<?php echo esc_attr($product->get_id()); ?>" 
+                                    <?php if ($variation_id): ?>
+                                    data-product-id="<?php echo esc_attr($variation_id); ?>"
+                                    <?php else: ?>
+                                    data-product-id="<?php echo esc_attr($product->get_id()); ?>"
+                                    <?php endif; ?>
                                     data-category-id="<?php echo esc_attr($category->term_id); ?>" 
+                                    <?php if ($variation_id): ?>
+                                    <?php endif; ?>
                                     value="<?php echo esc_attr($cart_quantity); ?>" 
                                     min="0"
                                 >
@@ -220,6 +301,11 @@ $wrapper_attributes = get_block_wrapper_attributes([
                 ?>
             </tbody>
         </table>
+    <div class="carmo-jump-top-container" style="text-align: right;">
+        <button type="button" class="carmo-jump-top-button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+            <?php echo esc_html__('Jump to top', 'carmo-order-form'); ?>
+        </button>
+    </div>
     </div>
     <!-- Notificação específica para este bloco -->
      <div id="carmo-notification" class="carmo-notification"></div>

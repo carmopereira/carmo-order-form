@@ -123,3 +123,55 @@ function get_product_parent_category_name($category_id) {
 
     return ''; // Return empty if no parent
 }
+
+/**
+ * Obtém o ID da variação para produtos variáveis
+ * Prioriza variações com atributo Shape="Wild", caso contrário retorna a variação única se houver apenas uma
+ * 
+ * @param int $product_id ID do produto
+ * @return int|false ID da variação priorizada, false caso contrário
+ */
+function carmo_bulk_get_single_variation_id($product_id) {
+    $product = wc_get_product($product_id);
+    
+    // Se não for um produto ou não for variável, retorna false
+    if (!$product || !$product->is_type('variable')) {
+        return false;
+    }
+    
+    // Obtém todas as variações disponíveis
+    $variations = $product->get_available_variations();
+    
+    // Se não houver variações, retorna false
+    if (empty($variations)) {
+        return false;
+    }
+    
+    // Primeiro, tenta encontrar a variação com Shape="Wild"
+    foreach ($variations as $variation) {
+        // Verifica os diferentes formatos possíveis para o atributo Shape
+        if (
+            // Verifica no formato normal de atributos WooCommerce (attribute_shape)
+            (isset($variation['attributes']['attribute_shape']) && 
+             $variation['attributes']['attribute_shape'] === 'Wild') ||
+            
+            // Verifica formatos alternativos que podem ser usados
+            (isset($variation['attributes']['shape']) && 
+             $variation['attributes']['shape'] === 'Wild') ||
+             
+            // Verifica em pa_ prefix (formato comum no WooCommerce)
+            (isset($variation['attributes']['attribute_pa_shape']) && 
+             $variation['attributes']['attribute_pa_shape'] === 'Wild')
+        ) {
+            return $variation['variation_id'];
+        }
+    }
+    
+    // Se não encontrou a variação "Wild" mas só tem uma variação, retorna essa
+    if (count($variations) === 1) {
+        return $variations[0]['variation_id'];
+    }
+    
+    // Caso contrário, retorna false
+    return false;
+}
