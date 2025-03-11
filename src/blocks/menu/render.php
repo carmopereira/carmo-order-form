@@ -25,17 +25,17 @@ $wrapper_attributes = get_block_wrapper_attributes([
         <ul>
             <li>
                 <a href="#carmo-bulk-category-350" class="category-link">
-                    <i class="menu-icon dashicons dashicons-tag"></i>Retail
+                    <i class="menu-icon"></i>Retail
                 </a>
             </li>
             <li>
                 <a href="#carmo-bulk-category-349" class="category-link">
-                    <i class="menu-icon dashicons dashicons-archive"></i>Boxed Sets
+                    <i class="menu-icon"></i>Boxed Sets
                 </a>
             </li>
             <li>
                 <a href="#carmo-bulk-category-298" class="category-link">
-                    <i class="menu-icon dashicons dashicons-palmtree"></i>Laser Plants
+                    <i class="menu-icon"></i>Laser Plants
                 </a>
             </li>
             
@@ -43,7 +43,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
             <li class="has-children">
                 <div class="submenu-toggle">
                     <div class="menu-label">
-                        <i class="menu-icon dashicons dashicons-grass"></i>
+                        <i class="menu-icon"></i>
                         Grass Tufts
                     </div>
                     <span class="toggle-icon">+</span>
@@ -78,7 +78,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
             
             <li>
                 <a href="#carmo-bulk-category-207" class="category-link">
-                    <i class="menu-icon dashicons dashicons-marker"></i>Basing Bits
+                    <i class="menu-icon"></i>Basing Bits
                 </a>
             </li>
             
@@ -86,7 +86,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
             <li class="has-children">
                 <div class="submenu-toggle">
                     <div class="menu-label">
-                        <i class="menu-icon dashicons dashicons-shield"></i>
+                        <i class="menu-icon"></i>
                         Battle Ready Bases
                     </div>
                     <span class="toggle-icon">+</span>
