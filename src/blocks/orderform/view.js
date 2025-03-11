@@ -1,35 +1,35 @@
 /**
- * Funções JavaScript para o bloco OrderForm
+ * JavaScript functions for the OrderForm block
  */
 (function() {
 	'use strict';
 	
-	// Namespace global para o plugin
+	// Global namespace for the plugin
 	window.CarmoBulk = window.CarmoBulk || {};
 	
-	// Criar as funções no namespace
+	// Create functions in the namespace
 	const CarmoBulk = window.CarmoBulk;
 	
 	document.addEventListener('DOMContentLoaded', function() {
-		console.log('🟢 OrderForm: Script inicializado');
+		console.log('🟢 OrderForm: Script initialized');
 		
-		// Inicializa os valores do carrinho
+		// Initialize cart values
 		updateQuantitiesFromCart();
 		
-		// Adicionar manipuladores de eventos para botões de quantidade
+		// Add event handlers for quantity buttons
 		setupQuantityButtons();
 		
-		// Adicionar manipuladores para o carrinho
+		// Add handlers for the cart
 		setupCartHandlers();
 		
-		// Inicializar manipuladores de eventos para botões de categoria
+		// Initialize event handlers for category buttons
 		handleCategoryApply();
 		
-		// Adicionar indicador visual de script carregado
+		// Add visual indicator of loaded script
 		addScriptLoadedIndicator();
 	});
 	
-	// Funções auxiliares
+	// Helper functions
 	
 	function addScriptLoadedIndicator() {
 		const containers = document.querySelectorAll('.carmo-bulk-container');
@@ -46,10 +46,10 @@
 				indicator.style.right = '10px';
 				indicator.style.top = '10px';
 				indicator.style.zIndex = '9999';
-				indicator.textContent = '✓ OrderForm JS ativo';
+				indicator.textContent = '✓ OrderForm JS active';
 				container.appendChild(indicator);
 				
-				// Auto-remover após 5 segundos
+				// Auto-remove after 5 seconds
 				setTimeout(() => {
 					indicator.style.display = 'none';
 				}, 5000);
@@ -58,25 +58,25 @@
 	}
 	
 	function setupQuantityButtons() {
-		// Manipulador para os botões de produto
+		// Handler for product buttons
 		document.body.addEventListener('click', async function(e) {
 			const productButton = e.target.closest('.quantity-button');
 			if (!productButton) return;
 			
 			e.preventDefault();
 			
-			// Encontra a linha da tabela (tr) primeiro
+			// Find the table row (tr) first
 			const row = productButton.closest('tr');
 			if (!row) return;
 			
-			// Encontra o input de quantidade na mesma linha
+			// Find the quantity input in the same row
 			const input = row.querySelector('.quantity-input');
 			if (!input) return;
 			
 			const currentValue = parseInt(input.value) || 0;
 			let increment = 0;
 			
-			// Verifica qual botão foi clicado
+			// Check which button was clicked
 			if (productButton.classList.contains('product-plus-one')) increment = 1;
 			else if (productButton.classList.contains('product-plus-five')) increment = 5;
 			else if (productButton.classList.contains('product-plus-ten')) increment = 10;
@@ -87,55 +87,55 @@
 				
 				try {
 					await handleQuantityChange(input, newValue);
-					showNotification('Quantidade atualizada com sucesso');
+					showNotification('Quantity updated successfully');
 				} catch (error) {
-					showNotification('Erro ao atualizar quantidade', 'error');
-					input.value = currentValue; // Reverte para o valor anterior em caso de erro
+					showNotification('Error updating quantity', 'error');
+					input.value = currentValue; // Revert to previous value in case of error
 				}
 			}
 		});
 		
-		console.log('Botões de quantidade configurados');
+		console.log('Quantity buttons configured');
 	}
 	
 	function setupCartHandlers() {
-		// Manipulador para o evento keypress nos inputs de quantidade
+		// Handler for keypress event on quantity inputs
 		document.body.addEventListener('keypress', async function(e) {
 			if (e.target.matches('.quantity-input') && e.key === 'Enter') {
-				e.preventDefault(); // Previne o comportamento padrão do Enter
+				e.preventDefault(); // Prevent default Enter behavior
 				
 				const input = e.target;
 				const newValue = parseInt(input.value) || 0;
 				const oldValue = parseInt(input.dataset.lastValue) || 0;
 				
-				// Se o valor for zero e existe um cartItemKey, sempre processa
+				// If the value is zero and there is a cartItemKey, always process
 				const cartItemKeyInput = input.closest('tr').querySelector('.cart-item-key');
 				const cartItemKey = cartItemKeyInput ? cartItemKeyInput.value : '';
 				const forceProcess = newValue === 0 && cartItemKey;
 				
-				// Processa se o valor mudou OU se estamos forçando a remoção com zero
+				// Process if the value changed OR if we're forcing removal with zero
 				if (newValue !== oldValue || forceProcess) {
 					try {
 						const result = await handleQuantityChange(input, newValue);
 						input.dataset.lastValue = newValue;
 						if (result && result.removed) {
-							showNotification('Produto removido do carrinho');
+							showNotification('Product removed from cart');
 						} else {
-							showNotification('Quantidade atualizada com sucesso');
+							showNotification('Quantity updated successfully');
 						}
-						input.blur(); // Remove o foco do input
+						input.blur(); // Remove focus from input
 					} catch (error) {
-						console.log('Erro no keypress event', error);
-						showNotification('Erro ao atualizar quantidade', 'error');
-						input.value = oldValue; // Reverte para o valor anterior em caso de erro
+						console.log('Error in keypress event', error);
+						showNotification('Error updating quantity', 'error');
+						input.value = oldValue; // Revert to previous value in case of error
 					}
 				} else {
-					input.blur(); // Remove o foco mesmo se não houver mudança
+					input.blur(); // Remove focus even if there's no change
 				}
 			}
 		});
 		
-		// Também atualizamos o evento change para manter consistência
+		// We also update the change event for consistency
 		document.body.addEventListener('change', async function(e) {
 			if (e.target.matches('.quantity-input')) {
 				const input = e.target;
@@ -151,20 +151,20 @@
 						const result = await handleQuantityChange(input, newValue);
 						input.dataset.lastValue = newValue;
 						if (result && result.removed) {
-							showNotification('Produto removido do carrinho');
+							showNotification('Product removed from cart');
 						} else {
-							showNotification('Quantidade atualizada com sucesso');
+							showNotification('Quantity updated successfully');
 						}
 					} catch (error) {
-						console.log('Erro no change event', error);
-						showNotification('Erro ao atualizar quantidade', 'error');
+						console.log('Error in change event', error);
+						showNotification('Error updating quantity', 'error');
 						input.value = oldValue;
 					}
 				}
 			}
 		});
 		
-		// Atualiza o último valor válido quando o input perde o foco
+		// Update the last valid value when the input loses focus
 		document.body.addEventListener('blur', function(e) {
 			if (e.target.matches('.quantity-input')) {
 				const input = e.target;
@@ -173,30 +173,30 @@
 			}
 		}, true);
 		
-		// Botão de reset de categoria
+		// Category reset button
 		document.body.addEventListener('click', function(e) {
-			// Novo listener para o botão de reset de categoria
+			// New listener for the category reset button
 			if (e.target.matches('.category-reset-button')) {
 				const categoryId = e.target.dataset.categoryId;
-				console.log('Botão reset clicado', { categoryId });
+				console.log('Reset button clicked', { categoryId });
 				
 				if (categoryId) {
 					resetCategory(categoryId).catch(error => {
-						console.log('Erro ao executar resetCategory', error);
+						console.log('Error executing resetCategory', error);
 					});
 				} else {
-					console.log('categoryId não encontrado no botão');
+					console.log('categoryId not found on the button');
 				}
 			}
 		});
 		
-		console.log('Manipuladores do carrinho configurados');
+		console.log('Cart handlers configured');
 	}
 	
 	function handleCategoryApply() {
 		const categoryApplyButtons = document.querySelectorAll('.category-apply-button');
 		
-		console.log(`Encontrados ${categoryApplyButtons.length} botões de aplicar categoria`);
+		console.log(`Found ${categoryApplyButtons.length} category apply buttons`);
 		
 		categoryApplyButtons.forEach(button => {
 			button.addEventListener('click', function(event) {
@@ -204,12 +204,12 @@
 				event.stopPropagation();
 				
 				const categoryId = this.dataset.categoryId;
-				console.log(`Botão de categoria ${categoryId} clicado`);
+				console.log(`Category button ${categoryId} clicked`);
 				
-				// Buscar o input de categoria
+				// Search for the category input
 				let categoryInput = document.querySelector(`.category-quantity-input[data-category-id="${categoryId}"]`);
 				
-				// Se não encontrou, tenta buscar input próximo ao botão
+				// If not found, try to find input near the button
 				if (!categoryInput) {
 					const parentElement = this.parentElement;
 					if (parentElement) {
@@ -217,40 +217,40 @@
 					}
 				}
 				
-				// Determinar o valor a ser aplicado
-				let valueToApply = '1';  // Valor padrão
+				// Determine the value to be applied
+				let valueToApply = '1';  // Default value
 				
 				if (categoryInput && categoryInput.value && categoryInput.value !== '') {
 					valueToApply = categoryInput.value;
-					console.log(`Valor a ser aplicado: ${valueToApply}`);
+					console.log(`Value to be applied: ${valueToApply}`);
 				} else {
-					console.log(`Nenhum input válido encontrado. Usando valor padrão: ${valueToApply}`);
+					console.log(`No valid input found. Using default value: ${valueToApply}`);
 				}
 				
-				// Encontrar todos os inputs da categoria
+				// Find all inputs for the category
 				const categoryInputs = document.querySelectorAll(`.quantity-input[data-category-id="${categoryId}"]`);
 				
 				if (categoryInputs.length === 0) {
-					console.log(`Nenhum input de produto encontrado para a categoria ${categoryId}`);
-					alert(`Erro: Não foi possível encontrar produtos para esta categoria (${categoryId})`);
+					console.log(`No product inputs found for category ${categoryId}`);
+					alert(`Error: Could not find products for this category (${categoryId})`);
 					return;
 				}
 				
-				console.log(`Aplicando valor ${valueToApply} a ${categoryInputs.length} produtos da categoria ${categoryId}`);
+				console.log(`Applying value ${valueToApply} to ${categoryInputs.length} products in category ${categoryId}`);
 				
-				// Aplicar o valor a todos os produtos sequencialmente
+				// Apply the value to all products sequentially
 				applyValueSequentially(Array.from(categoryInputs), 0, valueToApply, categoryId);
 			});
 		});
 	}
 	
 	/**
-	 * Aplica um valor específico a inputs sequencialmente
+	 * Applies a specific value to inputs sequentially
 	 */
 	function applyValueSequentially(inputs, index, valueToApply, categoryId) {
-		// Se terminou todos os inputs
+		// If finished all inputs
 		if (index >= inputs.length) {
-			console.log(`Atualizados ${inputs.length} produtos da categoria ${categoryId}`);
+			console.log(`Updated ${inputs.length} products in category ${categoryId}`);
 			return;
 		}
 		
@@ -258,42 +258,42 @@
 		const productId = input.dataset.productId;
 		const oldValue = input.value;
 		
-		console.log(`[${index+1}/${inputs.length}]: Aplicando valor ${valueToApply} ao produto ${productId} (valor anterior: ${oldValue})`);
+		console.log(`[${index+1}/${inputs.length}]: Applying value ${valueToApply} to product ${productId} (previous value: ${oldValue})`);
 		
 		try {
-			// Primeiro definir o valor explicitamente no input
+			// First set the value explicitly in the input
 			input.value = valueToApply;
 			
-			// Depois disparar o evento de mudança
+			// Then trigger the change event
 			handleQuantityChange(input, valueToApply);
 			
-			// Processar o próximo após um pequeno delay
+			// Process the next one after a small delay
 			setTimeout(function() {
 				applyValueSequentially(inputs, index + 1, valueToApply, categoryId);
 			}, 400);
 			
-			// Adicionar notificação
+			// Add notification
 			if (index === inputs.length - 1) {
-				// Usando o último input como referência para o contêiner do bloco
-				showNotification(`Aplicado valor ${valueToApply} a todos os produtos da categoria`, 'success', input);
+				// Using the last input as a reference for the block container
+				showNotification(`Applied value ${valueToApply} to all products in the category`, 'success', input);
 			}
 		} catch (e) {
-			console.error(`Erro ao aplicar valor: ${e.message}`);
-			showNotification('Erro ao aplicar valor aos produtos', 'error', input);
+			console.error(`Error applying value: ${e.message}`);
+			showNotification('Error applying value to products', 'error', input);
 		}
 	}
 	
 	/**
-	 * Reset de categoria
+	 * Category reset
 	 */
 	async function resetCategory(categoryId) {
-		console.log('Iniciando resetCategory', { categoryId });
+		console.log('Starting resetCategory', { categoryId });
 		
-		// Encontra todos os inputs de quantidade para esta categoria
+		// Find all quantity inputs for this category
 		const categoryInputs = document.querySelectorAll(`.quantity-input[data-category-id="${categoryId}"]`);
 		
 		if (!categoryInputs.length) {
-			console.log('Nenhum produto encontrado na categoria');
+			console.log('No products found in the category');
 			return;
 		}
 		
@@ -301,19 +301,19 @@
 		let productsRemoved = 0;
 		let itemsToRemove = [];
 		
-		// Primeiro coletamos todos os itens que precisam ser removidos
+		// First we collect all items that need to be removed
 		for (const input of categoryInputs) {
 			const row = input.closest('tr');
 			if (!row) continue;
 			
-			// Zeramos o input de qualquer forma
+			// We zero the input in any case
 			input.value = 0;
 			input.dataset.lastValue = 0;
 			
-			// Verifica se existe cartItemKey
+			// Check if cartItemKey exists
 			const cartItemKeyInput = row.querySelector('.cart-item-key');
 			if (!cartItemKeyInput || !cartItemKeyInput.value) {
-				continue; // Não está no carrinho, pula para o próximo
+				continue; // Not in the cart, skip to the next one
 			}
 			
 			const cartItemKey = cartItemKeyInput.value;
@@ -325,22 +325,22 @@
 			});
 		}
 		
-		console.log('Itens para remover', itemsToRemove.length);
+		console.log('Items to remove', itemsToRemove.length);
 		
-		// Agora removemos um por um, sequencialmente para evitar problemas
+		// Now we remove one by one, sequentially to avoid issues
 		for (const item of itemsToRemove) {
 			try {
-				console.log('Removendo item do carrinho', item.cartItemKey, 'produto ID:', item.productId);
+				console.log('Removing item from cart', item.cartItemKey, 'product ID:', item.productId);
 				await removeFromCart(item.cartItemKey);
 				
-				// Limpa o cartItemKey
+				// Clear the cartItemKey
 				item.cartItemKeyInput.value = '';
 				productsRemoved++;
 				
-				// Pequena pausa para garantir que o servidor processe cada remoção
+				// Small pause to ensure the server processes each removal
 				await new Promise(resolve => setTimeout(resolve, 100));
 			} catch (error) {
-				console.log('Erro ao remover produto', { 
+				console.log('Error removing product', { 
 					cartItemKey: item.cartItemKey, 
 					productId: item.productId, 
 					error 
@@ -349,42 +349,42 @@
 		}
 		
 		if (productsRemoved > 0) {
-			showNotification(`${productsRemoved} produtos removidos da categoria`);
+			showNotification(`${productsRemoved} products removed from category`);
 
 			const customEvent = new CustomEvent('wc-blocks_added_to_cart');
 			document.body.dispatchEvent(customEvent);
 		} else {
-			showNotification('Nenhum produto no carrinho para remover');
+			showNotification('No products in cart to remove');
 		}
 	}
 	
-	// Funções principais para manipulação do carrinho
+	// Main functions for cart manipulation
 	
 	function handleQuantityChange(input, newValue) {
 		if (!input) {
-			return Promise.reject(new Error('Input não encontrado'));
+			return Promise.reject(new Error('Input not found'));
 		}
 		
 		const productId = input.dataset.productId;
-		console.log('Alterando quantidade para produto', {
+		console.log('Changing quantity for product', {
 			productId: productId,
 			newValue: newValue,
 			inputValue: input.value
 		});
 		
 		if (!productId) {
-			return Promise.reject(new Error('ID do produto não encontrado'));
+			return Promise.reject(new Error('Product ID not found'));
 		}
 		
 		const row = input.closest('tr');
 		if (!row) {
-			return Promise.reject(new Error('Linha da tabela não encontrada'));
+			return Promise.reject(new Error('Table row not found'));
 		}
 		
 		const cartItemKeyInput = row.querySelector('.cart-item-key');
 		const cartItemKey = cartItemKeyInput ? cartItemKeyInput.value : '';
 		
-		// Se a quantidade for zero e temos um cartItemKey, removemos o item
+		// If the quantity is zero and we have a cartItemKey, we remove the item
 		if (newValue === 0 && cartItemKey) {
 			return removeFromCart(cartItemKey).then(() => {
 				if (cartItemKeyInput) {
@@ -395,9 +395,9 @@
 		}
 		
 		return updateCart(productId, null, newValue, cartItemKey).then(response => {
-			// Atualizar o cartItemKey após o sucesso da operação
+			// Update the cartItemKey after the operation is successful
 			if (response && response.key) {
-				// Se não existe o input para o cartItemKey, criamos um
+				// If the input for cartItemKey doesn't exist, we create one
 				if (!cartItemKeyInput) {
 					const newCartItemKeyInput = document.createElement('input');
 					newCartItemKeyInput.type = 'hidden';
@@ -412,9 +412,9 @@
 		});
 	}
 	
-	// Função para remover item do carrinho
+	// Function to remove item from cart
 	function removeFromCart(cartItemKey) {
-		console.log('Removendo item do carrinho', cartItemKey);
+		console.log('Removing item from cart', cartItemKey);
 		
 		return new Promise((resolve, reject) => {
 			jQuery.ajax({
@@ -424,14 +424,14 @@
 					xhr.setRequestHeader('X-WC-Store-API-Nonce', document.getElementById('carmo-bulk-form').dataset.nonce);
 				},
 				success: function(response) {
-					console.log('Item removido com sucesso', response);
+					console.log('Item successfully removed', response);
 					resolve(response);
 
 					const customEvent = new CustomEvent('wc-blocks_added_to_cart');
 					document.body.dispatchEvent(customEvent);
 				},
 				error: function(error) {
-					console.log('Erro ao remover item', error);
+					console.log('Error removing item', error);
 					reject(error);
 				}
 			});
@@ -439,7 +439,7 @@
 	}
 	
 	function updateCart(productId, variationId, quantity, cartItemKey) {
-		console.log('Iniciando updateCart', {
+		console.log('Starting updateCart', {
 			productId,
 			variationId,
 			quantity,
@@ -463,27 +463,27 @@
 				data: JSON.stringify(data),
 				contentType: 'application/json',
 				success: function(response) {
-					console.log('Sucesso na atualização', response);
+					console.log('Update successful', response);
 					resolve(response);
 
 					const customEvent = new CustomEvent('wc-blocks_added_to_cart');
 					document.body.dispatchEvent(customEvent);
 				},
 				error: function(error) {
-					console.log('Erro na atualização', error);
+					console.log('Update error', error);
 					reject(error);
 				}
 			};
 			
 			if (cartItemKey) {
-				console.log('Atualizando item existente', cartItemKey);
+				console.log('Updating existing item', cartItemKey);
 				jQuery.ajax({
 					...ajaxConfig,
 					url: '/wp-json/wc/store/v1/cart/items/' + cartItemKey,
 					method: 'PUT'
 				});
 			} else {
-				console.log('Adicionando novo item');
+				console.log('Adding new item');
 				jQuery.ajax({
 					...ajaxConfig,
 					url: '/wp-json/wc/store/v1/cart/items',
@@ -494,63 +494,63 @@
 	}
 	
 	/**
-	 * Mostra uma notificação dentro do contêiner do bloco
+	 * Shows a notification inside the block container
 	 */
 	function showNotification(message, type = 'success', triggerElement = null) {
-		// Encontrar o bloco que contém o elemento que disparou a ação
+		// Find the block that contains the element that triggered the action
 		let blockContainer;
 		
 		if (triggerElement) {
-			// Buscar o container de bloco mais próximo
+			// Search for the closest block container
 			blockContainer = triggerElement.closest('.carmo-bulk-container');
 		}
 		
-		// Se não encontrou o container a partir do elemento de trigger
+		// If container not found from the trigger element
 		if (!blockContainer) {
-			// Tentar usar o elemento atualmente com foco
+			// Try to use the currently focused element
 			const activeElement = document.activeElement;
 			if (activeElement) {
 				blockContainer = activeElement.closest('.carmo-bulk-container');
 			}
 		}
 		
-		// Se ainda não encontrou, tentar o primeiro bloco como fallback
+		// If still not found, try the first block as a fallback
 		if (!blockContainer) {
 			blockContainer = document.querySelector('.carmo-bulk-container');
 		}
 		
-		// Se realmente não encontrou nenhum container, não fazer nada
+		// If really didn't find any container, do nothing
 		if (!blockContainer) {
-			console.error('Erro: Não foi possível encontrar um container de bloco para a notificação');
+			console.error('Error: Could not find a block container for notification');
 			return;
 		}
 		
-		// Obter ou criar a notificação no container
+		// Get or create notification in the container
 		let notification = blockContainer.querySelector('.carmo-notification');
 		
-		// Se não existe um elemento de notificação, criar um
+		// If notification element doesn't exist, create one
 		if (!notification) {
 			notification = document.createElement('div');
 			notification.className = 'carmo-notification';
 			blockContainer.appendChild(notification);
 		}
 		
-		// Configurar a notificação
+		// Configure the notification
 		notification.textContent = message;
 		notification.className = `carmo-notification ${type}`;
 		notification.style.display = 'block';
 		
-		// Esconder após 3 segundos
+		// Hide after 3 seconds
 		setTimeout(() => {
 			notification.style.display = 'none';
 		}, 3000);
 	}
 	
-	// Inicializa os valores do carrinho
+	// Initialize cart values
 	function updateQuantitiesFromCart() {
-		console.log('Iniciando updateQuantitiesFromCart');
+		console.log('Starting updateQuantitiesFromCart');
 		
-		// Usar o endpoint do Store API do WooCommerce
+		// Use the WooCommerce Store API endpoint
 		jQuery.ajax({
 			url: '/wp-json/wc/store/v1/cart',
 			type: 'GET',
@@ -561,16 +561,16 @@
 				}
 			},
 			success: function(response) {
-				console.log('Resposta da Store API recebida');
+				console.log('Store API response received');
 				
-				// Mapear produtos no carrinho
+				// Map products in cart
 				const productsInCart = {};
 				
 				if (response && response.items && Array.isArray(response.items)) {
-					console.log('Encontrados', response.items.length, 'itens no carrinho');
+					console.log('Found', response.items.length, 'items in cart');
 					
 					response.items.forEach(item => {
-						// O ID pode estar em diferentes locais dependendo da estrutura
+						// ID can be in different locations depending on the structure
 						const productId = item.id || 
 									(item.product_id ? item.product_id.toString() : null) || 
 									(item.product && item.product.id ? item.product.id.toString() : null);
@@ -583,28 +583,28 @@
 						}
 					});
 				} else {
-					console.log('Estrutura de resposta não reconhecida ou carrinho vazio');
+					console.log('Unrecognized response structure or empty cart');
 				}
 				
-				// Encontrar todos os inputs de quantidade
+				// Find all quantity inputs
 				const inputs = document.querySelectorAll('.quantity-input');
-				console.log('Total de inputs encontrados', inputs.length);
+				console.log('Total inputs found', inputs.length);
 				
-				// Reset todos os inputs primeiro (opção 1: zerar tudo)
+				// Reset all inputs first (option 1: zero everything)
 				inputs.forEach(function(input) {
 					const productId = input.dataset.productId;
 					const row = input.closest('tr');
 					if (!row) return;
 					
-					// Verifica se o produto está no carrinho
+					// Check if the product is in the cart
 					if (productsInCart[productId]) {
 						const cartInfo = productsInCart[productId];
 						
-						// Atualiza o input com a quantidade
+						// Update the input with the quantity
 						input.value = cartInfo.quantity;
 						input.dataset.lastValue = cartInfo.quantity;
 						
-						// Atualiza ou cria o cartItemKey
+						// Update or create the cartItemKey
 						let cartItemKeyInput = row.querySelector('.cart-item-key');
 						if (!cartItemKeyInput) {
 							cartItemKeyInput = document.createElement('input');
@@ -615,11 +615,11 @@
 						
 						cartItemKeyInput.value = cartInfo.key;
 					} else {
-						// Zera o input
+						// Zero the input
 						input.value = 0;
 						input.dataset.lastValue = 0;
 						
-						// Limpa o cartItemKey se existir
+						// Clear the cartItemKey if it exists
 						const cartItemKeyInput = row.querySelector('.cart-item-key');
 						if (cartItemKeyInput) {
 							cartItemKeyInput.value = '';
@@ -631,24 +631,24 @@
 				document.body.dispatchEvent(customEvent);
 			},
 			error: function(error) {
-				console.log('Erro ao obter carrinho via Store API', error);
+				console.log('Error getting cart via Store API', error);
 				
-				// Tenta o método alternativo como fallback
+				// Try alternative method as fallback
 				if (typeof wc_cart_fragments_params !== 'undefined') {
 					jQuery.ajax({
 						url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),
 						type: 'POST',
 						success: function(data) {
-							console.log('Fragments obtidos');
+							console.log('Fragments obtained');
 							
-							// Atualiza os fragmentos
+							// Update fragments
 							if (data && data.fragments) {
 								jQuery.each(data.fragments, function(key, value) {
 									jQuery(key).replaceWith(value);
 								});
 							}
 							
-							// Trigger eventos do WooCommerce
+							// Trigger WooCommerce events
 							jQuery(document.body).trigger('wc_fragments_refreshed');
 							jQuery(document.body).trigger('updated_cart_totals');
 						}

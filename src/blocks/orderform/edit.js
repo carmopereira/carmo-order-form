@@ -85,9 +85,9 @@ export default function Edit(props) {
 	const getProductTypeLabel = (type) => {
 		switch (type) {
 			case 'simple':
-				return __('Simples', 'carmo-order-form');
+				return __('Simple', 'carmo-order-form');
 			case 'variable':
-				return __('Variável', 'carmo-order-form');
+				return __('Variable', 'carmo-order-form');
 			default:
 				return type.charAt(0).toUpperCase() + type.slice(1);
 		}
@@ -180,11 +180,11 @@ export default function Edit(props) {
 					<thead>
 						<tr>
 							{showImages && <th className="product-image"></th>}
-							<th className="product-name">{__('Produto', 'carmo-order-form')}</th>
-							<th className="product-type">{__('Tipo', 'carmo-order-form')}</th>
-							<th className="product-price">{__('Preço', 'carmo-order-form')}</th>
-							<th className="product-quantity">{__('Quantidade', 'carmo-order-form')}</th>
-							<th className="product-increment">{__('Adicionar Quantidade', 'carmo-order-form')}</th>
+							<th className="product-name">{__('Product', 'carmo-order-form')}</th>
+							<th className="product-type">{__('Type', 'carmo-order-form')}</th>
+							<th className="product-price">{__('Price', 'carmo-order-form')}</th>
+							<th className="product-quantity">{__('Quantity', 'carmo-order-form')}</th>
+							<th className="product-increment">{__('Add Quantity', 'carmo-order-form')}</th>
 						</tr>
 					</thead>
 					<tbody>

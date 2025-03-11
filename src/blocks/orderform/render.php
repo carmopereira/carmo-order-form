@@ -85,10 +85,12 @@ $wrapper_attributes = get_block_wrapper_attributes([
                 
                 <div class="category-controls">
                     <div class="category-input-group">
-                        <label for="category-quantity-<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Set all products to:', 'carmo-bulk'); ?></label>
-                        <input name="category-quantity.<?php echo esc_attr($unique_id); ?>" type="number" id="category-quantity-<?php echo esc_attr($category->term_id); ?>" class="category-quantity-input" min="0">
-                        <button name="category-apply.<?php echo esc_attr($unique_id); ?>" type="button" class="category-apply-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Apply', 'carmo-bulk'); ?></button>
-                        <button name="category-reset.<?php echo esc_attr($unique_id); ?>" type="button" class="category-reset-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Reset Category', 'carmo-bulk'); ?></button>
+                        <label for="category-quantity-<?php echo esc_attr($category->term_id); ?>">
+                            <?php echo esc_html__('Set all products to:', 'carmo-order-form'); ?>
+                        </label>
+                        <input name="category-quantity.<?php echo esc_attr($unique_id); ?>" type="number" id="category-quantity-<?php echo esc_attr($category->term_id); ?>" class="category-quantity-input" min="0" data-category-id="<?php echo esc_attr($category->term_id); ?>">
+                        <button name="category-apply.<?php echo esc_attr($unique_id); ?>" type="button" class="category-apply-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Apply', 'carmo-order-form'); ?></button>
+                        <button name="category-reset.<?php echo esc_attr($unique_id); ?>" type="button" class="category-reset-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Reset Category', 'carmo-order-form'); ?></button>
                     </div>
                     <!-- <div class="category-buttons">
                         <button type="button" class="category-button" data-category-id="<?php echo esc_attr($category->term_id); ?>" data-quantity="1">+1</button>
@@ -106,11 +108,11 @@ $wrapper_attributes = get_block_wrapper_attributes([
                     <?php if ($attributes['showImages']): ?>
                         <th class="product-image"></th>
                     <?php endif; ?>
-                    <th class="product-name"><?php echo esc_html__('Produto', 'carmo-bulk'); ?></th>
-                    <th class="product-type"><?php echo esc_html__('Tipo', 'carmo-bulk'); ?></th>
-                    <th class="product-price"><?php echo esc_html__('Preço', 'carmo-bulk'); ?></th>
-                    <th class="product-quantity"><?php echo esc_html__('Quantidade', 'carmo-bulk'); ?></th>
-                    <th class="product-increment"><?php echo esc_html__('Adicionar Quantidade', 'carmo-bulk'); ?></th>
+                    <th class="product-name"><?php echo esc_html__('Product', 'carmo-order-form'); ?></th>
+                    <th class="product-type"><?php echo esc_html__('Type', 'carmo-order-form'); ?></th>
+                    <th class="product-price"><?php echo esc_html__('Price', 'carmo-order-form'); ?></th>
+                    <th class="product-quantity"><?php echo esc_html__('Quantity', 'carmo-order-form'); ?></th>
+                    <th class="product-increment"><?php echo esc_html__('Add Quantity', 'carmo-order-form'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -126,10 +128,10 @@ $wrapper_attributes = get_block_wrapper_attributes([
                         $type_label = '';
                         switch ($product_type) {
                             case 'simple':
-                                $type_label = __('Simples', 'carmo-bulk');
+                                $type_label = __('Simple', 'carmo-order-form');
                                 break;
                             case 'variable':
-                                $type_label = __('Variável', 'carmo-bulk');
+                                $type_label = __('Variable', 'carmo-order-form');
                                 break;
                             default:
                                 $type_label = ucfirst($product_type);
@@ -203,7 +205,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
                             </td>
                         <?php else: ?>
                             <td colspan="5" class="out-of-stock-message">
-                                <?php echo esc_html__('out of stock', 'carmo-bulk'); ?>
+                                <?php echo esc_html__('out of stock', 'carmo-order-form'); ?>
                             </td>
                         <?php endif; ?>
                     </tr>
