@@ -19,7 +19,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
 ?>
 
 <div <?php echo $wrapper_attributes; ?>>
-    <h2 class="carmo-menu-title">Categories Menu</h2>
+    <h2 class="carmo-menu-title">Categories</h2>
     
     <nav class="menu-accordion">
         <ul>
