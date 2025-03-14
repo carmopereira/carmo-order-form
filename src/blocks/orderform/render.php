@@ -167,21 +167,6 @@ $wrapper_attributes = get_block_wrapper_attributes([
                             }
                         }
                         
-                        // Detailed information in HTML as comments
-                        echo "<!-- DEBUG PRODUCT: $product_name (ID: $product_id) -->";
-                        echo "<!-- Stock Status: $stock_status -->";
-                        echo "<!-- Stock Quantity: " . ($stock_quantity !== null ? $stock_quantity : 'N/A') . " -->";
-                        echo "<!-- is_in_stock(): " . ($is_in_stock ? 'true' : 'false') . " -->";
-                        
-                        // For visible debug in the interface (temporary)
-                        if (isset($_GET['debug'])) {
-                            echo '<div style="background:#ffe; padding:5px; border:1px solid #ddd; margin:5px; font-size:12px;">';
-                            echo "Debug: $product_name (ID: $product_id)<br>";
-                            echo "Status: $stock_status | ";
-                            echo "In Stock: " . ($is_in_stock ? 'Yes' : 'No') . " | ";
-                            echo "Quantity: " . ($stock_quantity !== null ? $stock_quantity : 'N/A');
-                            echo '</div>';
-                        }
                 ?>
                     <tr>
                         <?php if ($attributes['showImages']): ?>
@@ -192,64 +177,64 @@ $wrapper_attributes = get_block_wrapper_attributes([
                                     class="carmo-bulk-product-thumbnail"
                                 >
                             </td>
-                            <td class="carmo-bulk-product-sku">
-                                <?php 
-                                // Get the appropriate SKU based on the product type
-                                $display_sku = $product_sku;
-                                
-                                // If the product is a variable product, check if there is a SKU for the parent product
-                                if ($product->is_type('variable')) {
-                                    $parent_sku = $product->get_sku();
-                                    if (!empty($parent_sku)) {
-                                        $display_sku = $parent_sku;
-                                    } else {
-                                        // If the parent product does not have a SKU, try to get the SKU with the attribute shape="Wild" of the variations
-                                        // Search for variations with shape="Wild"
-                                        $variations = $product->get_available_variations();
-                                        foreach ($variations as $variation_data) {
-                                            $variation_obj = wc_get_product($variation_data['variation_id']);
+                        <?php endif; ?>
+                        <td class="carmo-bulk-product-sku">
+                            <?php 
+                            // Get the appropriate SKU based on the product type
+                            $display_sku = $product_sku;
+                            
+                            // If the product is a variable product, check if there is a SKU for the parent product
+                            if ($product->is_type('variable')) {
+                                $parent_sku = $product->get_sku();
+                                if (!empty($parent_sku)) {
+                                    $display_sku = $parent_sku;
+                                } else {
+                                    // If the parent product does not have a SKU, try to get the SKU with the attribute shape="Wild" of the variations
+                                    // Search for variations with shape="Wild"
+                                    $variations = $product->get_available_variations();
+                                    foreach ($variations as $variation_data) {
+                                        $variation_obj = wc_get_product($variation_data['variation_id']);
+                                        
+                                        // Check if the variation has the attribute shape="Wild"
+                                        $is_wild_shape = false;
+                                        
+                                        // Check in the different possible formats
+                                        if (
+                                            (isset($variation_data['attributes']['attribute_shape']) && 
+                                             $variation_data['attributes']['attribute_shape'] === 'Wild') ||
                                             
-                                            // Check if the variation has the attribute shape="Wild"
-                                            $is_wild_shape = false;
-                                            
-                                            // Check in the different possible formats
-                                            if (
-                                                (isset($variation_data['attributes']['attribute_shape']) && 
-                                                 $variation_data['attributes']['attribute_shape'] === 'Wild') ||
-                                                
-                                                (isset($variation_data['attributes']['shape']) && 
-                                                 $variation_data['attributes']['shape'] === 'Wild') ||
-                                                 
-                                                (isset($variation_data['attributes']['attribute_pa_shape']) && 
-                                                 $variation_data['attributes']['attribute_pa_shape'] === 'Wild')
-                                            ) {
-                                                $is_wild_shape = true;
-                                            }
-                                            
-                                            if ($is_wild_shape && $variation_obj && !empty($variation_obj->get_sku())) {
-                                                $display_sku = $variation_obj->get_sku();
-                                                break;
-                                            }
+                                            (isset($variation_data['attributes']['shape']) && 
+                                             $variation_data['attributes']['shape'] === 'Wild') ||
+                                             
+                                            (isset($variation_data['attributes']['attribute_pa_shape']) && 
+                                             $variation_data['attributes']['attribute_pa_shape'] === 'Wild')
+                                        ) {
+                                            $is_wild_shape = true;
                                         }
                                         
-                                        // If still no SKU is found and there is only one variation, use the SKU of the variation
-                                        if (empty($display_sku) && count($variations) === 1) {
-                                            $single_variation = wc_get_product($variations[0]['variation_id']);
-                                            if ($single_variation && !empty($single_variation->get_sku())) {
-                                                $display_sku = $single_variation->get_sku();
-                                            }
-                                        }
+                                        if ($is_wild_shape && $variation_obj && !empty($variation_obj->get_sku())) {
+                                            $display_sku = $variation_obj->get_sku();
+                                            break;
                                         }
                                     }
-                                
-                                
-                                echo esc_html($display_sku);
-                                ?>
-                            </td>
-                            <td class="carmo-bulk-product-name">
-                                <?php echo esc_html($product_name); ?>
-                            </td>
-                        <?php endif; ?>
+                                    
+                                    // If still no SKU is found and there is only one variation, use the SKU of the variation
+                                    if (empty($display_sku) && count($variations) === 1) {
+                                        $single_variation = wc_get_product($variations[0]['variation_id']);
+                                        if ($single_variation && !empty($single_variation->get_sku())) {
+                                            $display_sku = $single_variation->get_sku();
+                                        }
+                                    }
+                                    }
+                                }
+                            
+                            
+                            echo esc_html($display_sku);
+                            ?>
+                        </td>
+                        <td class="carmo-bulk-product-name">
+                            <?php echo esc_html($product_name); ?>
+                        </td>
                         <?php if ($is_in_stock): ?>                        
                             <td class="carmo-bulk-product-price">
                                 <?php 

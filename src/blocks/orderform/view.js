@@ -316,7 +316,7 @@
 				productsRemoved++;
 				
 				// Small pause to ensure the server processes each removal
-				await new Promise(resolve => setTimeout(resolve, 100));
+				await new Promise(resolve => setTimeout(resolve, 800));
 			} catch (error) {
 				if (isDebug) console.log('Error removing product', { 
 					cartItemKey: item.cartItemKey, 
