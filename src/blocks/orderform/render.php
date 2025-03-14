@@ -12,17 +12,18 @@
 
 defined('ABSPATH') || exit;
 
-// Verifica se WooCommerce está ativo
+// Check if WooCommerce is active
 if (!class_exists('WooCommerce')) {
 	return;
 }
 
-// Verifica se a Store API está disponível
+
+// Check if the Store API is available
 if (!class_exists('Automattic\WooCommerce\StoreApi\Routes\V1\AbstractRoute')) {
 	return;
 }
 
-// Definir valores padrão para os atributos
+// Define default values for attributes
 $attributes = wp_parse_args($attributes, [
     'selectedCategory' => '',
     'showImages' => true,
@@ -34,14 +35,14 @@ $attributes = wp_parse_args($attributes, [
 // Generates a unique id for aria-controls.
 $unique_id = wp_unique_id( 'p-' );
 
-// Obter produtos da categoria
+// Get products from category
 $category_name = '';
 if (!empty($attributes['selectedCategory'])) {
     $category = get_term_by('id', $attributes['selectedCategory'], 'product_cat');
 
 
-// Se tiver um parent category, use o nome do parent category
-$parent_category_name = get_product_parent_category_name($attributes['selectedCategory']);
+    // If there is a parent category, use the parent category name
+    $parent_category_name = get_product_parent_category_name($attributes['selectedCategory']);
 
     if ($category) {
         $category_name = $category->name;
@@ -61,7 +62,7 @@ $parent_category_name = get_product_parent_category_name($attributes['selectedCa
     }
 }
 
-// Obter as classes do bloco
+// Get the classes of the block
 $wrapper_attributes = get_block_wrapper_attributes([
     'class' => 'carmo-bulk-container',
     'id' => 'carmo-bulk-category-' . (isset($attributes['selectedCategory']) ? esc_attr($attributes['selectedCategory']) : 'default')
@@ -122,9 +123,9 @@ $wrapper_attributes = get_block_wrapper_attributes([
                         $cart_item_key = '';
                         $cart_quantity = 0;
                         
-                        // Obtém o tipo do produto
+                        // Get the product type
                         $product_type = $product->get_type();
-                        // Traduz o tipo para português
+                        // Translate the type to Portuguese
                         $type_label = '';
                         switch ($product_type) {
                             case 'simple':
@@ -137,7 +138,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
                                 $type_label = ucfirst($product_type);
                         }
 
-                        // Verificar se o produto está em estoque
+                        // Check if the product is in stock
                         $is_in_stock = $product->is_in_stock();
                         $product_id = $product->get_id();
                         $product_sku = $product->get_sku();
@@ -145,19 +146,19 @@ $wrapper_attributes = get_block_wrapper_attributes([
                         $stock_quantity = $product->get_stock_quantity();
                         $stock_status = $product->get_stock_status(); // 'instock', 'outofstock', or 'onbackorder'
                         
-                        // Verificar se é um produto variável com apenas uma variação
+                        // Check if the product is a variable product with only one variation
                         $variation_id = false;
                         if ($product->is_type('variable')) {
-                            // Prioriza variações com atributo Shape="Wild", ou usa a única variação disponível
+                            // Priorize variations with attribute Shape="Wild", or use the only available variation
                             $variation_id = carmo_bulk_get_single_variation_id($product_id);
                             
-                            // Se encontrou uma variação prioritária, usamos esta variação em vez do produto pai
+                            // If a priority variation is found, use this variation instead of the parent product
                             if ($variation_id) {
                                 $variation = wc_get_product($variation_id);
                                 
-                                // Atualiza os dados do produto com os da variação única
+                                // Update the product data with the data of the unique variation
                                 if ($variation) {
-                                    // Mantem o nome do produto pai, mas atualiza outros dados
+                                    // Keep the parent product name, but update other data
                                     $product_sku = $variation->get_sku();
                                     $is_in_stock = $variation->is_in_stock();
                                     $stock_quantity = $variation->get_stock_quantity();
@@ -166,19 +167,19 @@ $wrapper_attributes = get_block_wrapper_attributes([
                             }
                         }
                         
-                        // Informações detalhadas no HTML como comentários
-                        echo "<!-- DEBUG PRODUTO: $product_name (ID: $product_id) -->";
+                        // Detailed information in HTML as comments
+                        echo "<!-- DEBUG PRODUCT: $product_name (ID: $product_id) -->";
                         echo "<!-- Stock Status: $stock_status -->";
-                        echo "<!-- Quantidade em estoque: " . ($stock_quantity !== null ? $stock_quantity : 'N/A') . " -->";
+                        echo "<!-- Stock Quantity: " . ($stock_quantity !== null ? $stock_quantity : 'N/A') . " -->";
                         echo "<!-- is_in_stock(): " . ($is_in_stock ? 'true' : 'false') . " -->";
                         
-                        // Para debug visível na interface (temporário)
+                        // For visible debug in the interface (temporary)
                         if (isset($_GET['debug'])) {
                             echo '<div style="background:#ffe; padding:5px; border:1px solid #ddd; margin:5px; font-size:12px;">';
                             echo "Debug: $product_name (ID: $product_id)<br>";
                             echo "Status: $stock_status | ";
-                            echo "Em estoque: " . ($is_in_stock ? 'Sim' : 'Não') . " | ";
-                            echo "Quantidade: " . ($stock_quantity !== null ? $stock_quantity : 'N/A');
+                            echo "In Stock: " . ($is_in_stock ? 'Yes' : 'No') . " | ";
+                            echo "Quantity: " . ($stock_quantity !== null ? $stock_quantity : 'N/A');
                             echo '</div>';
                         }
                 ?>
@@ -193,25 +194,25 @@ $wrapper_attributes = get_block_wrapper_attributes([
                             </td>
                             <td class="carmo-bulk-product-sku">
                                 <?php 
-                                // Obtém o SKU apropriado com base no tipo de produto
+                                // Get the appropriate SKU based on the product type
                                 $display_sku = $product_sku;
                                 
-                                // Se for um produto variável, verifica se existe um SKU para o produto pai
+                                // If the product is a variable product, check if there is a SKU for the parent product
                                 if ($product->is_type('variable')) {
                                     $parent_sku = $product->get_sku();
                                     if (!empty($parent_sku)) {
                                         $display_sku = $parent_sku;
                                     } else {
-                                        // Se o produto pai não tiver SKU, tenta obter o SKU com o atributo shape="Wild" das variações
-                                        // Procura por variações com shape="Wild"
+                                        // If the parent product does not have a SKU, try to get the SKU with the attribute shape="Wild" of the variations
+                                        // Search for variations with shape="Wild"
                                         $variations = $product->get_available_variations();
                                         foreach ($variations as $variation_data) {
                                             $variation_obj = wc_get_product($variation_data['variation_id']);
                                             
-                                            // Verifica se a variação tem o atributo shape="Wild"
+                                            // Check if the variation has the attribute shape="Wild"
                                             $is_wild_shape = false;
                                             
-                                            // Verifica nos diferentes formatos possíveis
+                                            // Check in the different possible formats
                                             if (
                                                 (isset($variation_data['attributes']['attribute_shape']) && 
                                                  $variation_data['attributes']['attribute_shape'] === 'Wild') ||
@@ -231,7 +232,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
                                             }
                                         }
                                         
-                                        // Se ainda não encontrou um SKU e só existe uma variação, usa o SKU dela
+                                        // If still no SKU is found and there is only one variation, use the SKU of the variation
                                         if (empty($display_sku) && count($variations) === 1) {
                                             $single_variation = wc_get_product($variations[0]['variation_id']);
                                             if ($single_variation && !empty($single_variation->get_sku())) {
@@ -307,7 +308,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
         </button>
     </div>
     </div>
-    <!-- Notificação específica para este bloco -->
+    <!-- Specific notification for this block -->
      <div id="carmo-bulk-notification" class="carmo-bulk-notification"></div>
     <form id="carmo-bulk-form" data-nonce="<?php echo wp_create_nonce('wp_rest'); ?>"></form>
 
