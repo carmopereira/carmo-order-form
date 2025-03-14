@@ -1,10 +1,12 @@
-console.log('🟢 Bloco Menu carregado!');
+const isDebug = typeof URLSearchParams !== 'undefined' && new URLSearchParams(window.location.search).has('debug');
+
+if (isDebug) console.log('🟢 Bloco Menu carregado!');
 
 /**
  * Accordion Menu for the Categories Menu Block with scroll highlighting
  */
 document.addEventListener('DOMContentLoaded', function() {
-    const menuToggles = document.querySelectorAll('.carmo-menu-accordion .submenu-toggle');
+    const menuToggles = document.querySelectorAll('.carmo-bulk-menu-accordion .submenu-toggle');
     
     // Function to open/close submenus
     menuToggles.forEach(toggle => {
@@ -33,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Add handler for category links to highlight active item and implement smooth scroll
-    const categoryLinks = document.querySelectorAll('.carmo-menu-accordion .category-link');
+    const categoryLinks = document.querySelectorAll('.carmo-bulk-menu-accordion .carmo-bulk-category-link');
     
     // Create a map of target IDs to menu links for easy lookup
     const menuLinkMap = {};
@@ -68,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Helper function to remove all active classes
     function removeAllActiveClasses() {
-        document.querySelectorAll('.carmo-menu-accordion .category-link.active').forEach(activeLink => {
+        document.querySelectorAll('.carmo-bulk-menu-accordion .carmo-bulk-category-link.active').forEach(activeLink => {
             activeLink.classList.remove('active');
         });
     }
@@ -144,6 +146,4 @@ document.addEventListener('DOMContentLoaded', function() {
     categoryTargets.forEach(target => {
         observer.observe(target);
     });
-    
-    console.log('🟢 Accordion menu initialized with auto-collapsing submenus!');
 });

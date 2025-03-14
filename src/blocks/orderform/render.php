@@ -69,31 +69,31 @@ $wrapper_attributes = get_block_wrapper_attributes([
 ?>
 
 <div <?php echo $wrapper_attributes; ?> style="--image-width: <?php echo esc_attr($attributes['imageWidth']); ?>px;">
-    <div class="category-container">
+    <div class="carmo-bulk-category-container">
         <?php if (!empty($category_name)): ?>
-            <div class="category-header">
-                <div class="category-title-wrapper">
+            <div class="carmo-bulk-category-header">
+                <div class="carmo-bulk-category-title-wrapper">
                     
-                    <h3 class="category-title">
+                    <h3 class="carmo-bulk-category-title">
                         <?php echo esc_html($parent_category_name); ?>
                         <?php if (!empty($parent_category_name)): ?>
-                            <span class="category-separator"> - </span>
+                            <span class="carmo-bulk-category-separator"> - </span>
                         <?php endif; ?>
                         <?php echo esc_html($category_name); ?>
                     </h3>
                 </div>
                 
-                <div class="category-controls">
-                    <div class="category-input-group">
-                        <label for="category-quantity-<?php echo esc_attr($category->term_id); ?>">
+                <div class="carmo-bulk-category-controls">
+                    <div class="carmo-bulk-category-input-group">
+                        <label for="carmo-bulk-category-quantity-<?php echo esc_attr($category->term_id); ?>">
                             <?php echo esc_html__('Set all products quantity:', 'carmo-order-form'); ?>
                         </label>
-                        <input name="category-quantity.<?php echo esc_attr($unique_id); ?>" type="number" id="category-quantity-<?php echo esc_attr($category->term_id); ?>" class="category-quantity-input" min="0" data-category-id="<?php echo esc_attr($category->term_id); ?>">
-                        <button name="category-apply.<?php echo esc_attr($unique_id); ?>" type="button" class="category-apply-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Apply', 'carmo-order-form'); ?></button>
-                        <button name="category-reset.<?php echo esc_attr($unique_id); ?>" type="button" class="category-reset-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Reset Category', 'carmo-order-form'); ?></button>
+                        <input name="carmo-bulk-category-quantity.<?php echo esc_attr($unique_id); ?>" type="number" id="carmo-bulk-category-quantity-<?php echo esc_attr($category->term_id); ?>" class="carmo-bulk-category-quantity-input" min="0" data-category-id="<?php echo esc_attr($category->term_id); ?>">
+                        <button name="carmo-bulk-category-apply.<?php echo esc_attr($unique_id); ?>" type="button" class="carmo-bulk-category-apply-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Apply', 'carmo-order-form'); ?></button>
+                        <button name="carmo-bulk-category-reset.<?php echo esc_attr($unique_id); ?>" type="button" class="carmo-bulk-category-reset-button" data-category-id="<?php echo esc_attr($category->term_id); ?>"><?php echo esc_html__('Reset Category', 'carmo-order-form'); ?></button>
                     </div>
-                    <!-- <div class="category-buttons">
-                        <button type="button" class="category-button" data-category-id="<?php echo esc_attr($category->term_id); ?>" data-quantity="1">+1</button>
+                    <!-- <div class="carmo-bulk-category-buttons">
+                        <button type="button" class="carmo-bulk-category-button" data-category-id="<?php echo esc_attr($category->term_id); ?>" data-quantity="1">+1</button>
                         <button type="button" class="category-button" data-category-id="<?php echo esc_attr($category->term_id); ?>" data-quantity="5">+5</button>
                         <button type="button" class="category-button" data-category-id="<?php echo esc_attr($category->term_id); ?>" data-quantity="10">+10</button>
                         
@@ -102,17 +102,17 @@ $wrapper_attributes = get_block_wrapper_attributes([
             </div>
         <?php endif; ?>
 
-        <table class="carmo-order-table">
+        <table class="carmo-bulk-order-table">
             <thead>
                 <tr>
                     <?php if ($attributes['showImages']): ?>
-                        <th class="product-image"></th>
+                        <th class="carmo-bulk-product-image"></th>
                     <?php endif; ?>
-                    <th class="product-sku"><?php echo esc_html__('SKU', 'carmo-order-form'); ?></th>
-                    <th class="product-name"><?php echo esc_html__('Product', 'carmo-order-form'); ?></th>
-                    <th class="product-price"><?php echo esc_html__('Price', 'carmo-order-form'); ?></th>
-                    <th class="product-quantity"><?php echo esc_html__('Quantity', 'carmo-order-form'); ?></th>
-                    <th class="product-increment"><?php echo esc_html__('', 'carmo-order-form'); ?></th>
+                    <th class="carmo-bulk-product-sku"><?php echo esc_html__('SKU', 'carmo-order-form'); ?></th>
+                    <th class="carmo-bulk-product-name"><?php echo esc_html__('Product', 'carmo-order-form'); ?></th>
+                    <th class="carmo-bulk-product-price"><?php echo esc_html__('Price', 'carmo-order-form'); ?></th>
+                    <th class="carmo-bulk-product-quantity"><?php echo esc_html__('Quantity', 'carmo-order-form'); ?></th>
+                    <th class="carmo-bulk-product-increment"><?php echo esc_html__('', 'carmo-order-form'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -173,7 +173,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
                         echo "<!-- is_in_stock(): " . ($is_in_stock ? 'true' : 'false') . " -->";
                         
                         // Para debug visível na interface (temporário)
-                        if (isset($_GET['debug_stock'])) {
+                        if (isset($_GET['debug'])) {
                             echo '<div style="background:#ffe; padding:5px; border:1px solid #ddd; margin:5px; font-size:12px;">';
                             echo "Debug: $product_name (ID: $product_id)<br>";
                             echo "Status: $stock_status | ";
@@ -184,14 +184,14 @@ $wrapper_attributes = get_block_wrapper_attributes([
                 ?>
                     <tr>
                         <?php if ($attributes['showImages']): ?>
-                            <td class="product-image">
+                            <td class="carmo-bulk-product-image">
                                 <img 
                                     src="<?php echo esc_url($product->get_image_id() ? wp_get_attachment_image_url($product->get_image_id(), 'thumbnail') : wc_placeholder_img_src()); ?>"
                                     alt="<?php echo esc_attr($product->get_name()); ?>"
-                                    class="product-thumbnail"
+                                    class="carmo-bulk-product-thumbnail"
                                 >
                             </td>
-                            <td class="product-sku">
+                            <td class="carmo-bulk-product-sku">
                                 <?php 
                                 // Obtém o SKU apropriado com base no tipo de produto
                                 $display_sku = $product_sku;
@@ -245,12 +245,12 @@ $wrapper_attributes = get_block_wrapper_attributes([
                                 echo esc_html($display_sku);
                                 ?>
                             </td>
-                            <td class="product-name">
+                            <td class="carmo-bulk-product-name">
                                 <?php echo esc_html($product_name); ?>
                             </td>
                         <?php endif; ?>
                         <?php if ($is_in_stock): ?>                        
-                            <td class="product-price">
+                            <td class="carmo-bulk-product-price">
                                 <?php 
                                 if ($variation_id) {
                                     $variation = wc_get_product($variation_id);
@@ -260,16 +260,16 @@ $wrapper_attributes = get_block_wrapper_attributes([
                                 }
                                 ?>
                             </td>
-                            <td class="product-quantity">
+                            <td class="carmo-bulk-product-quantity">
                                 <?php 
                                 if ($cart_quantity > 0) {
-                                    echo '<input name="product-quantity.'. esc_attr($unique_id) .'" type="hidden" class="cart-item-key" value="' . esc_attr($cart_item_key) . '" />';
+                                    echo '<input name="product-quantity.'. esc_attr($unique_id) .'" type="hidden" class="carmo-bulk-cart-item-key" value="' . esc_attr($cart_item_key) . '" />';
                                 }
                                 ?>
                                 <input 
                                     name="product-quantity.<?php echo esc_attr($product->get_id()) ?>.<?php echo esc_attr($unique_id); ?>"
                                     type="number" 
-                                    class="quantity-input" 
+                                    class="carmo-bulk-quantity-input" 
                                     <?php if ($variation_id): ?>
                                     data-product-id="<?php echo esc_attr($variation_id); ?>"
                                     <?php else: ?>
@@ -282,15 +282,15 @@ $wrapper_attributes = get_block_wrapper_attributes([
                                     min="0"
                                 >
                             </td>
-                            <td class="product-increment">
-                                <div class="quantity-buttons">
-                                    <button class="quantity-button product-plus-one">+1</button>
-                                    <button class="quantity-button product-plus-five">+5</button>
-                                    <button class="quantity-button product-plus-ten">+10</button>
+                            <td class="carmo-bulk-product-increment">
+                                <div class="carmo-bulk-quantity-buttons">
+                                    <button class="carmo-bulk-quantity-button carmo-bulk-product-plus-one">+1</button>
+                                    <button class="carmo-bulk-quantity-button carmo-bulk-product-plus-five">+5</button>
+                                    <button class="carmo-bulk-quantity-button carmo-bulk-product-plus-ten">+10</button>
                                 </div>
                             </td>
                         <?php else: ?>
-                            <td colspan="5" class="out-of-stock-message">
+                            <td colspan="5" class="carmo-bulk-out-of-stock-message">
                                 <?php echo esc_html__('out of stock', 'carmo-order-form'); ?>
                             </td>
                         <?php endif; ?>
@@ -301,14 +301,14 @@ $wrapper_attributes = get_block_wrapper_attributes([
                 ?>
             </tbody>
         </table>
-    <div class="carmo-jump-top-container" style="text-align: right;">
-        <button type="button" class="carmo-jump-top-button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+    <div class="carmo-bulk-jump-top-container" style="text-align: right;">
+        <button type="button" class="carmo-bulk-jump-top-button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
             <?php echo esc_html__('Jump to top', 'carmo-order-form'); ?>
         </button>
     </div>
     </div>
     <!-- Notificação específica para este bloco -->
-     <div id="carmo-notification" class="carmo-notification"></div>
+     <div id="carmo-bulk-notification" class="carmo-bulk-notification"></div>
     <form id="carmo-bulk-form" data-nonce="<?php echo wp_create_nonce('wp_rest'); ?>"></form>
 
 </div>

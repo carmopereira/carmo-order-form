@@ -13,28 +13,28 @@ $block_id = 'carmo-menu-' . uniqid();
 
 // Get block classes
 $wrapper_attributes = get_block_wrapper_attributes([
-    'class' => 'carmo-menu-accordion',
+    'class' => 'carmo-bulk-menu-accordion',
     'id' => $block_id
 ]);
 ?>
 
 <div <?php echo $wrapper_attributes; ?>>
-    <h2 class="carmo-menu-title">Categories</h2>
+    <h2 class="carmo-bulk-menu-title">Categories</h2>
     
-    <nav class="menu-accordion">
+    <nav class="carmo-bulk-menu-accordion">
         <ul>
             <li>
-                <a href="#carmo-bulk-category-350" class="category-link">
+                <a href="#carmo-bulk-category-350" class="carmo-bulk-category-link">
                     <i class="menu-icon"></i>Retail
                 </a>
             </li>
             <li>
-                <a href="#carmo-bulk-category-349" class="category-link">
+                <a href="#carmo-bulk-category-349" class="carmo-bulk-category-link">
                     <i class="menu-icon"></i>Boxed Sets
                 </a>
             </li>
             <li>
-                <a href="#carmo-bulk-category-298" class="category-link">
+                <a href="#carmo-bulk-category-298" class="carmo-bulk-category-link">
                     <i class="menu-icon"></i>Laser Plants
                 </a>
             </li>
@@ -50,34 +50,34 @@ $wrapper_attributes = get_block_wrapper_attributes([
                 </div>
                 <ul class="submenu">
                     <li>
-                        <a href="#carmo-bulk-category-196" class="category-link">6mm</a>
+                        <a href="#carmo-bulk-category-196" class="carmo-bulk-category-link">6mm</a>
                     </li>
                     <li>
-                        <a href="#carmo-bulk-category-200" class="category-link">2mm</a>
+                        <a href="#carmo-bulk-category-200" class="carmo-bulk-category-link">2mm</a>
                     </li>
                     <li>
-                        <a href="#carmo-bulk-category-197" class="category-link">4/5mm</a>
+                        <a href="#carmo-bulk-category-197" class="carmo-bulk-category-link">4/5mm</a>
                     </li>
                     <li>
-                        <a href="#carmo-bulk-category-202" class="category-link">XL</a>
+                        <a href="#carmo-bulk-category-202" class="carmo-bulk-category-link">XL</a>
                     </li>
                     <li>
-                        <a href="#carmo-bulk-category-206" class="category-link">Shrubs and Flowers</a>
+                        <a href="#carmo-bulk-category-206" class="carmo-bulk-category-link">Shrubs and Flowers</a>
                     </li>
                     <li>
-                        <a href="#carmo-bulk-category-199" class="category-link">Alien</a>
+                        <a href="#carmo-bulk-category-199" class="carmo-bulk-category-link">Alien</a>
                     </li>
                     <li>
-                        <a href="#carmo-bulk-category-201" class="category-link">Tiny</a>
+                        <a href="#carmo-bulk-category-201" class="carmo-bulk-category-link">Tiny</a>
                     </li>
                     <li>
-                        <a href="#carmo-bulk-category-204" class="category-link">Tuft Sets</a>
+                        <a href="#carmo-bulk-category-204" class="carmo-bulk-category-link">Tuft Sets</a>
                     </li>
                 </ul>
             </li>
             
             <li>
-                <a href="#carmo-bulk-category-207" class="category-link">
+                <a href="#carmo-bulk-category-207" class="carmo-bulk-category-link">
                     <i class="menu-icon"></i>Basing Bits
                 </a>
             </li>
@@ -93,31 +93,31 @@ $wrapper_attributes = get_block_wrapper_attributes([
                 </div>
                 <ul class="submenu">
                     <li>
-                        <a href="#carmo-bulk-category-344" class="category-link">Deserts of Maahl</a>
+                        <a href="#carmo-bulk-category-344" class="carmo-bulk-category-link">Deserts of Maahl</a>
                     </li>
                     <li>
-                        <a href="#carmo-bulk-category-210" class="category-link">Highland</a>
+                        <a href="#carmo-bulk-category-210" class="carmo-bulk-category-link">Highland</a>
                     </li>
                     <li>
-                        <a href="#carmo-bulk-category-215" class="category-link">Winter</a>
+                        <a href="#carmo-bulk-category-215" class="carmo-bulk-category-link">Winter</a>
                     </li>
                     <li>
-                        <a href="#carmo-bulk-category-216" class="category-link">Badlands</a>
+                        <a href="#carmo-bulk-category-216" class="carmo-bulk-category-link">Badlands</a>
                     </li>
                     <li>
-                        <a href="#carmo-bulk-category-218" class="category-link">Temple</a>
+                        <a href="#carmo-bulk-category-218" class="carmo-bulk-category-link">Temple</a>
                     </li>
                     <li>
-                        <a href="#carmo-bulk-category-219" class="category-link">Urban Warfare</a>
+                        <a href="#carmo-bulk-category-219" class="carmo-bulk-category-link">Urban Warfare</a>
                     </li>
                     <li>
-                        <a href="#carmo-bulk-category-213" class="category-link">Spaceship Corridor</a>
+                        <a href="#carmo-bulk-category-213" class="carmo-bulk-category-link">Spaceship Corridor</a>
                     </li>
                     <li>
-                        <a href="#carmo-bulk-category-340" class="category-link">Alien Infestation</a>
+                        <a href="#carmo-bulk-category-340" class="carmo-bulk-category-link">Alien Infestation</a>
                     </li>
                     <li>
-                        <a href="#carmo-bulk-category-347" class="category-link">Infinity the Game</a>
+                        <a href="#carmo-bulk-category-347" class="carmo-bulk-category-link">Infinity the Game</a>
                     </li>
                 </ul>
             </li>

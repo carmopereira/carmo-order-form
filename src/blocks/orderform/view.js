@@ -10,8 +10,10 @@
 	// Create functions in the namespace
 	const CarmoBulk = window.CarmoBulk;
 	
+	const isDebug = typeof URLSearchParams !== 'undefined' && new URLSearchParams(window.location.search).has('debug');
+
 	document.addEventListener('DOMContentLoaded', function() {
-		console.log('🟢 OrderForm: Script initialized');
+		if (isDebug) console.log('🟢 OrderForm: Script initialized');
 		
 		// Initialize cart values
 		updateQuantitiesFromCart();
@@ -25,47 +27,18 @@
 		// Initialize event handlers for category buttons
 		handleCategoryApply();
 		
-		// Add visual indicator of loaded script
-		addScriptLoadedIndicator();
-		
 		// Initialize lastValue for all inputs
-		document.querySelectorAll('.quantity-input').forEach(input => {
+		document.querySelectorAll('.carmo-bulk-quantity-input').forEach(input => {
 			input.dataset.lastValue = input.value || '0';
 		});
 	});
 	
 	// Helper functions
 	
-	function addScriptLoadedIndicator() {
-		const containers = document.querySelectorAll('.carmo-bulk-container');
-		if (containers.length > 0) {
-			containers.forEach(function(container) {
-				const indicator = document.createElement('div');
-				indicator.style.backgroundColor = '#4CAF50';
-				indicator.style.color = 'white';
-				indicator.style.padding = '5px';
-				indicator.style.marginTop = '10px';
-				indicator.style.borderRadius = '4px';
-				indicator.style.fontSize = '12px';
-				indicator.style.position = 'fixed';
-				indicator.style.right = '10px';
-				indicator.style.top = '10px';
-				indicator.style.zIndex = '9999';
-				indicator.textContent = '✓ OrderForm JS active';
-				container.appendChild(indicator);
-				
-				// Auto-remove after 5 seconds
-				setTimeout(() => {
-					indicator.style.display = 'none';
-				}, 5000);
-			});
-		}
-	}
-	
 	function setupQuantityButtons() {
 		// Handler for product buttons
 		document.body.addEventListener('click', async function(e) {
-			const productButton = e.target.closest('.quantity-button');
+			const productButton = e.target.closest('.carmo-bulk-quantity-button');
 			if (!productButton) return;
 			
 			e.preventDefault();
@@ -75,16 +48,16 @@
 			if (!row) return;
 			
 			// Find the quantity input in the same row
-			const input = row.querySelector('.quantity-input');
+			const input = row.querySelector('.carmo-bulk-quantity-input');
 			if (!input) return;
 			
 			const currentValue = parseInt(input.value) || 0;
 			let increment = 0;
 			
 			// Check which button was clicked
-			if (productButton.classList.contains('product-plus-one')) increment = 1;
-			else if (productButton.classList.contains('product-plus-five')) increment = 5;
-			else if (productButton.classList.contains('product-plus-ten')) increment = 10;
+			if (productButton.classList.contains('carmo-bulk-product-plus-one')) increment = 1;
+			else if (productButton.classList.contains('carmo-bulk-product-plus-five')) increment = 5;
+			else if (productButton.classList.contains('carmo-bulk-product-plus-ten')) increment = 10;
 			
 			if (increment > 0) {
 				const newValue = currentValue + increment;
@@ -100,13 +73,13 @@
 			}
 		});
 		
-		console.log('Quantity buttons configured');
+		if (isDebug) console.log('Quantity buttons configured');
 	}
 	
 	function setupCartHandlers() {
 		// Handler for keypress event on quantity inputs
 		document.body.addEventListener('keypress', async function(e) {
-			if (e.target.matches('.quantity-input') && e.key === 'Enter') {
+			if (e.target.matches('.carmo-bulk-quantity-input') && e.key === 'Enter') {
 				e.preventDefault(); // Prevent default Enter behavior
 				
 				const input = e.target;
@@ -114,7 +87,7 @@
 				const oldValue = parseInt(input.dataset.lastValue) || 0;
 				
 				// If the value is zero and there is a cartItemKey, always process
-				const cartItemKeyInput = input.closest('tr').querySelector('.cart-item-key');
+				const cartItemKeyInput = input.closest('tr').querySelector('.carmo-bulk-cart-item-key');
 				const cartItemKey = cartItemKeyInput ? cartItemKeyInput.value : '';
 				const forceProcess = newValue === 0 && cartItemKey;
 				
@@ -142,12 +115,12 @@
 		
 		// We also update the change event for consistency
 		document.body.addEventListener('change', async function(e) {
-			if (e.target.matches('.quantity-input')) {
+			if (e.target.matches('.carmo-bulk-quantity-input')) {
 				const input = e.target;
 				const newValue = parseInt(input.value) || 0;
 				const oldValue = parseInt(input.dataset.lastValue) || 0;
 				
-				const cartItemKeyInput = input.closest('tr').querySelector('.cart-item-key');
+				const cartItemKeyInput = input.closest('tr').querySelector('.carmo-bulk-cart-item-key');
 				const cartItemKey = cartItemKeyInput ? cartItemKeyInput.value : '';
 				const forceProcess = newValue === 0 && cartItemKey;
 				
@@ -171,7 +144,7 @@
 		
 		// Update the last valid value when the input loses focus
 		document.body.addEventListener('blur', function(e) {
-			if (e.target.matches('.quantity-input')) {
+			if (e.target.matches('.carmo-bulk-quantity-input')) {
 				const input = e.target;
 				const currentValue = parseInt(input.value) || 0;
 				input.dataset.lastValue = currentValue;
@@ -181,7 +154,7 @@
 		// Category reset button
 		document.body.addEventListener('click', function(e) {
 			// New listener for the category reset button
-			if (e.target.matches('.category-reset-button')) {
+			if (e.target.matches('.carmo-bulk-category-reset-button')) {
 				const categoryId = e.target.dataset.categoryId;
 				console.log('Reset button clicked', { categoryId });
 				
@@ -195,13 +168,13 @@
 			}
 		});
 		
-		console.log('Cart handlers configured');
+		if (isDebug) console.log('Cart handlers configured');
 	}
 	
 	function handleCategoryApply() {
-		const categoryApplyButtons = document.querySelectorAll('.category-apply-button');
+		const categoryApplyButtons = document.querySelectorAll('.carmo-bulk-category-apply-button');
 		
-		console.log(`Found ${categoryApplyButtons.length} category apply buttons`);
+		if (isDebug) console.log(`Found ${categoryApplyButtons.length} category apply buttons`);
 		
 		categoryApplyButtons.forEach(button => {
 			button.addEventListener('click', function(event) {
@@ -209,10 +182,10 @@
 				event.stopPropagation();
 				
 				const categoryId = this.dataset.categoryId;
-				console.log(`Category button ${categoryId} clicked`);
+				if (isDebug) console.log(`Category button ${categoryId} clicked`);
 				
 				// Search for the category input
-				let categoryInput = document.querySelector(`.category-quantity-input[data-category-id="${categoryId}"]`);
+				let categoryInput = document.querySelector(`.carmo-bulk-category-quantity-input[data-category-id="${categoryId}"]`);
 				
 				// If not found, try to find input near the button
 				if (!categoryInput) {
@@ -227,21 +200,21 @@
 				
 				if (categoryInput && categoryInput.value && categoryInput.value !== '') {
 					valueToApply = categoryInput.value;
-					console.log(`Value to be applied: ${valueToApply}`);
+					if (isDebug) console.log(`Value to be applied: ${valueToApply}`);
 				} else {
-					console.log(`No valid input found. Using default value: ${valueToApply}`);
+					if (isDebug) console.log(`No valid input found. Using default value: ${valueToApply}`);
 				}
 				
 				// Find all inputs for the category
-				const categoryInputs = document.querySelectorAll(`.quantity-input[data-category-id="${categoryId}"]`);
+				const categoryInputs = document.querySelectorAll(`.carmo-bulk-quantity-input[data-category-id="${categoryId}"]`);
 				
 				if (categoryInputs.length === 0) {
-					console.log(`No product inputs found for category ${categoryId}`);
+					if (isDebug) console.log(`No product inputs found for category'. ${categoryId}`);
 					alert(`Error: Could not find products for this category (${categoryId})`);
 					return;
 				}
 				
-				console.log(`Applying value ${valueToApply} to ${categoryInputs.length} products in category ${categoryId}`);
+				if (isDebug) console.log(`Applying value ${valueToApply} to ${categoryInputs.length} products in category ${categoryId}`);
 				
 				// Apply the value to all products sequentially
 				applyValueSequentially(Array.from(categoryInputs), 0, valueToApply, categoryId);
@@ -255,7 +228,7 @@
 	function applyValueSequentially(inputs, index, valueToApply, categoryId) {
 		// If finished all inputs
 		if (index >= inputs.length) {
-			console.log(`Updated ${inputs.length} products in category ${categoryId}`);
+			if (isDebug) console.log(`Updated ${inputs.length} products in category ${categoryId}`);
 			return;
 		}
 		
@@ -263,7 +236,7 @@
 		const productId = input.dataset.productId;
 		const oldValue = input.value;
 		
-		console.log(`[${index+1}/${inputs.length}]: Applying value ${valueToApply} to product ${productId} (previous value: ${oldValue})`);
+		if (isDebug) console.log(`[${index+1}/${inputs.length}]: Applying value ${valueToApply} to product ${productId} (previous value: ${oldValue})`);
 		
 		try {
 			// First set the value explicitly in the input
@@ -292,13 +265,13 @@
 	 * Category reset
 	 */
 	async function resetCategory(categoryId) {
-		console.log('Starting resetCategory', { categoryId });
+		if (isDebug) console.log('Starting resetCategory', { categoryId });
 		
 		// Find all quantity inputs for this category
-		const categoryInputs = document.querySelectorAll(`.quantity-input[data-category-id="${categoryId}"]`);
+		const categoryInputs = document.querySelectorAll(`.carmo-bulk-quantity-input[data-category-id="${categoryId}"]`);
 		
 		if (!categoryInputs.length) {
-			console.log('No products found in the category');
+			if (isDebug) console.log('No products found in the category');
 			return;
 		}
 		
@@ -316,7 +289,7 @@
 			input.dataset.lastValue = 0;
 			
 			// Check if cartItemKey exists
-			const cartItemKeyInput = row.querySelector('.cart-item-key');
+			const cartItemKeyInput = row.querySelector('.carmo-bulk-cart-item-key');
 			if (!cartItemKeyInput || !cartItemKeyInput.value) {
 				continue; // Not in the cart, skip to the next one
 			}
@@ -330,12 +303,12 @@
 			});
 		}
 		
-		console.log('Items to remove', itemsToRemove.length);
+		if (isDebug) console.log('Items to remove', itemsToRemove.length);
 		
 		// Now we remove one by one, sequentially to avoid issues
 		for (const item of itemsToRemove) {
 			try {
-				console.log('Removing item from cart', item.cartItemKey, 'product ID:', item.productId);
+				if (isDebug) console.log('Removing item from cart', item.cartItemKey, 'product ID:', item.productId);
 				await removeFromCart(item.cartItemKey);
 				
 				// Clear the cartItemKey
@@ -345,7 +318,7 @@
 				// Small pause to ensure the server processes each removal
 				await new Promise(resolve => setTimeout(resolve, 100));
 			} catch (error) {
-				console.log('Error removing product', { 
+				if (isDebug) console.log('Error removing product', { 
 					cartItemKey: item.cartItemKey, 
 					productId: item.productId, 
 					error 
@@ -363,22 +336,22 @@
 		}
 	}
 	
-	// Main functions for cart manipulation
-	
+	// Main function for handling quantity changes
 	function handleQuantityChange(input, newValue) {
 		if (!input) {
 			return Promise.reject(new Error('Input not found'));
 		}
 		
 		const productId = input.dataset.productId;
-				
-		console.log('Changing quantity for product', {
+		
+		if (isDebug) console.log('Changing quantity for product', {
 			productId: productId,
 			newValue: newValue,
 			inputValue: input.value
 		});
 		
 		if (!productId) {
+			if (isDebug) console.error('Product ID not found in input:', input);
 			return Promise.reject(new Error('Product ID not found'));
 		}
 		
@@ -387,7 +360,7 @@
 			return Promise.reject(new Error('Table row not found'));
 		}
 		
-		const cartItemKeyInput = row.querySelector('.cart-item-key');
+		const cartItemKeyInput = row.querySelector('.carmo-bulk-cart-item-key');
 		const cartItemKey = cartItemKeyInput ? cartItemKeyInput.value : '';
 		
 		// If the quantity is zero and we have a cartItemKey, we remove the item
@@ -408,8 +381,8 @@
 				if (!cartItemKeyInput) {
 					const newCartItemKeyInput = document.createElement('input');
 					newCartItemKeyInput.type = 'hidden';
-					newCartItemKeyInput.className = 'cart-item-key';
-					row.querySelector('.product-quantity').appendChild(newCartItemKeyInput);
+					newCartItemKeyInput.className = 'carmo-bulk-cart-item-key';
+					row.querySelector('.carmo-bulk-product-quantity').appendChild(newCartItemKeyInput);
 					newCartItemKeyInput.value = response.key;
 				} else {
 					cartItemKeyInput.value = response.key;
@@ -421,13 +394,13 @@
 	
 	// Function to remove item from cart
 	function removeFromCart(cartItemKey) {
-		console.log('Removing item from cart', {
+		if (isDebug) console.log('Removing item from cart', {
 			cartItemKey: cartItemKey
 		});
 		
 		return new Promise((resolve, reject) => {
 			if (!cartItemKey) {
-				console.error('No cart item key provided for removal');
+				//console.error('No cart item key provided for removal');
 				return reject(new Error('No cart item key provided'));
 			}
 			
@@ -438,14 +411,14 @@
 					xhr.setRequestHeader('X-WC-Store-API-Nonce', document.getElementById('carmo-bulk-form').dataset.nonce);
 				},
 				success: function(response) {
-					console.log('Item successfully removed', response);
+					if (isDebug) console.log('Item successfully removed', response);
 					resolve(response);
 
 					const customEvent = new CustomEvent('wc-blocks_added_to_cart');
 					document.body.dispatchEvent(customEvent);
 				},
 				error: function(error) {
-					console.log('Error removing item', error);
+					if (isDebug) console.log('Error removing item', error);
 					reject(error);
 				}
 			});
@@ -453,11 +426,7 @@
 	}
 	
 	function updateCart(productId, quantity, cartItemKey) {
-		console.log('Starting updateCart', {
-			productId,
-			quantity,
-			cartItemKey
-		});
+		if (isDebug) console.log('Starting updateCart', {productId,	quantity, cartItemKey});
 		
 		return new Promise((resolve, reject) => {
 			const data = {
@@ -472,27 +441,27 @@
 				data: JSON.stringify(data),
 				contentType: 'application/json',
 				success: function(response) {
-					console.log('Update successful', response);
+					if (isDebug) console.log('Update successful', response);
 					resolve(response);
 
 					const customEvent = new CustomEvent('wc-blocks_added_to_cart');
 					document.body.dispatchEvent(customEvent);
 				},
 				error: function(error) {
-					console.log('Update error', error);
+					if (isDebug) console.log('Update error', error);
 					reject(error);
 				}
 			};
 			
 			if (cartItemKey) {
-				console.log('Updating existing item', cartItemKey);
+				if (isDebug) console.log('Updating existing item', cartItemKey);
 				jQuery.ajax({
 					...ajaxConfig,
 					url: '/wp-json/wc/store/v1/cart/items/' + cartItemKey,
 					method: 'PUT'
 				});
 			} else {
-				console.log('Adding new item');
+				if (isDebug) console.log('Adding new item');
 				jQuery.ajax({
 					...ajaxConfig,
 					url: '/wp-json/wc/store/v1/cart/items',
@@ -535,18 +504,18 @@
 		}
 		
 		// Get or create notification in the container
-		let notification = blockContainer.querySelector('.carmo-notification');
+		let notification = blockContainer.querySelector('.carmo-bulk-notification');
 		
 		// If notification element doesn't exist, create one
 		if (!notification) {
 			notification = document.createElement('div');
-			notification.className = 'carmo-notification';
+			notification.className = 'carmo-bulk-notification';
 			blockContainer.appendChild(notification);
 		}
 		
 		// Configure the notification
 		notification.textContent = message;
-		notification.className = `carmo-notification ${type}`;
+		notification.className = `carmo-bulk-notification ${type}`;
 		notification.style.display = 'block';
 		
 		// Hide after 3 seconds
@@ -557,7 +526,7 @@
 	
 	// Initialize cart values
 	function updateQuantitiesFromCart() {
-		console.log('Starting updateQuantitiesFromCart');
+		if (isDebug) console.log('Starting updateQuantitiesFromCart');
 		
 		// Use the WooCommerce Store API endpoint
 		jQuery.ajax({
@@ -570,13 +539,13 @@
 				}
 			},
 			success: function(response) {
-				console.log('Store API response received');
+				if (isDebug) console.log('Store API response received');
 				
 				// Map products in cart
 				const productsInCart = {};
 				
 				if (response && response.items && Array.isArray(response.items)) {
-					console.log('Found', response.items.length, 'items in cart');
+					if (isDebug) console.log('Found', response.items.length, 'items in cart');
 					
 					response.items.forEach(item => {
 						// ID pode ser o product_id para produtos simples ou variation_id para variáveis
@@ -601,12 +570,12 @@
 						}
 					});
 				} else {
-					console.log('Unrecognized response structure or empty cart');
+					if (isDebug) console.log('Unrecognized response structure or empty cart');
 				}
 				
 				// Find all quantity inputs
-				const inputs = document.querySelectorAll('.quantity-input');
-				console.log('Total inputs found', inputs.length);
+				const inputs = document.querySelectorAll('.carmo-bulk-quantity-input');
+				if (isDebug) console.log('Total inputs found', inputs.length);
 				
 				// Reset all inputs first (zerar os campos)
 				inputs.forEach(function(input) {
@@ -616,7 +585,7 @@
 					// Remover o cart item key, se existir
 					const row = input.closest('tr');
 					if (row) {
-						const cartItemKeyInput = row.querySelector('.cart-item-key');
+						const cartItemKeyInput = row.querySelector('.carmo-bulk-cart-item-key');
 						if (cartItemKeyInput) {
 							cartItemKeyInput.value = '';
 						}
@@ -647,13 +616,13 @@
 						input.dataset.lastValue = cartInfo.quantity;
 						
 						// Atualizar ou criar o cartItemKey
-						let cartItemKeyInput = row.querySelector('.cart-item-key');
+						let cartItemKeyInput = row.querySelector('.carmo-bulk-cart-item-key');
 						if (!cartItemKeyInput) {
 							cartItemKeyInput = document.createElement('input');
-							cartItemKeyInput.className = 'cart-item-key';
+							cartItemKeyInput.className = 'carmo-bulk-cart-item-key';
 							cartItemKeyInput.type = 'hidden';
 							cartItemKeyInput.name = 'product-quantity.' + (productId || '');
-							row.querySelector('.product-quantity').appendChild(cartItemKeyInput);
+							row.querySelector('.carmo-bulk-product-quantity').appendChild(cartItemKeyInput);
 						}
 						
 						cartItemKeyInput.value = cartInfo.key;
@@ -664,7 +633,7 @@
 				document.body.dispatchEvent(customEvent);
 			},
 			error: function(error) {
-				console.log('Error getting cart via Store API', error);
+				if (isDebug) console.log('Error getting cart via Store API', error);
 				
 				// Try alternative method as fallback
 				if (typeof wc_cart_fragments_params !== 'undefined') {
@@ -672,7 +641,7 @@
 						url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),
 						type: 'POST',
 						success: function(data) {
-							console.log('Fragments obtained');
+							if (isDebug) console.log('Fragments obtained');
 							
 							// Update fragments
 							if (data && data.fragments) {

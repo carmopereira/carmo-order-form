@@ -2,7 +2,7 @@
  * Estilos para o Menu de Categorias
  */
 
-.carmo-menu-container {
+.carmo-bulk-menu-container {
     position: fixed;
     top: 50%;
     left: 0;
@@ -17,7 +17,7 @@
     transition: all 0.3s ease;
     
     // Título do menu
-    .carmo-menu-title {
+    .carmo-bulk-menu-title {
         margin: 0 0 1rem;
         color: #333;
         font-size: 1.4rem;
@@ -28,7 +28,7 @@
     }
     
     // Container de navegação
-    .carmo-menu-nav {
+    .carmo-bulk-menu-nav {
         max-height: 80vh;
         overflow-y: auto;
         scrollbar-width: thin;
@@ -44,17 +44,17 @@
     }
     
     // Lista principal
-    .carmo-menu-list {
+    .carmo-bulk-menu-list {
         list-style: none;
         padding: 0;
         margin: 0;
         
         // Itens de menu
-        .menu-item {
+        .carmo-bulk-menu-item {
             position: relative;
             
             // Links das categorias
-            .category-link {
+            .carmo-bulk-category-link {
                 display: block;
                 
                 color: #444;
@@ -76,7 +76,7 @@
             }
             
             // Categorias pai (sem link)
-            .category-parent {
+            .carmo-bulk-category-parent {
                 display: block;
                 color: #000;
                 font-weight: bold;
@@ -100,15 +100,15 @@
                 margin-bottom: 0.8rem;
                 
                 // Submenu
-                .sub-menu {
+                .carmo-bulk-sub-menu {
                     list-style: none;
                     padding-left: 1rem;
                     border-left: 2px solid #ddd;
                     
-                    .menu-item {
+                    .carmo-bulk-menu-item {
                         margin: 0.2rem 0;
                         
-                        .category-link {
+                        .carmo-bulk-category-link {
                             font-size: 0.9rem;
                             
                         }
@@ -119,7 +119,7 @@
     }
     
     // Para os toggles de menu (categorias colapsáveis)
-    .menu-toggle {
+    .carmo-bulk-menu-toggle {
         color: #444;
         display: block;
         padding: 0.3rem 0.5rem;
@@ -139,12 +139,12 @@
     }
     
     // Quando o item está colapsado
-    .menu-item-has-children.collapsed {
+    .carmo-bulk-menu-item-has-children.collapsed {
         .toggle-icon {
             transform: rotate(-90deg);
         }
         
-        > .sub-menu {
+        > .carmo-bulk-sub-menu {
             display: none;
         }
     }
@@ -154,7 +154,7 @@
  * Estilos para o Menu Acordeão com animação de faixa colorida
  */
 
-.carmo-menu-accordion {
+.carmo-bulk-menu-accordion {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     position: fixed;
     top: 50%;
@@ -171,7 +171,7 @@
     transition: all 0.3s ease;
     
     // Menu title
-    .carmo-menu-title {
+    .carmo-bulk-menu-title {
         margin: 0 0 1rem;
         color: #333;
         font-size: 1.4rem;
@@ -182,7 +182,7 @@
     }
     
     // Main navigation
-    .menu-accordion {
+    .carmo-bulk-menu-accordion {
         max-height: 70vh;
         overflow-y: auto;
         overflow-x: hidden;
@@ -437,7 +437,7 @@
 
 // Responsiveness
 @media (max-width: 768px) {
-    .carmo-menu-accordion {
+    .carmo-bulk-menu-accordion {
         position: static;
         transform: none;
         width: 100%;

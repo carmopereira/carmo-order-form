@@ -1,8 +1,8 @@
 {
-	"name": "carmo-bulk",
-	"version": "0.1.0",
-	"description": "An interactive block with the Interactivity API.",
-	"author": "The WordPress Contributors",
+	"name": "carmo-order-form",
+	"version": "0.9.0",
+	"description": "A Gutenberg block to display products for a specific category. You can display multiple categories and add products easily to the cart",
+	"author": "carmopereira",
 	"license": "GPL-2.0-or-later",
 	"main": "build/blocks/orderform/index.js",
 	"scripts": {

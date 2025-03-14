@@ -10,10 +10,9 @@
     width: 100%;
     box-sizing: border-box;
     overflow: visible;
-	padding-left: 200px!important;
  }
 // Estilos para o frontend
-.carmo-notification {
+.carmo-bulk-notification {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -39,13 +38,13 @@
 	position: relative;
 }
 
-.category-container {
+.carmo-bulk-category-container {
 	margin-bottom: 2em;
 
-	.category-header {
+	.carmo-bulk-category-header {
 		margin-bottom: 2em;
 		
-		.category-title-wrapper {
+		.carmo-bulk-category-title-wrapper {
 			margin-bottom: 1em;
 			
 			.category-title {
@@ -56,17 +55,17 @@
 			}
 		}
 		
-		.category-controls {
+		.carmo-bulk-category-controls {
 			display: flex;
 			flex-direction: column;
 			gap: 1em;
 			
-			.category-input-group {
+			.carmo-bulk-category-input-group {
 				display: flex;
 				gap: 0.5em;
 				align-items: center;
 				
-				.category-apply-button {
+				.carmo-bulk-category-apply-button {
 					padding: 0.5em 1em;
 					background-color: #4CAF50;
 					color: white;
@@ -80,12 +79,12 @@
 				}
 			}
 			
-			.category-buttons {
+			.carmo-bulk-category-buttons {
 				display: flex;
 				gap: 0.5em;
 				flex-wrap: wrap;
 				
-				.category-button {
+				.carmo-bulk-category-button {
 					padding: 0.5em 1em;
 					background-color: #f0f0f0;
 					border: 1px solid #ddd;
@@ -103,23 +102,23 @@
 		}
 	}
 
-	.category-quantity-controls {
+	.carmo-bulk-category-quantity-controls {
 		display: flex;
 		gap: 1em;
 		align-items: center;
 	}
 
-	.category-input-group {
+	.carmo-bulk-category-input-group {
 		display: flex;
 		gap: 0.5em;
 	}
 
-	.category-buttons {
+	.carmo-bulk-category-buttons {
 		display: flex;
 		gap: 0.5em;
 	}
 
-	.category-button {
+	.carmo-bulk-category-button {
 		padding: 0.5em 1em;
 		border-radius: 4px;
 		cursor: pointer;
@@ -132,11 +131,11 @@
 	}
 }
 
-.category-title-container {
+.carmo-bulk-category-title-container {
 	display: block;
 }
 
-.carmo-order-table {
+.carmo-bulk-order-table {
 	width: 100%;
 	border-collapse: collapse;
 	display: table; // mantemos como tabela para preservar a semântica
@@ -149,49 +148,48 @@
 	// Sistema de Grid - total de 12 unidades
 	thead tr,
 	tbody tr {
-		display: grid;
 		grid-template-columns: repeat(12, 1fr);
 		align-items: center;
 	}
 
 	// Distribuição das colunas
-	.product-image {
+	.carmo-bulk-product-image {
 		grid-column: span 1; // 1/12
 		width: var(--image-width, 100px);
 		min-width: var(--image-width, 100px);
 		text-align: center;
 	}
 
-	.product-sku {
+	.carmo-bulk-product-sku {
 		grid-column: span 1; // 1/12
 		text-align: center;
 	}
 	
-	.product-name {
+	.carmo-bulk-product-name {
 		grid-column: span 5; // 4/12
 	}
 	
-	.product-type {
+	.carmo-bulk-product-type {
 		text-align: center;
 		grid-column: span 1; // 1/12
 	}
 	
-	.product-price {
+	.carmo-bulk-product-price {
 		text-align: center;
 		grid-column: span 2; // 2/12
 	}
 	
-	.product-quantity {
+	.carmo-bulk-product-quantity {
 		text-align: center;
 		grid-column: span 1; // 2/12
 	}
 	
-	.product-increment {
+	.carmo-bulk-product-increment {
 		text-align: center;
 		grid-column: span 2; // 2/12
 	}
 
-	.out-of-stock-message {
+	.carmo-bulk-out-of-stock-message {
 		grid-column: span 6;
 	}
 
@@ -202,39 +200,39 @@
 			grid-template-columns: repeat(6, 1fr); // Reduz para 6 unidades em telas menores
 		}
 
-		.product-image {
+		.carmo-bulk-product-image {
 			grid-column: span 1; // 1/6
 		}
 		
-		.product-name {
+		.carmo-bulk-product-name {
 			grid-column: span 2; // 2/6
 		}
 		
-		.product-type {
+		.carmo-bulk-product-type {
 			grid-column: span 1; // 1/6
 		}
 		
-		.product-price {
+		.carmo-bulk-product-price {
 			grid-column: span 1; // 1/6
 		}
 		
-		.product-quantity {
+		.carmo-bulk-product-quantity {
 			grid-column: span 1; // 1/6
 		}
 		
-		.product-increment {
+		.carmo-bulk-product-increment {
 			grid-column: span 6; // linha completa em mobile
 		}
 	}
 }
 
-.carmo-footer {
+.carmo-bulk-footer {
 	display: flex;
 	justify-content: flex-end;
 	gap: 1em;
 	margin-top: 2em;
 	
-	.carmo-footer-button {
+	.carmo-bulk-footer-button {
 		padding: 0.5em 1em;
 		border-radius: 4px;
 		cursor: pointer;
@@ -251,7 +249,7 @@
 	}
 }
 
-.product-thumbnail {
+.carmo-bulk-product-thumbnail {
 	width: var(--image-width);
 	height: auto;
 	display: block;
@@ -259,7 +257,7 @@
 	object-fit: contain;
 }
 
-.carmo-order-table {
+.carmo-bulk-order-table {
 	width: 100%;
 	border-collapse: collapse;
 	margin: 25px 0;
@@ -267,37 +265,37 @@
 	border: solid 1px green;
 }
 
-.carmo-order-table thead tr {
+.carmo-bulk-order-table thead tr {
 	background-color: #009879;
 	color: #ffffff;
 	text-align: left;
 }
 
-.carmo-order-table th,
-.carmo-order-table td {
+.carmo-bulk-order-table th,
+.carmo-bulk-order-table td {
 	padding: 1px 4px;
 }
 
-.carmo-order-table tbody tr {
+.carmo-bulk-order-table tbody tr {
 	border-bottom: 1px solid #dddddd;
 }
 
-.carmo-order-table tbody tr:nth-of-type(even) {
+.carmo-bulk-order-table tbody tr:nth-of-type(even) {
 	/* background-color: #f3f3f3; */
 }
 
-.carmo-order-table tbody tr:last-of-type {
+.carmo-bulk-order-table tbody tr:last-of-type {
 	border-bottom: 2px solid #009879;
 }
 
-.add-to-cart-button {
+.carmo-bulk-add-to-cart-button {
 	background: none;
 	border: none;
 	cursor: pointer;
 	padding: 0px;
 }
 
-.cart-icon {
+.carmo-bulk-cart-icon {
 	width: 24px;
 	height: 24px;
 	fill: #009879;
@@ -305,13 +303,13 @@
 	padding: 0px;
 }
 
-.add-to-cart-button:hover .cart-icon {
+.carmo-bulk-add-to-cart-button:hover .carmo-bulk-cart-icon {
 	fill: #006b56;  /* Uma cor mais escura para o hover */
 }
 
 /* Estilo para o input numérico */
-.quantity-input,
-.category-quantity-input {
+.carmo-bulk-quantity-input,
+.carmo-bulk-category-quantity-input {
     width: 70px;
     padding: 6px 10px;
     border: 1px solid #ddd;
@@ -331,8 +329,8 @@
 }
 
 /* Efeito quando o input recebe foco */
-.quantity-input:focus,
-.category-quantity-input:focus {
+.carmo-bulk-quantity-input:focus,
+.carmo-bulk-category-quantity-input:focus {
     border-color: #009879;
     background: #fff;
     box-shadow: 0 2px 8px rgba(0, 152, 121, 0.5);
@@ -340,24 +338,24 @@
 }
 
 /* Chrome, Safari, Edge, Opera */
-.quantity-input::-webkit-outer-spin-button,
-.quantity-input::-webkit-inner-spin-button,
-.category-quantity-input::-webkit-outer-spin-button,
-.category-quantity-input::-webkit-inner-spin-button {
+.carmo-bulk-quantity-input::-webkit-outer-spin-button,
+.carmo-bulk-quantity-input::-webkit-inner-spin-button,
+.carmo-bulk-category-quantity-input::-webkit-outer-spin-button,
+.carmo-bulk-category-quantity-input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
 /* Microsoft Edge e IE */
-.quantity-input::-ms-clear,
-.quantity-input::-ms-reveal,
-.category-quantity-input::-ms-clear,
-.category-quantity-input::-ms-reveal {
+.carmo-bulk-quantity-input::-ms-clear,
+.carmo-bulk-quantity-input::-ms-reveal,
+.carmo-bulk-category-quantity-input::-ms-clear,
+.carmo-bulk-category-quantity-input::-ms-reveal {
     display: none;
 }
 
 /* Estilização APENAS para os botões de quantidade */
-.quantity-button {
+.carmo-bulk-quantity-button {
     background-color: #6fb2cf;
     color: white;
     border: none;
@@ -373,23 +371,23 @@
 }
 
 /* Efeito hover - apenas para botões */
-.quantity-button:hover {
+.carmo-bulk-quantity-button:hover {
     background-color: #1266ab;
 }
 
 /* Efeito ao pressionar - apenas para botões */
-.quantity-button:active {
+.carmo-bulk-quantity-button:active {
     transform: scale(0.95);
 }
 
 /* Estilo quando desativado - apenas para botões */
-.quantity-button:disabled {
+.carmo-bulk-quantity-button:disabled {
     background: #ccc;
     cursor: not-allowed;
     box-shadow: none;
 }
 
-.category-reset-button {
+.carmo-bulk-category-reset-button {
 	padding: 0.5em 1em;
 	background-color: #f44336;
 	color: white;
@@ -403,7 +401,7 @@
 }
 
 /* Estilo para colocar preços riscados e com desconto lado a lado */
-.price {
+.carmo-bulk-price {
     display: flex;
     align-items: center;
     flex-wrap: nowrap; /* Impede que os elementos quebrem para a próxima linha */
@@ -411,7 +409,7 @@
 }
 
 /* Preço riscado */
-del .amount {
+.carmo-bulk-price del .amount {
     color: #666; /* Cinza escuro para o preço riscado */
     font-weight: 300;
 	font-size: 14px;
@@ -420,23 +418,23 @@ del .amount {
 }
 
 /* Container do preço com desconto */
-ins {
+.carmo-bulk-price ins {
     text-decoration: none !important; /* Remove o sublinhado do preço com desconto */
     white-space: nowrap; /* Evita quebras de linha dentro do preço */
 }
 
 /* Valor do preço com desconto */
-ins .amount {
+.carmo-bulk-price ins .amount {
     color: black; /* Vermelho para o preço com desconto */
 }
 
 /* Para casos específicos onde o WooCommerce usa outra estrutura */
-.price del, 
-.price ins {
+.carmo-bulk-price del, 
+.carmo-bulk-price ins {
     display: inline-block; /* Garante que estes elementos fiquem na mesma linha */
 }
 
-.out-of-stock-message {
+.carmo-bulk-out-of-stock-message {
     height: 94%;
     background-color: lavenderblush;
     align-content: center;
@@ -447,7 +445,7 @@ ins .amount {
 }
 
 /* Estilo para produtos esgotados */
-.carmo-bulk-table .out-of-stock-message {
+.carmo-bulk-table .carmo-bulk-out-of-stock-message {
     text-align: center;
     font-weight: bold;
     color: #e74c3c;
@@ -458,37 +456,37 @@ ins .amount {
 }
 
 /* Opcional: adicionar um ícone */
-.carmo-bulk-table .out-of-stock-message::before {
+.carmo-bulk-table .carmo-bulk-out-of-stock-message::before {
     content: "⚠ ";
     margin-right: 5px;
 }
 
 /* Remover completamente as setas de inputs numéricos em todos os navegadores */
-.quantity-input,
-.category-quantity-input {
+.carmo-bulk-quantity-input,
+.carmo-bulk-category-quantity-input {
     /* Firefox */
     -moz-appearance: textfield;
 }
 
 /* Chrome, Safari, Edge, Opera */
-.quantity-input::-webkit-outer-spin-button,
-.quantity-input::-webkit-inner-spin-button,
-.category-quantity-input::-webkit-outer-spin-button,
-.category-quantity-input::-webkit-inner-spin-button {
+.carmo-bulk-quantity-input::-webkit-outer-spin-button,
+.carmo-bulk-quantity-input::-webkit-inner-spin-button,
+.carmo-bulk-category-quantity-input::-webkit-outer-spin-button,
+.carmo-bulk-category-quantity-input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
 /* Microsoft Edge e IE */
-.quantity-input::-ms-clear,
-.quantity-input::-ms-reveal,
-.category-quantity-input::-ms-clear,
-.category-quantity-input::-ms-reveal {
+.carmo-bulk-quantity-input::-ms-clear,
+.carmo-bulk-quantity-input::-ms-reveal,
+.carmo-bulk-category-quantity-input::-ms-clear,
+.carmo-bulk-category-quantity-input::-ms-reveal {
     display: none;
 }
 
 /* Efeito visual para o próximo campo que receberá foco */
-.highlight-focus {
+.carmo-bulk-highlight-focus {
     animation: pulse-focus 0.8s ease-in-out;
 }
 
@@ -499,8 +497,8 @@ ins .amount {
 }
 
 /* Melhorar a visibilidade do foco nos inputs */
-.quantity-input:focus,
-.category-quantity-input:focus {
+.carmo-bulk-quantity-input:focus,
+.carmo-bulk-category-quantity-input:focus {
     border-color: #009879;
     background: #fff;
     box-shadow: 0 2px 8px rgba(0, 152, 121, 0.5);

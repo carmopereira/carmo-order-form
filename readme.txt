@@ -1,31 +1,100 @@
-=== Carmo Bulk ===
-Contributors:      The WordPress Contributors
-Tags:              block
-Tested up to:      6.7
-Stable tag:        0.1.0
-License:           GPL-2.0-or-later
-License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+=== Carmo Order Form ===
+Contributors: carmopereira
+Donate link: https://ko-fi.com/carmopereira
+Tags: order form, bulk
+Requires at least: 6.0
+Tested up to: 6.7
+Stable tag: 1.0
+Requires PHP: 8
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-An interactive block with the Interactivity API.
+A Gutenberg block to display products for a specific category. You can display multiple categories and add products easily to the cart.
 
 == Description ==
 
-This is the long description. No limit, and you can use Markdown (as well as in the following sections).
+Carmo Bulk is a WordPress plugin that provides a Gutenberg block for displaying products from specific categories. With this plugin, you can easily:
 
-For backwards compatibility, if this section is missing, the full length of the short description will be used, and
-Markdown parsed.
+* Display products from multiple categories on a single page
+* Add products to cart quickly and intuitively
+* Customize product display with various layout options
+* Allow customers to add multiple products at once
+
+Ideal for online stores that want to offer a simplified shopping experience, especially for bulk orders or frequent purchases. The plugin uses WordPress's modern Interactivity API to provide a smooth, responsive user experience without page reloads.
+
+Compatible with WooCommerce and optimized for performance on both mobile and desktop devices.
 
 == Installation ==
 
-This section describes how to install the plugin and get it working.
+1. Upload the plugin to the `/wp-content/plugins/` directory or install it directly through the WordPress plugins panel.
+2. Activate the plugin through the 'Plugins' menu in WordPress.
+3. Go to the block editor (Gutenberg) and search for the "Carmo Order Form" block.
 
-e.g.
+== How to Use ==
 
-1. Upload the plugin files to the `/wp-content/plugins/carmo-bulk` directory, or install the plugin through the WordPress plugins screen directly.
-1. Activate the plugin through the 'Plugins' screen in WordPress
+= Adding the Block to a Page =
 
+1. Edit the page where you want to add the order form.
+2. Click the "+" button to add a new block.
+3. Search for "Carmo Order Form" and select it.
+4. Configure the product categories you want to display in the sidebar panel.
+
+= Block Configuration =
+
+In the sidebar panel, you can configure:
+
+* Product categories to display
+* Number of products per page
+* Layout and style options
+* Cart behavior
+
+= Customer Usage =
+
+Customers can:
+
+1. Browse products organized by category
+2. Adjust quantities using the "+" and "-" buttons or by entering values directly
+3. Add multiple products to the cart with a single click
+4. View detailed information such as price, SKU, and availability
+
+= Compatibility =
+
+The plugin is fully compatible with:
+
+* WordPress 6.4+
+* WooCommerce 8.0+
+* Modern Gutenberg-compatible themes
+* Mobile and desktop devices
 
 == Frequently Asked Questions ==
+
+= How can I add the order form block to a page? =
+
+Edit the page where you want to add the form, click the "+" button to add a new block, search for "Carmo Order Form" and select it. Then configure the product categories you want to display in the sidebar panel.
+
+= Is the plugin compatible with my theme? =
+
+Yes, Carmo Order Form is compatible with any modern theme that supports the Gutenberg editor. The plugin uses WordPress's Interactivity API to ensure a consistent experience across different themes.
+
+= Can I customize the appearance of the order form? =
+
+Yes, the block offers various customization options in the sidebar panel, including layout, colors, and styles. You can adjust the number of products per page, category arrangement, and other visual elements.
+
+= Can customers add multiple products to the cart at once? =
+
+Yes, this is one of the plugin's key features. Customers can adjust quantities for multiple products and add them all to the cart with a single click, making the ordering process much more efficient.
+
+= Do I need technical knowledge to use this plugin? =
+
+No, the plugin is designed to be easy to use. Simply add the block to a page and configure the product categories you want to display. No programming knowledge is required.
+
+= Does the plugin support product variations? =
+
+Yes, Carmo Order Form supports products with variations. Customers can select their desired options (such as size, color, etc.) directly in the order form.
+
+= How can I get support if I have issues with the plugin? =
+
+You can get support through the support section in the WordPress plugin directory or by contacting the plugin author directly via the email provided on the plugin page.
 
 = A question that someone might have =
 
@@ -45,8 +114,8 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 == Changelog ==
 
-= 0.1.0 =
-* Release
+= 0.9.0 =
+* Release Candidate 1
 
 == Arbitrary section ==
 
