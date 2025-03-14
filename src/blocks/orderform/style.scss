@@ -11,7 +11,7 @@
     box-sizing: border-box;
     overflow: visible;
  }
-// Estilos para o frontend
+// Styles for the frontend
 .carmo-bulk-notification {
 	position: absolute;
 	top: 0;
@@ -138,21 +138,21 @@
 .carmo-bulk-order-table {
 	width: 100%;
 	border-collapse: collapse;
-	display: table; // mantemos como tabela para preservar a semântica
+	display: table; // keep as table to preserve semantics
 	
 	th, td {
 		padding: 8px;
 		// border: 1px solid #ddd;
 	}
 
-	// Sistema de Grid - total de 12 unidades
+	// Grid system - total of 12 units
 	thead tr,
 	tbody tr {
 		grid-template-columns: repeat(12, 1fr);
 		align-items: center;
 	}
 
-	// Distribuição das colunas
+	// Distribution of columns
 	.carmo-bulk-product-image {
 		grid-column: span 1; // 1/12
 		width: var(--image-width, 100px);
@@ -193,11 +193,11 @@
 		grid-column: span 6;
 	}
 
-	// Responsividade
+	// Responsiveness
 	@media (max-width: 768px) {
 		thead tr,
 		tbody tr {
-			grid-template-columns: repeat(6, 1fr); // Reduz para 6 unidades em telas menores
+			grid-template-columns: repeat(6, 1fr); // Reduce to 6 units on smaller screens
 		}
 
 		.carmo-bulk-product-image {
@@ -221,7 +221,7 @@
 		}
 		
 		.carmo-bulk-product-increment {
-			grid-column: span 6; // linha completa em mobile
+			grid-column: span 6; // full line on mobile
 		}
 	}
 }
@@ -304,10 +304,10 @@
 }
 
 .carmo-bulk-add-to-cart-button:hover .carmo-bulk-cart-icon {
-	fill: #006b56;  /* Uma cor mais escura para o hover */
+	fill: #006b56;  /* A darker color for the hover */
 }
 
-/* Estilo para o input numérico */
+/* Style for the numeric input */
 .carmo-bulk-quantity-input,
 .carmo-bulk-category-quantity-input {
     width: 70px;
@@ -324,17 +324,17 @@
     /* Firefox */
     -moz-appearance: textfield;
 
-    /* Garante que o elemento pode receber foco */
+    /* Ensure the element can receive focus */
     tab-index: 0;
 }
 
-/* Efeito quando o input recebe foco */
+/* Effect when the input receives focus */
 .carmo-bulk-quantity-input:focus,
 .carmo-bulk-category-quantity-input:focus {
     border-color: #009879;
     background: #fff;
     box-shadow: 0 2px 8px rgba(0, 152, 121, 0.5);
-    outline: 2px solid #009879; /* Contorno mais visível */
+    outline: 2px solid #009879; /* More visible outline */
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -354,7 +354,7 @@
     display: none;
 }
 
-/* Estilização APENAS para os botões de quantidade */
+/* Styling ONLY for the quantity buttons */
 .carmo-bulk-quantity-button {
     background-color: #6fb2cf;
     color: white;
@@ -370,17 +370,17 @@
     justify-content: center;
 }
 
-/* Efeito hover - apenas para botões */
+/* Effect when hovering - only for buttons */
 .carmo-bulk-quantity-button:hover {
     background-color: #1266ab;
 }
 
-/* Efeito ao pressionar - apenas para botões */
+/* Effect when pressing - only for buttons */
 .carmo-bulk-quantity-button:active {
     transform: scale(0.95);
 }
 
-/* Estilo quando desativado - apenas para botões */
+/* Style when disabled - only for buttons */
 .carmo-bulk-quantity-button:disabled {
     background: #ccc;
     cursor: not-allowed;
@@ -400,38 +400,38 @@
 	}
 }
 
-/* Estilo para colocar preços riscados e com desconto lado a lado */
+/* Style to place striked prices and discounts side by side */
 .carmo-bulk-price {
     display: flex;
     align-items: center;
-    flex-wrap: nowrap; /* Impede que os elementos quebrem para a próxima linha */
+    flex-wrap: nowrap; /* Prevent elements from breaking to the next line */
     gap: 8px;
 }
 
-/* Preço riscado */
+/* Striked price */
 .carmo-bulk-price del .amount {
-    color: #666; /* Cinza escuro para o preço riscado */
+    color: #666; /* Dark gray for the striked price */
     font-weight: 300;
 	font-size: 14px;
     text-decoration:none;
-    white-space: nowrap; /* Evita quebras de linha dentro do preço */
+    white-space: nowrap; /* Prevent line breaks within the price */
 }
 
-/* Container do preço com desconto */
+/* Container of the discounted price */
 .carmo-bulk-price ins {
-    text-decoration: none !important; /* Remove o sublinhado do preço com desconto */
-    white-space: nowrap; /* Evita quebras de linha dentro do preço */
+    text-decoration: none !important; /* Remove the underline of the discounted price */
+    white-space: nowrap; /* Prevent line breaks within the price */
 }
 
-/* Valor do preço com desconto */
+/* Value of the discounted price */
 .carmo-bulk-price ins .amount {
-    color: black; /* Vermelho para o preço com desconto */
+    color: black; /* Red for the discounted price */
 }
 
-/* Para casos específicos onde o WooCommerce usa outra estrutura */
+/* For specific cases where WooCommerce uses another structure */
 .carmo-bulk-price del, 
 .carmo-bulk-price ins {
-    display: inline-block; /* Garante que estes elementos fiquem na mesma linha */
+    display: inline-block; /* Ensure these elements stay on the same line */
 }
 
 .carmo-bulk-out-of-stock-message {
@@ -444,7 +444,7 @@
     border-radius: 4px;
 }
 
-/* Estilo para produtos esgotados */
+/* Style for out of stock products */
 .carmo-bulk-table .carmo-bulk-out-of-stock-message {
     text-align: center;
     font-weight: bold;
@@ -455,13 +455,13 @@
     border-radius: 4px;
 }
 
-/* Opcional: adicionar um ícone */
+/* Optional: add an icon */
 .carmo-bulk-table .carmo-bulk-out-of-stock-message::before {
     content: "⚠ ";
     margin-right: 5px;
 }
 
-/* Remover completamente as setas de inputs numéricos em todos os navegadores */
+/* Remove completely the arrows of numeric inputs in all browsers */
 .carmo-bulk-quantity-input,
 .carmo-bulk-category-quantity-input {
     /* Firefox */
@@ -485,7 +485,7 @@
     display: none;
 }
 
-/* Efeito visual para o próximo campo que receberá foco */
+/* Visual effect for the next field that will receive focus */
 .carmo-bulk-highlight-focus {
     animation: pulse-focus 0.8s ease-in-out;
 }
@@ -496,12 +496,12 @@
     100% { box-shadow: 0 0 0 0 rgba(0, 152, 121, 0); }
 }
 
-/* Melhorar a visibilidade do foco nos inputs */
+/* Improve the visibility of the focus on the inputs */
 .carmo-bulk-quantity-input:focus,
 .carmo-bulk-category-quantity-input:focus {
     border-color: #009879;
     background: #fff;
     box-shadow: 0 2px 8px rgba(0, 152, 121, 0.5);
-    outline: 2px solid #009879; /* Contorno mais visível */
+    outline: 2px solid #009879; /* More visible outline */
 }
 
