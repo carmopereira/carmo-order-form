@@ -16,19 +16,13 @@ A Gutenberg block to display products for a specific category. You can display m
 Carmo Bulk is a WordPress plugin that provides a Gutenberg block for displaying products from specific categories. With this plugin, you can easily:
 
 * Display products from multiple categories on a single page
-* Add products to cart quickly and intuitively
+* Add products to the cart quickly and intuitively
 * Customize product display with various layout options
 * Allow customers to add multiple products at once
 
-Ideal for online stores that want to offer a simplified shopping experience, especially for bulk orders or frequent purchases. The plugin uses WordPress's modern Interactivity API to provide a smooth, responsive user experience without page reloads.
+This plugin is ideal for online stores that want to offer a simplified shopping experience, especially for bulk orders or frequent purchases. It uses WordPress's modern Interactivity API to provide a smooth, responsive user experience without page reloads.
 
-Compatible with WooCommerce and optimized for performance on both mobile and desktop devices.
-
-== Installation ==
-
-1. Upload the plugin to the `/wp-content/plugins/` directory or install it directly through the WordPress plugins panel.
-2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Go to the block editor (Gutenberg) and search for the "Carmo Order Form" block.
+Compatible with WooCommerce and optimized for performance on desktop devices.
 
 == How to Use ==
 
@@ -70,39 +64,31 @@ The plugin is fully compatible with:
 
 = How can I add the order form block to a page? =
 
-Edit the page where you want to add the form, click the "+" button to add a new block, search for "Carmo Order Form" and select it. Then configure the product categories you want to display in the sidebar panel.
+Edit the page where you want to add the form, click the "+" button to add a new block, search for "Carmo Order Form" and select it. Then, configure the product categories you want to display in the sidebar panel.
 
 = Is the plugin compatible with my theme? =
 
 Yes, Carmo Order Form is compatible with any modern theme that supports the Gutenberg editor. The plugin uses WordPress's Interactivity API to ensure a consistent experience across different themes.
 
-= Can I customize the appearance of the order form? =
+= Can I go ahead and customize the appearance of the order form? =
 
 Yes, the block offers various customization options in the sidebar panel, including layout, colors, and styles. You can adjust the number of products per page, category arrangement, and other visual elements.
 
 = Can customers add multiple products to the cart at once? =
 
-Yes, this is one of the plugin's key features. Customers can adjust quantities for multiple products and add them all to the cart with a single click, making the ordering process much more efficient.
+Yes, this is one of the plugin's key features. Customers can adjust quantities for multiple products and add them to the cart with a single click, making the ordering process much more efficient.
 
 = Do I need technical knowledge to use this plugin? =
 
-No, the plugin is designed to be easy to use. Simply add the block to a page and configure the product categories you want to display. No programming knowledge is required.
+No, the plugin is designed to be easy to use. Add the block to a page and configure the product categories you want to display. No programming knowledge is required.
 
 = Does the plugin support product variations? =
 
-Yes, Carmo Order Form supports products with variations. Customers can select their desired options (such as size, color, etc.) directly in the order form.
+Yes, Carmo Order Form supports products with variations. Customers can directly select their desired options (size, color, etc.) in the order form.
 
 = How can I get support if I have issues with the plugin? =
 
 You can get support through the support section in the WordPress plugin directory or by contacting the plugin author directly via the email provided on the plugin page.
-
-= A question that someone might have =
-
-An answer to that question.
-
-= What about foo bar? =
-
-Answer to foo bar dilemma.
 
 == Screenshots ==
 
@@ -116,9 +102,3 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 = 0.9.0 =
 * Release Candidate 1
-
-== Arbitrary section ==
-
-You may provide arbitrary sections, in the same format as the ones above. This may be of use for extremely complicated
-plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
-"installation." Arbitrary sections will be shown below the built-in sections outlined above.
