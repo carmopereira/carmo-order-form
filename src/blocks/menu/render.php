@@ -19,8 +19,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
 ?>
 
 <div <?php echo $wrapper_attributes; ?>>
-    <h2 class="carmo-bulk-menu-title">Categories</h2>
-    
+
     <nav class="carmo-bulk-menu-accordion">
         <ul>
             <li>
@@ -111,7 +110,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
                         <a href="#carmo-bulk-category-219" class="carmo-bulk-category-link">Urban Warfare</a>
                     </li>
                     <li>
-                        <a href="#carmo-bulk-category-213" class="carmo-bulk-category-link">Spaceship Corridor</a>
+                        <a href="#carmo-bulk-category-341" class="carmo-bulk-category-link">Spaceship Corridor</a>
                     </li>
                     <li>
                         <a href="#carmo-bulk-category-340" class="carmo-bulk-category-link">Alien Infestation</a>
@@ -121,6 +120,12 @@ $wrapper_attributes = get_block_wrapper_attributes([
                     </li>
                 </ul>
             </li>
+            <li><hr></li>
+            <li>
+            <div class="carmo-minicart" style="text-align:center;"><?php echo do_blocks('<!-- wp:woocommerce/mini-cart {"addToCartBehaviour":"none"} /-->'); ?></div>
+        <div style="text-align:center;"><a style="font-size:12pt" href="/checkout" target="_self">Proceed to Checkout</a></div>    
+        </li>
+
         </ul>
     </nav>
 </div> 

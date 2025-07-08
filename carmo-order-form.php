@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Carmo Order Form
  * Description:       A block to display products for a specific category. You can display multiple categories and add products easily to the cart
- * Version:           0.9.0
+ * Version:           0.9.2
  * Requires at least: 6.7
  * Requires PHP:      8
  * Author:            carmopereira
@@ -175,4 +175,48 @@ function carmo_bulk_get_single_variation_id($product_id) {
     
     // Caso contrário, retorna false
     return false;
+}
+
+add_action('wp_ajax_update_cart_item_quantity', 'carmo_update_cart_item_quantity');
+add_action('wp_ajax_nopriv_update_cart_item_quantity', 'carmo_update_cart_item_quantity');
+
+function carmo_update_cart_item_quantity() {
+    check_ajax_referer('carmo_order_form_nonce', 'nonce');
+    
+    $cart_item_key = sanitize_text_field($_POST['cart_item_key']);
+    $product_id = intval($_POST['product_id']);
+    $quantity = max(0, intval($_POST['quantity']));
+    
+    try {
+        // Remove item if quantity is zero
+        if ($quantity === 0) {
+            WC()->cart->remove_cart_item($cart_item_key);
+            wp_send_json_success([
+                'message' => 'Produto removido do carrinho',
+                'removed' => true,
+                'quantity' => 0
+            ]);
+        }
+        
+        // Update cart item quantity
+        $result = WC()->cart->set_quantity($cart_item_key, $quantity);
+        
+        if ($result) {
+            wp_send_json_success([
+                'message' => 'Quantidade atualizada com sucesso',
+                'removed' => false,
+                'quantity' => $quantity
+            ]);
+        } else {
+            wp_send_json_error([
+                'message' => 'Falha ao atualizar quantidade',
+                'quantity' => $quantity
+            ]);
+        }
+    } catch (Exception $e) {
+        wp_send_json_error([
+            'message' => $e->getMessage(),
+            'quantity' => $quantity
+        ]);
+    }
 }

@@ -505,3 +505,84 @@
     outline: 2px solid #009879; /* More visible outline */
 }
 
+
+// Recommended CSS to accompany this (add to your stylesheet)
+
+.carmo-bulk-quantity-input.updated-success {
+    border-color: green;
+    transition: border-color 0.3s ease;
+}
+
+.carmo-bulk-quantity-input.updated-error {
+    border-color: red;
+    transition: border-color 0.3s ease;
+}
+
+/* Estilo para uma notificação tipo barra no fundo da página */
+.carmo-notification {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px; /* Altura fixa como uma barra */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #333;
+    color: white;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+/* Animação para entrada/saída da notificação */
+.carmo-notification.hidden {
+    transform: translateY(100%);
+}
+/*
+.carmo-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    z-index: 1000;
+    transition: opacity 0.3s ease;
+}
+*/
+
+.carmo-notification-success {
+    background-color: #dff0d8;
+    color: #3c763d;
+}
+
+.carmo-notification-error {
+    background-color: #f2dede;
+    color: #a94442;
+}
+
+.carmo-notification-exit {
+    opacity: 0;
+}
+
+.carmo-bulk-progress-container {
+    width: 98%;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    margin: 10px;
+	position:fixed;
+	bottom:20px;
+}
+
+.carmo-bulk-progress {
+    height: 5px;
+    background-color: #4CAF50;
+    width: 0%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.wc-block-mini-cart__badge {
+	background-color: cadetblue;
+	color: white;
+}

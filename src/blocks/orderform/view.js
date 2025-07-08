@@ -26,7 +26,7 @@
 		
 		// Initialize event handlers for category buttons
 		handleCategoryApply();
-		
+
 		// Initialize lastValue for all inputs
 		document.querySelectorAll('.carmo-bulk-quantity-input').forEach(input => {
 			input.dataset.lastValue = input.value || '0';
@@ -171,10 +171,129 @@
 		if (isDebug) console.log('Cart handlers configured');
 	}
 	
+	/**
+	 * Applies a specific value to inputs sequentially
+	 */
+
+
+	/* TEST async */
+
+	// Add this to your view.js for comprehensive debugging
+	document.addEventListener('carmo:quantity-update', (event) => {
+		console.log('Quantity Update Event:', {
+			detail: event.detail,
+			target: event.target
+		});
+	});
+
+	function hideProgressBarWithDelay(progressElement, delay = 4000) {
+		if (!progressElement) return;
+		
+		// First, indicate completion by setting the progress to 100%
+		const progressBar = progressElement.querySelector('.carmo-bulk-progress-bar');
+		if (progressBar) {
+			progressBar.style.width = '100%';
+		}
+		
+		// Set a timeout to hide the progress bar after the delay
+		setTimeout(() => {
+			// Option 1: Hide with CSS
+			progressElement.style.opacity = '0';
+			progressElement.style.transition = 'opacity 0.5s ease';
+			
+			// After fade out animation, actually remove from DOM
+			setTimeout(() => {
+				if (progressElement.parentNode) {
+					progressElement.parentNode.removeChild(progressElement);
+				}
+			}, 500); // Wait for fade out to complete
+		}, delay);
+	}
+
+	async function applyValueSequentially(inputs, currentIndex, valueToApply, categoryId) {
+		// Early exit conditions
+		if (!inputs || inputs.length === 0 || currentIndex >= inputs.length) {
+			if (isDebug) console.log('Bulk update completed');
+			showNotification(`Category updated`, 'success');
+			return;
+		}
+
+		// Ensure progress indicator exists
+		let progressElement = document.querySelector(`.carmo-bulk-progress[data-category-id="${categoryId}"]`);
+		if (!progressElement) {
+			progressElement = createProgressIndicator(categoryId);
+			//hide progress after 4seconds
+
+		// Hide it with delay
+		hideProgressBarWithDelay(progressElement);
+
+		}
+
+		// Current input being processed
+		const currentInput = inputs[currentIndex];
+
+		try {
+			// Validate input and value
+			const newQuantity = parseInt(valueToApply, 10);
+			if (isNaN(newQuantity) || newQuantity < 0) {
+				console.warn(`Invalid quantity: ${valueToApply}`);
+				throw new Error('Invalid Quantity');
+			}
+
+			if (isDebug) console.log("currentInput: " + currentInput.value + " and newQuantity: " + newQuantity);
+			// Perform quantity change with error handling
+			const result = await handleQuantityChange(currentInput, newQuantity);
+
+			// Ensure input value is updated
+			if (isDebug) console.log('result ', result);
+			if (result && Object.keys(result).length > 0) {
+				if (isDebug) console.log('entrou no sucess');
+				// Directly set the value and last value
+				currentInput.value = newQuantity;
+				currentInput.setAttribute('value', newQuantity);  // Update HTML attribute
+				currentInput.dataset.lastValue = newQuantity;
+				
+				// Trigger change event to ensure any dependent logic runs
+				const changeEvent = new Event('change', { bubbles: true });
+				currentInput.dispatchEvent(changeEvent);
+				
+				// Visual feedback
+				currentInput.classList.add('updated-success');
+				setTimeout(() => {
+					currentInput.classList.remove('updated-success');
+				}, 1000);
+			} else {
+				// Handle specific failure scenarios
+				currentInput.classList.add('updated-error');
+				console.warn(`Failed to update product: ${currentInput.dataset.productId}`);
+			}
+
+			// Progress tracking
+			const progress = Math.round(((currentIndex + 1) / inputs.length) * 100);
+			updateProgressIndicator(categoryId, progress);
+
+			// Recursive call with small delay
+			await new Promise(resolve => setTimeout(resolve, 100)); // 100ms between updates
+			await applyValueSequentially(inputs, currentIndex + 1, valueToApply, categoryId);
+
+		} catch (error) {
+			// Comprehensive error handling
+			console.error('Error in sequential update:', error);
+			
+			// User-friendly error notification
+			showNotification(`Erro ao atualizar produto: ${error.message}`, 'error');
+
+			// Mark input as errored
+			currentInput.classList.add('updated-error');
+			
+			// Continue with next input
+			await applyValueSequentially(inputs, currentIndex + 1, valueToApply, categoryId);
+		}
+	}
+
+	// Enhanced handleCategoryApply to use new approach
 	function handleCategoryApply() {
 		const categoryApplyButtons = document.querySelectorAll('.carmo-bulk-category-apply-button');
-		
-		if (isDebug) console.log(`Found ${categoryApplyButtons.length} category apply buttons`);
 		
 		categoryApplyButtons.forEach(button => {
 			button.addEventListener('click', function(event) {
@@ -184,83 +303,75 @@
 				const categoryId = this.dataset.categoryId;
 				if (isDebug) console.log(`Category button ${categoryId} clicked`);
 				
-				// Search for the category input
+				// Find category input
 				let categoryInput = document.querySelector(`.carmo-bulk-category-quantity-input[data-category-id="${categoryId}"]`);
 				
-				// If not found, try to find input near the button
-				if (!categoryInput) {
-					const parentElement = this.parentElement;
-					if (parentElement) {
-						categoryInput = parentElement.querySelector('input[type="number"]');
-					}
-				}
 				
-				// Determine the value to be applied
-				let valueToApply = '1';  // Default value
-				
-				if (categoryInput && categoryInput.value && categoryInput.value !== '') {
-					valueToApply = categoryInput.value;
-					if (isDebug) console.log(`Value to be applied: ${valueToApply}`);
-				} else {
-					if (isDebug) console.log(`No valid input found. Using default value: ${valueToApply}`);
+				if (categoryInput.value === '') {
+					if (isDebug) console.log('vazzzzio');
+					showNotification("No value was filled in");
+					// get out of the function and do not continue
+					return;
 				}
+
+				// Determine value to apply
+				const valueToApply = (categoryInput && categoryInput.value) ? categoryInput.value : '1';
 				
 				// Find all inputs for the category
 				const categoryInputs = document.querySelectorAll(`.carmo-bulk-quantity-input[data-category-id="${categoryId}"]`);
-				
-				if (categoryInputs.length === 0) {
-					if (isDebug) console.log(`No product inputs found for category'. ${categoryId}`);
-					alert(`Error: Could not find products for this category (${categoryId})`);
-					return;
-				}
-				
+							
 				if (isDebug) console.log(`Applying value ${valueToApply} to ${categoryInputs.length} products in category ${categoryId}`);
 				
-				// Apply the value to all products sequentially
+				// Start sequential processing
 				applyValueSequentially(Array.from(categoryInputs), 0, valueToApply, categoryId);
 			});
 		});
 	}
-	
-	/**
-	 * Applies a specific value to inputs sequentially
-	 */
-	function applyValueSequentially(inputs, index, valueToApply, categoryId) {
-		// If finished all inputs
-		if (index >= inputs.length) {
-			if (isDebug) console.log(`Updated ${inputs.length} products in category ${categoryId}`);
-			return;
-		}
+
+	// Progress Indicator Function
+	function updateProgressIndicator(categoryId, progress) {
+		// Find progress element by category ID
+		const progressElement = document.querySelector(`.carmo-bulk-progress[data-category-id="${categoryId}"]`);
 		
-		const input = inputs[index];
-		const productId = input.dataset.productId;
-		const oldValue = input.value;
-		
-		if (isDebug) console.log(`[${index+1}/${inputs.length}]: Applying value ${valueToApply} to product ${productId} (previous value: ${oldValue})`);
-		
-		try {
-			// First set the value explicitly in the input
-			input.value = valueToApply;
+		if (progressElement) {
+			// Update width
+			progressElement.style.width = `${progress}%`;
 			
-			// Then trigger the change event
-			handleQuantityChange(input, valueToApply);
+			// Update ARIA attributes for accessibility
+			progressElement.setAttribute('aria-valuenow', progress);
+			progressElement.setAttribute('aria-valuetext', `${progress}% concluído`);
 			
-			// Process the next one after a small delay
-			setTimeout(function() {
-				applyValueSequentially(inputs, index + 1, valueToApply, categoryId);
-			}, 400);
-			
-			// Add notification
-			if (index === inputs.length - 1) {
-				// Using the last input as a reference for the block container
-				showNotification(`Applied value ${valueToApply} to all products in the category`, 'success', input);
+			// Optional: Add text representation
+			progressElement.textContent = `${progress}%`;
+		} else {
+			// Fallback logging if no progress element found
+			if (isDebug) {
+				console.log(`No progress element found for category ${categoryId}`);
 			}
-		} catch (e) {
-			console.error(`Error applying value: ${e.message}`);
-			showNotification('Error applying value to products', 'error', input);
 		}
 	}
-	
+
+	// Optional: Add HTML structure for progress indicator
+	function createProgressIndicator(categoryId) {
+		const container = document.createElement('div');
+		container.className = 'carmo-bulk-progress-container';
+		
+		const progressElement = document.createElement('div');
+		progressElement.className = 'carmo-bulk-progress';
+		progressElement.dataset.categoryId = categoryId;
+		progressElement.setAttribute('role', 'progressbar');
+		progressElement.setAttribute('aria-valuenow', '0');
+		progressElement.setAttribute('aria-valuemin', '0');
+		progressElement.setAttribute('aria-valuemax', '100');
+		
+		container.appendChild(progressElement);
+		
+		// Optional: Add to a specific location or body
+		document.body.appendChild(container);
+		
+		return progressElement;
+	}
+
 	/**
 	 * Category reset
 	 */
@@ -276,9 +387,7 @@
 		}
 		
 		let promises = [];
-		let productsRemoved = 0;
 		let itemsToRemove = [];
-		
 		// First we collect all items that need to be removed
 		for (const input of categoryInputs) {
 			const row = input.closest('tr');
@@ -305,24 +414,41 @@
 		
 		if (isDebug) console.log('Items to remove', itemsToRemove.length);
 		
-		// Now we remove one by one, sequentially to avoid issues
-		for (const item of itemsToRemove) {
-			try {
-				if (isDebug) console.log('Removing item from cart', item.cartItemKey, 'product ID:', item.productId);
-				await removeFromCart(item.cartItemKey);
-				
+		// Process in batches of 5
+		const BATCH_SIZE = 1;
+		const BATCH_DELAY = 200; // Only 200ms between batches instead of 800ms per item
+		try {
+			showNotification(`Removing ${itemsToRemove.length} products...`, 'info');
+			let productsRemoved = 0;
+
+			// Process in batches
+			for (let i = 0; i < itemsToRemove.length; i += BATCH_SIZE) {
+				const batch = itemsToRemove.slice(i, i + BATCH_SIZE);
+
+				const results = await Promise.all(
+					batch.map(item =>
+						removeFromCart(item.cartItemKey)
+							.then(() => {
 				// Clear the cartItemKey
 				item.cartItemKeyInput.value = '';
-				productsRemoved++;
-				
-				// Small pause to ensure the server processes each removal
-				await new Promise(resolve => setTimeout(resolve, 800));
-			} catch (error) {
+								return true;
+							})
+							.catch(error => {
 				if (isDebug) console.log('Error removing product', { 
 					cartItemKey: item.cartItemKey, 
 					productId: item.productId, 
 					error 
 				});
+								return false;
+							})
+					)
+				);
+
+				productsRemoved += results.filter(result => result).length;
+
+				// Small delay between batches
+				if (i + BATCH_SIZE < itemsToRemove.length) {
+					await new Promise(resolve => setTimeout(resolve, BATCH_DELAY));
 			}
 		}
 		
@@ -334,10 +460,14 @@
 		} else {
 			showNotification('No products in cart to remove');
 		}
+		} catch (error) {
+			showNotification('Error removing products', 'error');
+			if (isDebug) console.error('Error in bulk remove operation', error);
+	}
 	}
 	
 	// Main function for handling quantity changes
-	function handleQuantityChange(input, newValue) {
+	async function handleQuantityChange(input, newValue) {
 		if (!input) {
 			return Promise.reject(new Error('Input not found'));
 		}
@@ -350,6 +480,11 @@
 			inputValue: input.value
 		});
 		
+if (newValue == inputValue) {
+	if (isDebug) console.log('Product already with that value');
+	return Promise.reject(new Warning('Product already with that value'));
+}
+
 		if (!productId) {
 			if (isDebug) console.error('Product ID not found in input:', input);
 			return Promise.reject(new Error('Product ID not found'));
@@ -404,24 +539,28 @@
 				return reject(new Error('No cart item key provided'));
 			}
 			
-			jQuery.ajax({
-				url: '/wp-json/wc/store/v1/cart/items/' + cartItemKey,
-				method: 'DELETE',
-				beforeSend: function(xhr) {
-					xhr.setRequestHeader('X-WC-Store-API-Nonce', document.getElementById('carmo-bulk-form').dataset.nonce);
-				},
-				success: function(response) {
-					if (isDebug) console.log('Item successfully removed', response);
-					resolve(response);
-
-					const customEvent = new CustomEvent('wc-blocks_added_to_cart');
-					document.body.dispatchEvent(customEvent);
-				},
-				error: function(error) {
-					if (isDebug) console.log('Error removing item', error);
-					reject(error);
-				}
-			});
+		jQuery.ajax({
+		url: '/wp-json/wc/store/v1/cart/items/' + cartItemKey,
+		method: 'DELETE',
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader('X-WC-Store-API-Nonce', document.getElementById('carmo-bulk-form').dataset.nonce);
+		},
+		success: function(response, textStatus, jqXHR) {    
+			// Even if response is undefined, we can consider the operation successful
+			// if we reached the success callback
+			resolve({ success: true, status: jqXHR.status });
+			
+			const customEvent = new CustomEvent('wc-blocks_added_to_cart');
+			document.body.dispatchEvent(customEvent);
+		},
+		// Add error handling
+		error: function(jqXHR, textStatus, errorThrown) {
+			if (isDebug) {
+			console.error('Error removing item:', textStatus, errorThrown);
+			}
+			reject({ success: false, error: textStatus });
+		}
+		});
 		});
 	}
 	
@@ -439,6 +578,13 @@
 					xhr.setRequestHeader('X-WC-Store-API-Nonce', document.getElementById('carmo-bulk-form').dataset.nonce);
 				},
 				data: JSON.stringify(data),
+				custom_data:{
+					origin_page: window.location.href,
+					origin_page_id: document.body.dataset.pageId || '',  // You might need to add this data attribute
+					origin_page_title: document.title,
+					block_id: 'orderform',  // Identify your specific block
+					timestamp: Date.now()
+				},
 				contentType: 'application/json',
 				success: function(response) {
 					if (isDebug) console.log('Update successful', response);

@@ -69,6 +69,16 @@ $wrapper_attributes = get_block_wrapper_attributes([
 ]);
 ?>
 
+<div class="category-update-container">
+    <div class="carmo-bulk-progress" 
+         data-category-id="123" 
+         role="progressbar" 
+         aria-valuenow="0" 
+         aria-valuemin="0" 
+         aria-valuemax="100">
+    </div>
+</div>
+
 <div <?php echo $wrapper_attributes; ?> style="--image-width: <?php echo esc_attr($attributes['imageWidth']); ?>px;">
     <div class="carmo-bulk-category-container">
         <?php if (!empty($category_name)): ?>
