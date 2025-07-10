@@ -1,6 +1,6 @@
 {
 	"name": "carmo-order-form",
-	"version": "0.9.2",
+	"version": "0.9.3",
 	"description": "A Gutenberg block to display products for a specific category. You can display multiple categories and add products easily to the cart",
 	"author": "carmopereira",
 	"license": "GPL-2.0-or-later",

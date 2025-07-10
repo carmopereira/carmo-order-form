@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Carmo Order Form
  * Description:       A block to display products for a specific category. You can display multiple categories and add products easily to the cart
- * Version:           0.9.2
+ * Version:           0.9.3
  * Requires at least: 6.7
  * Requires PHP:      8
  * Author:            carmopereira

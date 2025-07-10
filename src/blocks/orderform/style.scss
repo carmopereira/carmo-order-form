@@ -207,6 +207,10 @@
 		.carmo-bulk-product-name {
 			grid-column: span 2; // 2/6
 		}
+
+		.carmo-bulk-product-url {
+			grid-column: span 1; // 2/6
+		}
 		
 		.carmo-bulk-product-type {
 			grid-column: span 1; // 1/6
@@ -585,4 +589,43 @@
 .wc-block-mini-cart__badge {
 	background-color: cadetblue;
 	color: white;
+}
+
+
+// processing stuff
+
+/* Processing state styles */
+.button.processing {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.button.processing::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: button-loading-spinner 0.8s linear infinite;
+}
+
+@keyframes button-loading-spinner {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Disabled state without processing animation */
+.button:disabled:not(.processing) {
+    opacity: 0.7;
+    cursor: not-allowed;
 }

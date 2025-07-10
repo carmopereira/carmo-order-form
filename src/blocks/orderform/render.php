@@ -120,6 +120,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
                         <th class="carmo-bulk-product-image"></th>
                     <?php endif; ?>
                     <th class="carmo-bulk-product-sku"><?php echo esc_html__('SKU', 'carmo-order-form'); ?></th>
+                    <th class="carmo-bulk-product-url"><?php echo esc_html__('Link', 'carmo-order-form'); ?></th>
                     <th class="carmo-bulk-product-name"><?php echo esc_html__('Product', 'carmo-order-form'); ?></th>
                     <th class="carmo-bulk-product-price"><?php echo esc_html__('Price', 'carmo-order-form'); ?></th>
                     <th class="carmo-bulk-product-quantity"><?php echo esc_html__('Quantity', 'carmo-order-form'); ?></th>
@@ -155,7 +156,8 @@ $wrapper_attributes = get_block_wrapper_attributes([
                         $product_name = $product->get_name();
                         $stock_quantity = $product->get_stock_quantity();
                         $stock_status = $product->get_stock_status(); // 'instock', 'outofstock', or 'onbackorder'
-                        
+                        $product_url = $product->get_permalink();
+
                         // Check if the product is a variable product with only one variation
                         $variation_id = false;
                         if ($product->is_type('variable')) {
@@ -242,8 +244,17 @@ $wrapper_attributes = get_block_wrapper_attributes([
                             echo esc_html($display_sku);
                             ?>
                         </td>
+                        <td class="carmo-bukl-product-url">
+<a href="<?php echo esc_html($product_url); ?>" target="_blank" class="product-link-icon" aria-label="<?php echo esc_attr__('View product details', 'carmo-order-form'); ?>">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                            </svg>
+                        </a>   
+                        </td>
                         <td class="carmo-bulk-product-name">
-                            <?php echo esc_html($product_name); ?>
+                        <?php echo esc_html($product_name); ?>
                         </td>
                         <?php if ($is_in_stock): ?>                        
                             <td class="carmo-bulk-product-price">
