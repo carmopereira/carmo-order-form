@@ -129,6 +129,6 @@ $wrapper_attributes = get_block_wrapper_attributes([
         </ul>
     </nav>
 </div> 
-<div class="carmo-bulk-container" id="checkout-footer" style="align-self:flex-end; display: flex; align-items: center; float:right; justify-content: right">
+<div class="carmo-bulk-container" id="checkout-footer" style="align-self:flex-end; display: flex; align-items: center; float:right; justify-content: right; padding-bottom:40px">
     <?php echo do_blocks('<!-- wp:woocommerce/mini-cart {"addToCartBehaviour":"none"} /-->'); ?>&nbsp;<a style="font-size:12pt" href="/checkout" target="_self">Proceed to Checkout</a>
 </div>
